@@ -1,6 +1,6 @@
 # AuthMed Intern Backend
 
-This is a Django + DRF backend implementing the AuthMed medicine intake inspection and risk-control workflow (Phase 1 & 2).
+This is a Django an DRF backend implementing the AuthMed medicine intake inspection and risk-control workflow.
 
 Core features
 - Organizations and Sites multi-tenancy
@@ -76,8 +76,3 @@ How this supports the workflow
 3. A `RiskResult` is stored (one-to-one) describing risk score and reason from automated or manual evaluation.
 4. A `ReviewDecision` is recorded when a reviewer approves or rejects; the `BatchInspection` also stores an `outcome` (`accepted`, `isolated`, `escalated`).
 5. All create/update/delete events are recorded into `AuditLog` for internal traceability.
-
-Notes
-- This implementation is intentionally minimal and focuses on a clear, extendable structure for interns to take over. ML/OCR is out of scope for Phase 1/2 but the evidence model supports attaching images for future processing.
-
-If you want, I can now run migrations and the seed command here, and run the tests locally. Let me know if you want me to do that now.
