@@ -1,4 +1,4 @@
-# Sequence 14d — Review decision flow
+# Sequence — Review Decision
 
 **Résumé**
 Le reviewer examine l'inspection et prend une décision: accept / isolate / escalate.

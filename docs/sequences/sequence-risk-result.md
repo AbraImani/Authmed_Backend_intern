@@ -1,4 +1,4 @@
-# Sequence 14c — Risk scoring and result
+# Sequence — Risk Result
 
 **Résumé**
 Pipeline de scoring: déclenché après ingestion des données et/ou après extraction, le moteur de risque calcule et stocke un `RiskResult`.

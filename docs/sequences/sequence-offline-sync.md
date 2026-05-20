@@ -1,4 +1,4 @@
-# Sequence 14g — Offline sync and conflict resolution
+# Sequence — Offline Sync and Conflict Resolution
 
 **Résumé**
 Gestion des inspections créées hors-ligne sur mobile et synchronisation lorsque la connectivité revient, avec résolution de conflits simples.

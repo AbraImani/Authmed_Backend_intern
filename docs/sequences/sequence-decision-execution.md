@@ -1,4 +1,4 @@
-# Sequence 14e — Decision execution and notification
+# Sequence — Decision Execution and Notification
 
 **Résumé**
 Après décision, actions opérationnelles (libération en stock, isolement, ou escalade) et notifications.

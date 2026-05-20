@@ -1,4 +1,4 @@
-# Sequence 14a — Batch reception and inspection (Mobile)
+# Sequence — Create Inspection (Mobile)
 
 **Résumé**
 Séquence décrivant la réception d'un lot depuis l'application mobile jusqu'à l'enregistrement de l'inspection initiale.

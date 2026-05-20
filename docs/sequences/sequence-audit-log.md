@@ -1,4 +1,4 @@
-# Sequence 14f — Audit log and compliance
+# Sequence — Audit Log and Compliance
 
 **Résumé**
 Chaque action significative génère une entrée d'audit: création inspection, preuves ajoutées, score calculé, décision prise.

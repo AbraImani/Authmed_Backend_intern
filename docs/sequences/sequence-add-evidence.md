@@ -1,4 +1,4 @@
-# Sequence 14b — Evidence upload and extraction
+# Sequence — Add Evidence
 
 **Résumé**
 Téléversement d'éléments de preuve (photos/docs), extraction optionnelle via OCR et enrichissement.
