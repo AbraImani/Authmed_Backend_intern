@@ -180,7 +180,7 @@ CMD ["gunicorn", "authmed.wsgi:application", "--bind", "0.0.0.0:8000"]
 **Secrets:**
 - database password
 - JWT secret key
-- AWS credentials
+- GCP credentials
 - API keys
 
 ---
