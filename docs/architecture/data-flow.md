@@ -1,16 +1,16 @@
 # Data Flow Diagram
 
-**Explication courte**
-Flux de données depuis la capture sur mobile jusqu'au scoring et à la prise de décision, avec persistance et audit.
+**Short explanation**
+Data flows from mobile capture through scoring and decision-making, with persistence and audit logging.
 
 ```mermaid
 flowchart LR
-    subgraph "CLIENTS"
+    subgraph CLIENTS["CLIENTS"]
         Mobile["Mobile App (offline/online)"]
         Web["Web Dashboard / Admin UI"]
     end
     
-    subgraph "API & BACKEND"
+    subgraph API_BACKEND["API & BACKEND"]
         API["Django REST API"]
         Ingest["Ingest Service<br/>- Validate payloads<br/>- Normalize data"]
         Storage["Evidence Storage (S3)"]
@@ -36,5 +36,5 @@ flowchart LR
     API --> Web
     
     style CLIENTS fill:#ecf0f1,stroke:#34495e
-    style API and BACKEND fill:#fef5e7,stroke:#f39c12
+    style API_BACKEND fill:#fef5e7,stroke:#f39c12
 ```
