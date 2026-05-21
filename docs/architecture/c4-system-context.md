@@ -72,7 +72,7 @@ graph TB
 - Receive feedback on rejected batches (future)
 
 ### Cloud Storage
-**Who:** AWS S3 or equivalent  
+**Who:** GOOGLE CLOUD SERVICES  
 **Interaction:**
 - Store evidence photos and documents
 - Archive inspection files
