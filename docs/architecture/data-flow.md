@@ -36,5 +36,5 @@ flowchart LR
     API --> Web
     
     style CLIENTS fill:#ecf0f1,stroke:#34495e
-    style API & BACKEND fill:#fef5e7,stroke:#f39c12
+    style API and BACKEND fill:#fef5e7,stroke:#f39c12
 ```
