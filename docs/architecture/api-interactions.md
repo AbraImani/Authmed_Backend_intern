@@ -2,92 +2,76 @@
 
 ## Overview
 
-This diagram shows how the major system components communicate via APIs - the backend API, mobile app, web dashboard, and external systems.
+This diagram shows how the major system components communicate via APIs: the backend API, mobile app, web dashboard, and external systems.
 
 ## API Interaction Architecture
 
 ```mermaid
 graph TB
-    subgraph "CLIENTS"
-        Mobile["📱 Mobile App<br/>Inspector<br/>React Native"]
-        Web["💻 Web Dashboard<br/>Reviewer/Manager<br/>React/Vue"]
-        ExtAPI["🔌 External API<br/>Future integrations"]
-    end
-    
-    subgraph "API LAYER"
-        APIGateway["🚪 API Gateway<br/>- Auth<br/>- Rate limiting<br/>- CORS"]
-        
-        AuthAPI["🔐 Auth API<br/>- POST /login<br/>- POST /refresh<br/>- POST /logout"]
-        
-        BatchAPI["📋 Batch API<br/>- POST /batches<br/>- GET /batches<br/>- PUT /batches"]
-        
-        InspectionAPI["🔍 Inspection API<br/>- POST /inspections<br/>- GET /inspections<br/>- PUT /inspections"]
-        
-        EvidenceAPI["📸 Evidence API<br/>- POST /evidence<br/>- GET /evidence<br/>- DELETE /evidence"]
-        
-        RiskAPI["⚠️ Risk API<br/>- POST /risk/calculate<br/>- GET /risk/results"]
-        
-        DecisionAPI["✅ Decision API<br/>- POST /decisions<br/>- GET /decisions<br/>- PUT /decisions"]
-        
-        DashboardAPI["📊 Dashboard API<br/>- GET /kpis<br/>- GET /trends<br/>- GET /batches"]
-        
-        ReportAPI["📄 Report API<br/>- POST /reports<br/>- GET /reports<br/>- DELETE /reports"]
-    end
-    
-    subgraph "PROCESSING"
-        RiskEngine["⚠️ Risk Scoring<br/>Engine"]
-        DecisionLogic["🔀 Decision<br/>Logic"]
-        NotificationService["📬 Notification<br/>Service"]
-    end
-    
-    subgraph "DATA LAYER"
-        Database["🗄️ PostgreSQL<br/>Database"]
-        Cache["⚡ Redis Cache<br/>KPI metrics"]
-        Storage["💾 AWS S3<br/>Evidence files"]
-    end
-    
-    Mobile -->|HTTPS API| APIGateway
-    Web -->|HTTPS API| APIGateway
-    ExtAPI -->|HTTPS API| APIGateway
-    
-    APIGateway -->|Route| AuthAPI
-    APIGateway -->|Route| BatchAPI
-    APIGateway -->|Route| InspectionAPI
-    APIGateway -->|Route| EvidenceAPI
-    APIGateway -->|Route| RiskAPI
-    APIGateway -->|Route| DecisionAPI
-    APIGateway -->|Route| DashboardAPI
-    APIGateway -->|Route| ReportAPI
-    
-    BatchAPI -->|Query/Store| Database
-    InspectionAPI -->|Query/Store| Database
-    EvidenceAPI -->|Upload/Retrieve| Storage
-    EvidenceAPI -->|Metadata| Database
-    
-    InspectionAPI -->|Trigger| RiskEngine
-    RiskEngine -->|Calculate| RiskAPI
-    RiskAPI -->|Store result| Database
-    
-    RiskAPI -->|Score| DecisionLogic
-    DecisionLogic -->|Store decision| DecisionAPI
-    DecisionLogic -->|Notify| NotificationService
-    
-    DashboardAPI -->|Query| Cache
-    DashboardAPI -->|Query| Database
-    
-    ReportAPI -->|Query| Database
-    ReportAPI -->|Export| Storage
-    
-    RiskAPI -->|Cache KPIs| Cache
-    
-    style APIGateway fill:#e74c3c,color:#fff,stroke-width:2px
-    style Mobile fill:#27ae60,color:#fff
-    style Web fill:#3498db,color:#fff
-    style RiskEngine fill:#e67e22,color:#fff
-    style DecisionLogic fill:#9b59b6,color:#fff
-    style Database fill:#95a5a6,color:#fff
-    style Cache fill:#f39c12,color:#fff
-    style Storage fill:#34495e,color:#fff
+  subgraph CLIENTS
+    Mobile["Mobile App\nInspector (mobile client)"]
+    Web["Web Dashboard\nReviewer / Manager UI"]
+    ExtAPI["External API\nFuture integrations"]
+  end
+
+  subgraph API_LAYER
+    APIGateway["API Gateway\n- Auth, rate limiting, CORS"]
+    AuthAPI["Auth API\n- POST /auth/login\n- POST /auth/refresh\n- POST /auth/logout"]
+    BatchAPI["Batch API\n- POST /batches\n- GET /batches\n- PUT /batches"]
+    InspectionAPI["Inspection API\n- POST /inspections\n- GET /inspections\n- PUT /inspections"]
+    EvidenceAPI["Evidence API\n- POST /evidence\n- GET /evidence\n- DELETE /evidence"]
+    RiskAPI["Risk API\n- POST /risk/calculate\n- GET /risk/results"]
+    DecisionAPI["Decision API\n- POST /decisions\n- GET /decisions\n- PUT /decisions"]
+    DashboardAPI["Dashboard API\n- GET /kpis\n- GET /trends\n- GET /batches"]
+    ReportAPI["Report API\n- POST /reports\n- GET /reports\n- DELETE /reports"]
+  end
+
+  subgraph PROCESSING
+    RiskEngine["Risk Scoring Engine"]
+    DecisionLogic["Decision Logic"]
+    NotificationService["Notification Service"]
+  end
+
+  subgraph DATA_LAYER
+    Database["PostgreSQL Database"]
+    Cache["Redis Cache\n- KPI metrics"]
+    Storage["Object storage (S3)\n- Evidence files"]
+  end
+
+  Mobile -->|HTTPS API| APIGateway
+  Web -->|HTTPS API| APIGateway
+  ExtAPI -->|HTTPS API| APIGateway
+
+  APIGateway -->|Route| AuthAPI
+  APIGateway -->|Route| BatchAPI
+  APIGateway -->|Route| InspectionAPI
+  APIGateway -->|Route| EvidenceAPI
+  APIGateway -->|Route| RiskAPI
+  APIGateway -->|Route| DecisionAPI
+  APIGateway -->|Route| DashboardAPI
+  APIGateway -->|Route| ReportAPI
+
+  BatchAPI -->|Query / Store| Database
+  InspectionAPI -->|Query / Store| Database
+  EvidenceAPI -->|Upload / Retrieve| Storage
+  EvidenceAPI -->|Metadata| Database
+
+  InspectionAPI -->|Trigger| RiskEngine
+  RiskEngine -->|Calculate| RiskAPI
+  RiskAPI -->|Store result| Database
+
+  RiskAPI -->|Score| DecisionLogic
+  DecisionLogic -->|Store decision| DecisionAPI
+  DecisionLogic -->|Notify| NotificationService
+
+  DashboardAPI -->|Query| Cache
+  DashboardAPI -->|Query| Database
+
+  ReportAPI -->|Query| Database
+  ReportAPI -->|Export| Storage
+
+  RiskAPI -->|Cache KPIs| Cache
+
 ```
 
 ## API Endpoints by Domain

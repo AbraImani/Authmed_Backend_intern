@@ -8,40 +8,40 @@ This document describes how AuthMed is deployed, scaled, monitored, and maintain
 
 ```mermaid
 graph TB
-    Users["👥 Users<br/>Mobile + Web"]
+    Users["Users<br/>Mobile + Web"]
     
     subgraph "CDN"
-        CDN["📡 CloudFront<br/>Static assets<br/>Images<br/>JS/CSS"]
+        CDN["CloudFront<br/>Static assets<br/>Images<br/>JS/CSS"]
     end
     
     subgraph "API Layer"
-        LB["⚖️ Load Balancer<br/>HTTPS<br/>TLS 1.3"]
-        
-        API1["🔧 API Server 1<br/>Django 4.2<br/>Port 8000"]
-        API2["🔧 API Server 2<br/>Django 4.2<br/>Port 8000"]
-        API3["🔧 API Server 3<br/>Django 4.2<br/>Port 8000"]
+        LB["Load Balancer<br/>HTTPS<br/>TLS 1.3"]
+
+        API1["API Server 1<br/>Django 4.2<br/>Port 8000"]
+        API2["API Server 2<br/>Django 4.2<br/>Port 8000"]
+        API3["API Server 3<br/>Django 4.2<br/>Port 8000"]
     end
     
     subgraph "Data Layer"
-        MainDB["🗄️ PostgreSQL<br/>Primary<br/>Replication"]
-        ReplicaDB["🗄️ PostgreSQL<br/>Replica<br/>Read-only"]
-        Cache["⚡ Redis<br/>Cache<br/>Sessions"]
+        MainDB["PostgreSQL<br/>Primary<br/>Replication"]
+        ReplicaDB["PostgreSQL<br/>Replica<br/>Read-only"]
+        Cache["Redis<br/>Cache<br/>Sessions"]
     end
     
     subgraph "Storage"
-        S3["💾 AWS S3<br/>Evidence files<br/>Backups"]
+        S3["AWS S3<br/>Evidence files<br/>Backups"]
     end
     
     subgraph "Services"
-        Queue["📬 Celery Queue<br/>Async jobs<br/>Risk scoring"]
-        Notifications["🔔 Notification<br/>Email<br/>Push"]
-        Search["🔍 Elasticsearch<br/>Full-text search<br/>Logging"]
+        Queue["Celery Queue<br/>Async jobs<br/>Risk scoring"]
+        Notifications["Notification<br/>Email<br/>Push"]
+        Search["Elasticsearch<br/>Full-text search<br/>Logging"]
     end
     
     subgraph "Monitoring"
-        Prometheus["📊 Prometheus<br/>Metrics"]
-        Grafana["📈 Grafana<br/>Dashboards"]
-        ELK["🔍 ELK Stack<br/>Logs<br/>Analysis"]
+        Prometheus["Prometheus<br/>Metrics"]
+        Grafana["Grafana<br/>Dashboards"]
+        ELK["ELK Stack<br/>Logs<br/>Analysis"]
     end
     
     Users -->|HTTPS| CDN
@@ -86,17 +86,7 @@ graph TB
     Prometheus -->|Display| Grafana
     Search -->|Display| ELK
     
-    style LB fill:#e74c3c,color:#fff
-    style API1 fill:#3498db,color:#fff
-    style API2 fill:#3498db,color:#fff
-    style API3 fill:#3498db,color:#fff
-    style MainDB fill:#95a5a6,color:#fff
-    style ReplicaDB fill:#95a5a6,color:#fff
-    style Cache fill:#f39c12,color:#fff
-    style S3 fill:#34495e,color:#fff
-    style Queue fill:#9b59b6,color:#fff
-    style Prometheus fill:#2980b9,color:#fff
-    style Grafana fill:#2980b9,color:#fff
+    %% Diagram styles removed for neutral presentation
 ```
 
 ## Deployment Environments

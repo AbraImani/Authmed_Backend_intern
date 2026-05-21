@@ -1,7 +1,7 @@
 # Sequence — Review Decision
 
-**Résumé**
-Le reviewer examine l'inspection et prend une décision: accept / isolate / escalate.
+**Summary**
+The reviewer inspects the inspection record, reviews evidence and risk, and issues a `ReviewDecision` (Accept / Isolate / Escalate).
 
 ```mermaid
 sequenceDiagram

@@ -129,13 +129,13 @@ BatchInspection (1) ──→ (many) AuditLog
 - Role-Based Access Control
 
 **Database:**
-- Organizations, Sites, Users
-- Suppliers, Products
-- BatchInspections (central)
+- Organization, Site, User
+- Supplier, ProductReference
+- BatchInspection (central)
 - Evidence (metadata)
-- RiskResults
-- ReviewDecisions
-- AuditLogs
+- RiskResult
+- ReviewDecision
+- AuditLog
 
 **Storage:**
 - Evidence files (photos, documents)
@@ -173,23 +173,23 @@ Draft → Pending → Under Inspection → Pending Review → Review
 
 At the end of an inspection, the system enforces **exactly one** of three decisions:
 
-### ✅ ACCEPTED
+### ACCEPTED
 - Risk score is below threshold
 - No anomalies detected
 - Physical inspection passed
 - **Action:** Batch released to stock
 
-### ⚠️ ISOLATED
+### ISOLATED
 - Risk score in medium range
 - Minor anomalies detected
-- Requires quarantine/separate handling
-- **Action:** Batch quarantined, further analysis may be required
+- Requires quarantine or separate handling
+- **Action:** Batch quarantined for further analysis
 
-### 🔴 ESCALATED
+### ESCALATED
 - Risk score exceeds threshold
 - Major anomalies or suspicious signs detected
-- Requires immediate escalation to direction/quality
-- **Action:** Escalated to management, potential rejection/investigation
+- Requires immediate escalation to management or quality officers
+- **Action:** Escalated to management for investigation
 
 ---
 

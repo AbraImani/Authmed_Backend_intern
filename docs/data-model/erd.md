@@ -1,7 +1,7 @@
 # Entity Relationship Diagram (ERD)
 
-**Explication courte**
-Ce diagramme représente la structure relationnelle de la base de données destinée à l'implémentation backend Django/DRF. Il montre les tables principales, leurs champs clés et les relations (PK/FK) entre elles.
+## Overview
+This diagram represents the relational database structure for the Django/DRF backend. It shows the main tables, key fields and relationships (PK/FK).
 
 ```mermaid
 erDiagram

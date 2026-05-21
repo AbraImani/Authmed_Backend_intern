@@ -1,7 +1,7 @@
 # Sequence — Dashboard Notification
 
-**Résumé**
-Comment les événements (scoring, decision) sont exposés au tableau de bord et aux reviewers.
+**Summary**
+How scoring and decision events are exposed to the reviewer dashboard and observers.
 
 ```mermaid
 sequenceDiagram

@@ -1,7 +1,7 @@
 # Sequence — Audit Log and Compliance
 
-**Résumé**
-Chaque action significative génère une entrée d'audit: création inspection, preuves ajoutées, score calculé, décision prise.
+**Summary**
+Every significant action generates an `AuditLog` entry: inspection creation, evidence uploads, risk calculations, and decisions.
 
 ```mermaid
 sequenceDiagram

@@ -1,7 +1,7 @@
 # Sequence — Offline Sync and Conflict Resolution
 
-**Résumé**
-Gestion des inspections créées hors-ligne sur mobile et synchronisation lorsque la connectivité revient, avec résolution de conflits simples.
+**Summary**
+Handling of inspections created offline on the mobile client and synchronization when connectivity is restored, including simple conflict resolution.
 
 ```mermaid
 sequenceDiagram

@@ -8,67 +8,52 @@ This diagram illustrates the complete end-to-end business workflow for inspectin
 
 ```mermaid
 flowchart TD
-    Start["🚀 RÉCEPTION LOT<br/>Arrivée médicaments"]
-    
-    Register["📋 Enregistrement<br/>- Identification lot<br/>- Supplier info<br/>- Product ref<br/>- Quantité/date"]
-    
-    InspectionCreate["🔍 Création inspection<br/>- Assignation inspecteur<br/>- Site / Org<br/>- Draft status"]
-    
-    FieldInspection["🏭 INSPECTION TERRAIN<br/>- Vérification physique<br/>- Prélèvement si besoin"]
-    
-    EvidenceCapture["📸 CAPTURE PREUVES<br/>- Photos<br/>- Documents<br/>- Notes détaillées<br/>- Conditions stockage"]
-    
-    DataExtraction["🖊️ EXTRACTION/SAISIE<br/>- Info produit<br/>- Batch/lot details<br/>- Conditions<br/>- Observations"]
-    
-    RiskGeneration["⚠️ SCORING RISQUE<br/>- Analyse automatique<br/>- Scoring règles<br/>- Suspicion level<br/>- Recommandation"]
-    
-    OperationalDecision["✅ DÉCISION OPÉRATIONNELLE<br/>- Accepté ✓<br/>- Isolé ⚠️<br/>- Escaladé 🔴"]
-    
-    HumanReview{"👁️ Revue humaine<br/>requise?"}
-    
-    ReviewQueue["📋 QUEUE REVIEW<br/>- Inspection en attente<br/>- Assignation reviewer<br/>- Priority"]
-    
-    ReviewDecision["👁️ RÉVISION & VALIDATION<br/>- Lecture preuves<br/>- Validation décision<br/>- Remarques<br/>- Approbation/Rejet"]
-    
-    RecordAudit["🔗 ENREGISTREMENT AUDIT<br/>- Historique complet<br/>- Décision finale<br/>- Timestamps<br/>- Acteurs"]
-    
-    Execution["⚙️ EXÉCUTION DÉCISION<br/>- Accept → Stockage<br/>- Isolate → Quarantine<br/>- Escalate → Direction"]
-    
-    Dashboard["📊 VISIBILITÉ DASHBOARD<br/>- Batch status<br/>- Risk level<br/>- History<br/>- KPI updated"]
-    
-    End["✔️ INSPECTION COMPLÈTE<br/>Lot traité & tracé"]
-    
-    Start --> Register
-    Register --> InspectionCreate
-    InspectionCreate --> FieldInspection
-    FieldInspection --> EvidenceCapture
-    EvidenceCapture --> DataExtraction
-    DataExtraction --> RiskGeneration
-    RiskGeneration --> OperationalDecision
-    OperationalDecision --> HumanReview
-    HumanReview -->|Oui, complexe| ReviewQueue
-    HumanReview -->|Non, clair| RecordAudit
-    ReviewQueue --> ReviewDecision
-    ReviewDecision --> RecordAudit
-    RecordAudit --> Execution
-    Execution --> Dashboard
-    Dashboard --> End
-    
-    style Start fill:#27ae60,color:#fff,stroke-width:3px
-    style Register fill:#3498db,color:#fff
-    style InspectionCreate fill:#3498db,color:#fff
-    style FieldInspection fill:#e74c3c,color:#fff
-    style EvidenceCapture fill:#e74c3c,color:#fff
-    style DataExtraction fill:#f39c12,color:#fff
-    style RiskGeneration fill:#e67e22,color:#fff
-    style OperationalDecision fill:#f1c40f,color:#000
-    style HumanReview fill:#9b59b6,color:#fff
-    style ReviewQueue fill:#8e44ad,color:#fff
-    style ReviewDecision fill:#8e44ad,color:#fff
-    style RecordAudit fill:#16a085,color:#fff
-    style Execution fill:#27ae60,color:#fff
-    style Dashboard fill:#2980b9,color:#fff
-    style End fill:#27ae60,color:#fff,stroke-width:3px
+   Start["Batch Received"]
+
+   Register["Register Batch\n- identify lot\n- supplier, product, quantity, date"]
+
+   InspectionCreate["Create Inspection\n- assign inspector\n- site / organization\n- draft status"]
+
+   FieldInspection["Field Inspection\n- physical verification\n- sampling if required"]
+
+   EvidenceCapture["Capture Evidence\n- photos, documents, notes"]
+
+   DataExtraction["Data Extraction / Entry\n- product info, batch details, observations"]
+
+   RiskGeneration["Risk Scoring\n- automatic analysis\n- scoring rules\n- recommendations"]
+
+   OperationalDecision["Operational Decision\n- Accept, Isolate, Escalate"]
+
+   HumanReview{"Human Review required?"}
+
+   ReviewQueue["Review Queue\n- pending inspections\n- reviewer assignment"]
+
+   ReviewDecision["Review & Validation\n- review evidence\n- approve / reject"]
+
+   RecordAudit["Record Audit\n- immutable audit entry\n- actor and timestamp"]
+
+   Execution["Execute Decision\n- release, quarantine, or escalate"]
+
+   Dashboard["Dashboard Visibility\n- batch status, risk level, KPIs"]
+
+   End["Inspection Complete"]
+
+   Start --> Register
+   Register --> InspectionCreate
+   InspectionCreate --> FieldInspection
+   FieldInspection --> EvidenceCapture
+   EvidenceCapture --> DataExtraction
+   DataExtraction --> RiskGeneration
+   RiskGeneration --> OperationalDecision
+   OperationalDecision --> HumanReview
+   HumanReview -->|Yes (complex)| ReviewQueue
+   HumanReview -->|No (clear)| RecordAudit
+   ReviewQueue --> ReviewDecision
+   ReviewDecision --> RecordAudit
+   RecordAudit --> Execution
+   Execution --> Dashboard
+   Dashboard --> End
+
 ```
 
 ## Workflow Steps

@@ -8,40 +8,33 @@ This diagram shows AuthMed positioned within its operating environment - the eco
 
 ```mermaid
 graph TB
-    HealthcareFacility["🏥 Structures de Santé<br/>- Pharmacies<br/>- Hôpitaux<br/>- Distributeurs<br/>- Réception stock"]
-    
-    AuthMed["🔬 AuthMed<br/>Medicine Intake Inspection<br/>& Risk-Control System"]
-    
-    Suppliers["📦 Fournisseurs<br/>Pharma"]
-    
-    Users["👥 Utilisateurs<br/>- Pharmaciens<br/>- Inspecteurs<br/>- Reviewers<br/>- Admins<br/>- Responsables qualité"]
-    
-    RegulatoryBodies["⚖️ Organismes<br/>Réglementaires<br/>& Audit"]
-    
-    Storage["💾 Stockage<br/>- Données inspections<br/>- Preuves/Evidence<br/>- Audit trails"]
-    
-    Dashboard["📊 Dashboard Web<br/>Monitoring & Revue"]
-    
-    MobileApp["📱 Application Mobile<br/>Inspection terrain"]
-    
-    HealthcareFacility -->|utilise| AuthMed
-    Suppliers -->|fournissent| HealthcareFacility
-    Users -->|utilisent| AuthMed
-    AuthMed -->|interroge| Suppliers
-    AuthMed -->|stocke| Storage
-    AuthMed -->|alimente| Dashboard
-    AuthMed -->|utilise| MobileApp
-    RegulatoryBodies -->|audite| AuthMed
-    AuthMed -->|rapporte à| RegulatoryBodies
-    
-    style AuthMed fill:#4a90e2,stroke:#2c5aa0,color:#fff,stroke-width:3px
-    style HealthcareFacility fill:#50c878,stroke:#2d7a4a
-    style Suppliers fill:#ff9500,stroke:#b36b00
-    style Users fill:#9b59b6,stroke:#6c3d7f
-    style RegulatoryBodies fill:#e74c3c,stroke:#a93226
-    style Dashboard fill:#3498db,stroke:#1f618d
-    style MobileApp fill:#27ae60,stroke:#1a5c39
-    style Storage fill:#95a5a6,stroke:#5d6d7b
+    HealthcareFacility["Healthcare Facilities<br/>- Pharmacies<br/>- Hospitals<br/>- Distributors<br/>- Receiving docks"]
+
+    AuthMed["AuthMed<br/>Medicine Intake Inspection<br/>& Risk-Control System"]
+
+    Suppliers["Suppliers<br/>Pharmaceutical manufacturers and distributors"]
+
+    Users["Users<br/>- Pharmacists<br/>- Inspectors<br/>- Reviewers<br/>- Admins<br/>- Quality officers"]
+
+    RegulatoryBodies["Regulatory Bodies<br/>- Health ministries<br/>- Accreditation agencies"]
+
+    Storage["Storage<br/>- Inspection data<br/>- Evidence files<br/>- Audit trails"]
+
+    Dashboard["Web Dashboard<br/>Monitoring & Review"]
+
+    MobileApp["Mobile App<br/>Field inspection client"]
+
+    HealthcareFacility -->|uses| AuthMed
+    Suppliers -->|supply| HealthcareFacility
+    Users -->|use| AuthMed
+    AuthMed -->|queries| Suppliers
+    AuthMed -->|stores| Storage
+    AuthMed -->|feeds| Dashboard
+    AuthMed -->|integrates with| MobileApp
+    RegulatoryBodies -->|audit| AuthMed
+    AuthMed -->|reports to| RegulatoryBodies
+
+    %% Styles removed for a neutral diagram presentation
 ```
 
 ## Ecosystem Components

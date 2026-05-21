@@ -23,9 +23,9 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin | API Client |
 |----------|-----------|----------|---------|------------|-------|------------|
-| POST /auth/login | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| POST /auth/refresh | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| POST /auth/logout | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| POST /auth/login | Yes | Yes | Yes | Yes | Yes | No |
+| POST /auth/refresh | Yes | Yes | Yes | Yes | Yes | No |
+| POST /auth/logout | Yes | Yes | Yes | Yes | Yes | No |
 
 ---
 
@@ -33,11 +33,11 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /batches/ | ✅ Own org | ❌ | ❌ | ❌ | ✅ |
-| GET /batches/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /batches/{id}/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| PUT /batches/{id}/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| DELETE /batches/{id}/ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| POST /batches/ | Yes (Own org) | No | No | No | Yes |
+| GET /batches/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /batches/{id}/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| PUT /batches/{id}/ | No | No | No | No | Yes |
+| DELETE /batches/{id}/ | No | No | No | No | No |
 
 ---
 
@@ -45,10 +45,10 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /inspections/ | ✅ Assign self | ❌ | ❌ | ❌ | ✅ |
-| GET /inspections/ | ✅ Own assigned | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /inspections/{id}/ | ✅ Own assigned | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| PUT /inspections/{id}/ | ✅ Own assigned | ❌ | ❌ | ❌ | ✅ |
+| POST /inspections/ | Yes (Assign self) | No | No | No | Yes |
+| GET /inspections/ | Yes (Own assigned) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /inspections/{id}/ | Yes (Own assigned) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| PUT /inspections/{id}/ | Yes (Own assigned) | No | No | No | Yes |
 
 ---
 
@@ -56,10 +56,10 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /evidence/ | ✅ Own inspection | ❌ | ❌ | ❌ | ✅ |
-| GET /evidence/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /evidence/{id}/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| DELETE /evidence/{id}/ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| POST /evidence/ | Yes (Own inspection) | No | No | No | Yes |
+| GET /evidence/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /evidence/{id}/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| DELETE /evidence/{id}/ | No | No | No | No | Yes |
 
 ---
 
@@ -67,8 +67,8 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /risk/calculate/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| GET /risk/results/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
+| POST /risk/calculate/ | No | No | No | No | Yes |
+| GET /risk/results/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
 
 ---
 
@@ -76,10 +76,10 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /decisions/ | ❌ | ✅ Own org | ❌ | ✅ All | ✅ |
-| GET /decisions/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /decisions/{id}/ | ✅ Own org | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| PUT /decisions/{id}/ | ❌ | ✅ Own | ❌ | ❌ | ✅ |
+| POST /decisions/ | No | Yes (Own org) | No | Yes (All) | Yes |
+| GET /decisions/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /decisions/{id}/ | Yes (Own org) | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| PUT /decisions/{id}/ | No | Yes (Own) | No | No | Yes |
 
 ---
 
@@ -87,9 +87,9 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| GET /dashboard/kpis/ | ❌ | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /dashboard/queue/ | ❌ | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
-| GET /dashboard/trends/ | ❌ | ✅ Own org | ✅ Own org | ✅ All | ✅ All |
+| GET /dashboard/kpis/ | No | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /dashboard/queue/ | No | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
+| GET /dashboard/trends/ | No | Yes (Own org) | Yes (Own org) | Yes (All) | Yes (All) |
 
 ---
 
@@ -97,10 +97,10 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| POST /reports/ | ❌ | ❌ | ✅ Own org | ✅ All | ✅ |
-| GET /reports/ | ❌ | ❌ | ✅ Own org | ✅ All | ✅ |
-| GET /reports/{id}/ | ❌ | ❌ | ✅ Own org | ✅ All | ✅ |
-| DELETE /reports/{id}/ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| POST /reports/ | No | No | Yes (Own org) | Yes (All) | Yes |
+| GET /reports/ | No | No | Yes (Own org) | Yes (All) | Yes |
+| GET /reports/{id}/ | No | No | Yes (Own org) | Yes (All) | Yes |
+| DELETE /reports/{id}/ | No | No | No | No | Yes |
 
 ---
 
@@ -108,11 +108,11 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| GET /users/ | ❌ | ❌ | ✅ Own org | ❌ | ✅ |
-| POST /users/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| GET /users/{id}/ | ❌ | ❌ | ✅ Own org | ❌ | ✅ |
-| PUT /users/{id}/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| DELETE /users/{id}/ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| GET /users/ | No | No | Yes (Own org) | No | Yes |
+| POST /users/ | No | No | No | No | Yes |
+| GET /users/{id}/ | No | No | Yes (Own org) | No | Yes |
+| PUT /users/{id}/ | No | No | No | No | Yes |
+| DELETE /users/{id}/ | No | No | No | No | Yes |
 
 ---
 
@@ -120,9 +120,9 @@ This matrix defines which roles have permission to perform which actions across 
 
 | Endpoint | Inspector | Reviewer | Manager | QA Officer | Admin |
 |----------|-----------|----------|---------|------------|-------|
-| GET /config/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| PUT /config/ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| GET /audit-log/ | ❌ | ❌ | ❌ | ✅ All | ✅ |
+| GET /config/ | No | No | No | No | Yes |
+| PUT /config/ | No | No | No | No | Yes |
+| GET /audit-log/ | No | No | No | Yes (All) | Yes |
 
 ---
 
@@ -175,48 +175,48 @@ This matrix defines which roles have permission to perform which actions across 
 ### Batch Management
 | Action | Inspector | Reviewer | Manager | QA | Admin |
 |--------|-----------|----------|---------|-----|-------|
-| Create batch | ✅ | ❌ | ❌ | ❌ | ✅ |
-| View batch | ✅ Org | ✅ Org | ✅ Org | ✅ All | ✅ |
-| Edit batch | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Delete batch | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Create batch | Yes | No | No | No | Yes |
+| View batch | Yes (Org) | Yes (Org) | Yes (Org) | Yes (All) | Yes |
+| Edit batch | No | No | No | No | Yes |
+| Delete batch | No | No | No | No | No |
 
 ### Inspection Management
 | Action | Inspector | Reviewer | Manager | QA | Admin |
 |--------|-----------|----------|---------|-----|-------|
-| Create inspection | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Assign to self | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Start inspection | ✅ Own | ❌ | ❌ | ❌ | ✅ |
-| Upload evidence | ✅ Own | ❌ | ❌ | ❌ | ✅ |
-| View inspection | ✅ Org | ✅ Org | ✅ Org | ✅ All | ✅ |
-| Complete inspection | ✅ Own | ❌ | ❌ | ❌ | ✅ |
+| Create inspection | Yes | No | No | No | Yes |
+| Assign to self | Yes | No | No | No | Yes |
+| Start inspection | Yes (Own) | No | No | No | Yes |
+| Upload evidence | Yes (Own) | No | No | No | Yes |
+| View inspection | Yes (Org) | Yes (Org) | Yes (Org) | Yes (All) | Yes |
+| Complete inspection | Yes (Own) | No | No | No | Yes |
 
 ### Decision Making
 | Action | Inspector | Reviewer | Manager | QA | Admin |
 |--------|-----------|----------|---------|-----|-------|
-| View risk score | ✅ Own | ✅ Org | ✅ Org | ✅ All | ✅ |
-| View pending review queue | ❌ | ✅ Org | ✅ Org | ✅ All | ✅ |
-| Make decision | ❌ | ✅ Org | ❌ | ✅ All | ✅ |
-| Override risk score | ❌ | ✅ Org | ❌ | ✅ All | ✅ |
-| View decision history | ✅ Org | ✅ Org | ✅ Org | ✅ All | ✅ |
+| View risk score | Yes (Own) | Yes (Org) | Yes (Org) | Yes (All) | Yes |
+| View pending review queue | No | Yes (Org) | Yes (Org) | Yes (All) | Yes |
+| Make decision | No | Yes (Org) | No | Yes (All) | Yes |
+| Override risk score | No | Yes (Org) | No | Yes (All) | Yes |
+| View decision history | Yes (Org) | Yes (Org) | Yes (Org) | Yes (All) | Yes |
 
 ### Reporting & Analytics
 | Action | Inspector | Reviewer | Manager | QA | Admin |
 |--------|-----------|----------|---------|-----|-------|
-| View KPI dashboard | ❌ | ✅ Org | ✅ Org | ✅ All | ✅ |
-| Generate compliance report | ❌ | ❌ | ✅ Org | ✅ All | ✅ |
-| Generate trend analysis | ❌ | ❌ | ✅ Org | ✅ All | ✅ |
-| Export data | ❌ | ❌ | ✅ Org | ✅ All | ✅ |
-| View audit log | ❌ | ❌ | ❌ | ✅ All | ✅ |
+| View KPI dashboard | No | Yes (Org) | Yes (Org) | Yes (All) | Yes |
+| Generate compliance report | No | No | Yes (Org) | Yes (All) | Yes |
+| Generate trend analysis | No | No | Yes (Org) | Yes (All) | Yes |
+| Export data | No | No | Yes (Org) | Yes (All) | Yes |
+| View audit log | No | No | No | Yes (All) | Yes |
 
 ### Administration
 | Action | Inspector | Reviewer | Manager | QA | Admin |
 |--------|-----------|----------|---------|-----|-------|
-| Manage users | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Configure rules | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Set thresholds | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Manage organizations | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Manage sites | ❌ | ❌ | ❌ | ❌ | ✅ |
-| System configuration | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Manage users | No | No | No | No | Yes |
+| Configure rules | No | No | No | No | Yes |
+| Set thresholds | No | No | No | No | Yes |
+| Manage organizations | No | No | No | No | Yes |
+| Manage sites | No | No | No | No | Yes |
+| System configuration | No | No | No | No | Yes |
 
 ---
 

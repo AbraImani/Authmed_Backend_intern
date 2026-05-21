@@ -8,33 +8,33 @@ This diagram summarizes the complete journey of a medicine batch through AuthMed
 
 ```mermaid
 flowchart TD
-    Start["🚀 RÉCEPTION LOT<br/>Médicament arrive<br/>à la pharmacie/hôpital"]
+   Start["Batch Reception<br/>Medicine arrives at facility"]
     
     subgraph "PHASE_1_CAPTURE"
-        C1["📋 ENREGISTREMENT<br/>- Identification lot<br/>- Supplier, product<br/>- Reçu par qui"]
-        C2["🔍 INSPECTION TERRAIN<br/>- Inspector assigné<br/>- Vérification physique<br/>- Prélèvement conditions"]
-        C3["📸 CAPTURE PREUVES<br/>- Photos conditions<br/>- Notes anomalies<br/>- Métadonnées"]
+      C1["Registration<br/>- Batch identification<br/>- Supplier, product<br/>- Received by"]
+      C2["Field Inspection<br/>- Inspector assigned<br/>- Physical verification<br/>- Sample conditions"]
+      C3["Evidence Capture<br/>- Photos of conditions<br/>- Notes on anomalies<br/>- Metadata"]
     end
     
     subgraph "PHASE_2_ANALYSIS"
-        A1["🖊️ EXTRACTION INFO<br/>- Données batch<br/>- Conditions stockage<br/>- Observations terrain"]
-        A2["⚠️ SCORING RISQUE<br/>- Analyse automatique<br/>- Règles métier<br/>- Calcul score"]
-        A3["✅ DÉCISION AUTO<br/>- Accepté (score < X)<br/>- Isolé (score Y-Z)<br/>- Escaladé (score > Z)"]
+      A1["Data Extraction<br/>- Batch data<br/>- Storage conditions<br/>- Field observations"]
+      A2["Risk Scoring<br/>- Automated analysis<br/>- Business rules<br/>- Score calculation"]
+      A3["Automated Decision<br/>- Accept (score < X)<br/>- Isolate (score Y-Z)<br/>- Escalate (score > Z)"]
     end
     
     subgraph "PHASE_3_REVIEW"
-        R1["👁️ REVUE HUMAINE<br/>- Reviewer lit preuves<br/>- Valide score<br/>- Approuve/rejette"]
-        R2["✔️ DÉCISION FINALE<br/>- Accept → Stockage<br/>- Isolate → Quarantine<br/>- Escalate → Direction"]
+      R1["Human Review<br/>- Reviewer reads evidence<br/>- Validates score<br/>- Approve/reject"]
+      R2["Final Decision<br/>- Accept → Release to stock<br/>- Isolate → Quarantine<br/>- Escalate → Management"]
     end
     
     subgraph "PHASE_4_EXECUTION"
-        E1["⚙️ EXÉCUTION<br/>- Mise à jour statut<br/>- Notification stakeholders<br/>- Action opérationnelle"]
-        E2["📊 DASHBOARD UPDATE<br/>- Statut visible<br/>- Métrique mise à jour<br/>- KPI recalculé"]
+      E1["Execution<br/>- Update status<br/>- Notify stakeholders<br/>- Operational action"]
+      E2["Dashboard Update<br/>- Status visible<br/>- Metrics updated<br/>- KPI recalculated"]
     end
     
     subgraph "PHASE_5_TRACE"
-        T1["🔗 AUDIT TRAIL<br/>- Historique complet<br/>- Timestamps<br/>- Tous acteurs"]
-        T2["📄 RAPPORTS<br/>- Export CSV/PDF<br/>- Conformité<br/>- Compliance ready"]
+      T1["Audit Trail<br/>- Complete history<br/>- Timestamps<br/>- All actors"]
+      T2["Reports<br/>- Export CSV/PDF<br/>- Compliance-ready"]
     end
     
     Start --> C1
@@ -45,8 +45,8 @@ flowchart TD
     A1 --> A2
     A2 --> A3
     
-    A3 -->|Si complexe| R1
-    A3 -->|Si clair| R2
+   A3 -->|If complex| R1
+   A3 -->|If clear| R2
     R1 --> R2
     
     R2 --> E1
@@ -55,15 +55,9 @@ flowchart TD
     E2 --> T1
     T1 --> T2
     
-    T2 --> End["✅ INSPECTION COMPLÈTE<br/>Lot tracé définitivement<br/>Historique permanent"]
+   T2 --> End["Inspection Complete<br/>Batch permanently traced<br/>Permanent history"]
     
-    style Start fill:#27ae60,color:#fff,stroke-width:3px
-    style PHASE_1_CAPTURE fill:#3498db,color:#fff
-    style PHASE_2_ANALYSIS fill:#e67e22,color:#fff
-    style PHASE_3_REVIEW fill:#9b59b6,color:#fff
-    style PHASE_4_EXECUTION fill:#27ae60,color:#fff
-    style PHASE_5_TRACE fill:#16a085,color:#fff
-    style End fill:#c0392b,color:#fff,stroke-width:3px
+   %% Diagram colors removed for accessibility and consistency
 ```
 
 ## Phase-by-Phase Breakdown

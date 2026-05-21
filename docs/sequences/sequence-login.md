@@ -1,7 +1,7 @@
 # Sequence — Login (JWT Authentication)
 
-**Résumé**
-Flux d'authentification JWT pour l'application mobile / web.
+**Summary**
+JWT authentication flow for mobile and web clients.
 
 ```mermaid
 sequenceDiagram

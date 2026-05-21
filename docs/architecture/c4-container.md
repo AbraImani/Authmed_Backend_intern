@@ -1,45 +1,41 @@
 # C4 Container Diagram
 
-**Explication courte**
-Vue "container" qui montre les composants principaux du système : mobile, dashboard, API Django DRF, stockage, base de données et services futurs (ML/OCR).
+## Overview
+
+Container view showing the primary system components: mobile client, web dashboard, API (Django/DRF), storage, and data services.
 
 ```mermaid
 graph TB
-    subgraph "CLIENT_LAYER"
-        Mobile["📱 Mobile App<br/>Inspection Terrain<br/>- Batch reception<br/>- Evidence capture<br/>- Field inspection<br/>- Offline support"]
-        Web["🌐 Web Dashboard<br/>Review & Monitoring<br/>- Inspection tracking<br/>- Risk review<br/>- Decision queue<br/>- KPI dashboard"]
-        Admin["⚙️ Admin Portal<br/>Administration<br/>- User mgmt<br/>- Config<br/>- Reports"]
+    subgraph CLIENTS
+        Mobile["Mobile App\n- Inspector mobile client\n- Offline/online support"]
+        Web["Web Dashboard\n- Reviewer and manager UI\n- KPI and review pages"]
+        Admin["Admin Portal\n- User and configuration management"]
     end
-    
-    subgraph "API_LAYER"
-        API["🔌 Django REST API<br/>Inspection API<br/>- /inspections<br/>- /evidence<br/>- /risk-results<br/>- /decisions<br/>- /audit-logs"]
+
+    subgraph API_LAYER
+        API["Django REST API\n- /inspections\n- /evidence\n- /risk-results\n- /decisions\n- /audit-logs"]
     end
-    
-    subgraph "APPLICATION_LAYER"
-        Backend["⚙️ Django Application<br/>- Auth & JWT<br/>- Business Logic<br/>- Risk Scoring<br/>- Workflow Orchestration<br/>- Audit Logging"]
+
+    subgraph APPLICATION
+        Backend["Django application\n- Authentication (JWT)\n- Business logic and workflows\n- Risk scoring\n- Audit logging"]
     end
-    
-    subgraph "DATA_LAYER"
-        DB["🗄️ PostgreSQL Database<br/>- Organizations<br/>- Sites<br/>- Users<br/>- Inspections<br/>- Evidence<br/>- Risk Results<br/>- Decisions<br/>- Audit Logs"]
-        Storage["💾 Evidence Storage<br/>- Photos<br/>- Documents<br/>- File service"]
+
+    subgraph DATA
+        DB["PostgreSQL\n- Organization, Site, User\n- BatchInspection, Evidence, RiskResult, ReviewDecision, AuditLog"]
+        Storage["Object storage (S3)\n- Evidence files: photos, documents"]
     end
-    
-    subgraph "FUTURE_SERVICES"
-        MLService["🤖 ML/OCR Service<br/>Future: Advanced<br/>risk scoring,<br/>data extraction"]
+
+    subgraph SERVICES
+        MLService["Optional ML/OCR service\n- Data extraction, advanced scoring"]
     end
-    
-    Mobile -->|API calls<br/>JSON| API
-    Web -->|API calls<br/>JSON| API
-    Admin -->|API calls<br/>JSON| API
-    
-    API -->|exposes| Backend
-    Backend -->|queries/writes| DB
-    Backend -->|stores/retrieves| Storage
-    Backend -.->|future<br/>integration| MLService
-    
-    style CLIENT_LAYER fill:#ecf0f1,stroke:#34495e
-    style API_LAYER fill:#e8f8f5,stroke:#27ae60
-    style APPLICATION_LAYER fill:#fef5e7,stroke:#f39c12
-    style DATA_LAYER fill:#fadbd8,stroke:#e74c3c
-    style FUTURE_SERVICES fill:#f4ecf7,stroke:#9b59b6
+
+    Mobile -->|HTTPS| API
+    Web -->|HTTPS| API
+    Admin -->|HTTPS| API
+
+    API --> Backend
+    Backend --> DB
+    Backend --> Storage
+    Backend -.-> MLService
+
 ```

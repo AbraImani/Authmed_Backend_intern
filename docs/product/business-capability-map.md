@@ -8,27 +8,27 @@ This diagram identifies the 10 core capabilities that AuthMed provides to achiev
 
 ```mermaid
 graph TB
-    AuthMed["🔬 AUTHMED<br/>CORE CAPABILITIES"]
-    
-    Inspection["🔍 INSPECTION & RECEIVING<br/>- Batch intake<br/>- Lot validation<br/>- Field inspection"]
-    
-    Evidence["📸 EVIDENCE CAPTURE<br/>- Photo/document<br/>- Notes inspection<br/>- Assisted extraction<br/>- OCR ready"]
-    
-    ProductLib["📚 PRODUCT REFERENCE<br/>LIBRARY<br/>- Product catalog<br/>- SKU management<br/>- Supplier linking"]
-    
-    SupplierMgmt["🏭 SUPPLIER MANAGEMENT<br/>- Supplier registry<br/>- Contact info<br/>- Historical perf"]
-    
-    RiskScoring["⚠️ RISK SCORING<br/>- Automated scoring<br/>- Rule engine<br/>- ML ready<br/>- Suspicion level"]
-    
-    Decision["✅ OPERATIONAL DECISION<br/>- Accept/Isolate/Escalate<br/>- Decision matrix<br/>- Approval workflow"]
-    
-    ReviewQueue["👁️ REVIEW & QUEUE<br/>- Human-in-loop<br/>- Queue management<br/>- Approval chain"]
-    
-    Traceability["🔗 TRACEABILITY & AUDIT<br/>- Complete audit trail<br/>- History logs<br/>- Compliance ready"]
-    
-    Dashboard["📊 DASHBOARD & REPORTING<br/>- Real-time monitoring<br/>- KPI tracking<br/>- Batch status<br/>- Historical view"]
-    
-    Admin["⚙️ ADMINISTRATION<br/>- Multi-site mgmt<br/>- User mgmt<br/>- Permissions<br/>- Config"]
+    AuthMed["AUTHMED<br/>CORE CAPABILITIES"]
+
+    Inspection["INSPECTION & RECEIVING<br/>- Batch intake<br/>- Lot validation<br/>- Field inspection"]
+
+    Evidence["EVIDENCE CAPTURE<br/>- Photo/document<br/>- Notes inspection<br/>- Assisted extraction<br/>- OCR ready"]
+
+    ProductLib["PRODUCT REFERENCE LIBRARY<br/>- Product catalog<br/>- SKU management<br/>- Supplier linking"]
+
+    SupplierMgmt["SUPPLIER MANAGEMENT<br/>- Supplier registry<br/>- Contact info<br/>- Historical performance"]
+
+    RiskScoring["RISK SCORING<br/>- Automated scoring<br/>- Rule engine<br/>- ML ready<br/>- Suspicion level"]
+
+    Decision["OPERATIONAL DECISION<br/>- Accept/Isolate/Escalate<br/>- Decision matrix<br/>- Approval workflow"]
+
+    ReviewQueue["REVIEW & QUEUE<br/>- Human-in-loop<br/>- Queue management<br/>- Approval chain"]
+
+    Traceability["TRACEABILITY & AUDIT<br/>- Complete audit trail<br/>- History logs<br/>- Compliance ready"]
+
+    Dashboard["DASHBOARD & REPORTING<br/>- Real-time monitoring<br/>- KPI tracking<br/>- Batch status<br/>- Historical view"]
+
+    Admin["ADMINISTRATION<br/>- Multi-site management<br/>- User management<br/>- Permissions<br/>- Config"]
     
     AuthMed --> Inspection
     AuthMed --> Evidence
@@ -51,17 +51,7 @@ graph TB
     Decision -.->|records| Traceability
     Traceability -.->|visible in| Dashboard
     
-    style AuthMed fill:#2c3e50,stroke:#1a252f,color:#fff,stroke-width:3px
-    style Inspection fill:#3498db
-    style Evidence fill:#e74c3c
-    style ProductLib fill:#f39c12
-    style SupplierMgmt fill:#9b59b6
-    style RiskScoring fill:#e67e22
-    style Decision fill:#27ae60
-    style ReviewQueue fill:#16a085
-    style Traceability fill:#8e44ad
-    style Dashboard fill:#2980b9
-    style Admin fill:#c0392b
+    %% Diagram styles removed for consistency and accessibility
 ```
 
 ## Capability Descriptions
@@ -233,36 +223,36 @@ Administration (supports all)
 ## Phase Roadmap by Capability
 
 ### MVP (Foundation)
-- ✅ Inspection & Receiving
-- ✅ Evidence Capture (basic)
-- ✅ Product Reference Library (basic)
-- ✅ Supplier Management (basic)
-- ✅ Risk Scoring (basic rules)
-- ✅ Operational Decision (simple logic)
-- ✅ Traceability & Audit
-- ⚠️ Review & Queue (manual, no UI yet)
-- ⚠️ Dashboard (API only, no UI)
-- ✅ Administration
+- Inspection & Receiving (Completed)
+- Evidence Capture (basic) (Completed)
+- Product Reference Library (basic) (Completed)
+- Supplier Management (basic) (Completed)
+- Risk Scoring (basic rules) (Completed)
+- Operational Decision (simple logic) (Completed)
+- Traceability & Audit (Completed)
+- Review & Queue (manual, no UI yet)
+- Dashboard (API only, no UI)
+- Administration (Completed)
 
 ### Phase 1
-- ✅ Review & Queue Management (full feature)
-- ✅ Dashboard (web UI)
-- ⚠️ Reporting (basic export)
-- ⚠️ Notifications (email alerts)
+- Review & Queue Management (full feature) (Completed)
+- Dashboard (web UI) (Completed)
+- Reporting (basic export)
+- Notifications (email alerts)
 
 ### Phase 2
-- ✅ Evidence Capture (OCR-ready, enhanced)
-- ✅ Risk Scoring (advanced rules)
-- ✅ Reporting (PDF generation)
-- ✅ Mobile Optimization
-- ✅ Performance Tuning
+- Evidence Capture (OCR-ready, enhanced) (Completed)
+- Risk Scoring (advanced rules) (Completed)
+- Reporting (PDF generation) (Completed)
+- Mobile Optimization (Completed)
+- Performance Tuning (Completed)
 
 ### Future
-- 🚀 ML-based Risk Scoring
-- 🚀 OCR/Assisted Data Extraction
-- 🚀 Supplier Scoring (ML predictions)
-- 🚀 IoT Integration
-- 🚀 Advanced Compliance Reporting
+- ML-based Risk Scoring (Future)
+- OCR/Assisted Data Extraction (Future)
+- Supplier Scoring (ML predictions) (Future)
+- IoT Integration (Future)
+- Advanced Compliance Reporting (Future)
 
 ---
 

@@ -8,18 +8,16 @@ This diagram illustrates the fundamental shift in AuthMed's positioning and capa
 
 ```mermaid
 graph LR
-    A["❌ ANCIEN MODÈLE<br/>Scan-Only App<br/>- Simple lecture code<br/>- Résultat immédiat<br/>- Pas de traçabilité<br/>- Décision simple ok/ko"] 
-    
-    B["🔄 TRANSFORMATION<br/>Changement de<br/>perspective<br/>et de valeur"]
-    
-    C["✅ NOUVEAU MODÈLE<br/>Medicine Intake Inspection<br/>& Risk-Control System<br/>- Inspection opérationnelle<br/>- Workflow complet<br/>- Traçabilité complète<br/>- Scoring de risque<br/>- Décisions nuancées<br/>- Review & audit<br/>- Multi-site ready"]
+    A["OLD MODEL<br/>Scan-only app<br/>- Simple barcode read<br/>- Immediate result<br/>- No traceability<br/>- Binary decision (ok/ko)"]
+
+    B["TRANSFORMATION<br/>Shift in perspective<br/>and value"]
+
+    C["NEW MODEL<br/>Medicine Intake Inspection<br/>& Risk-Control System<br/>- Operational inspection<br/>- Full workflow<br/>- Complete traceability<br/>- Risk scoring<br/>- Nuanced decisions<br/>- Review & audit<br/>- Multi-site ready"]
     
     A -->|Evolution| B
     B -->|devient| C
     
-    style A fill:#ffcccc
-    style B fill:#ffffcc
-    style C fill:#ccffcc
+    %% Color styles removed for consistency and accessibility
 ```
 
 ## What Changed

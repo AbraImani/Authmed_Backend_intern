@@ -1,7 +1,7 @@
 # Sequence — Create Inspection (Mobile)
 
-**Résumé**
-Séquence décrivant la réception d'un lot depuis l'application mobile jusqu'à l'enregistrement de l'inspection initiale.
+**Summary**
+Sequence describing reception of a batch from the mobile app through creation of the initial inspection record.
 
 ```mermaid
 sequenceDiagram

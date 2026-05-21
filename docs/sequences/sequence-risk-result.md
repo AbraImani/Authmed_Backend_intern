@@ -1,7 +1,7 @@
 # Sequence — Risk Result
 
-**Résumé**
-Pipeline de scoring: déclenché après ingestion des données et/ou après extraction, le moteur de risque calcule et stocke un `RiskResult`.
+**Summary**
+Scoring pipeline: triggered after data ingestion or extraction. The Risk Engine computes and stores a `RiskResult`.
 
 ```mermaid
 sequenceDiagram

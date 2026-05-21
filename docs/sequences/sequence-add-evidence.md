@@ -1,7 +1,7 @@
 # Sequence — Add Evidence
 
-**Résumé**
-Téléversement d'éléments de preuve (photos/docs), extraction optionnelle via OCR et enrichissement.
+**Summary**
+Upload of evidence (photos/documents), optional OCR extraction, and metadata enrichment.
 
 ```mermaid
 sequenceDiagram

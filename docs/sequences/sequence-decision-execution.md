@@ -1,7 +1,7 @@
 # Sequence — Decision Execution and Notification
 
-**Résumé**
-Après décision, actions opérationnelles (libération en stock, isolement, ou escalade) et notifications.
+**Summary**
+After a decision is recorded, the system executes operational actions (release to stock, quarantine, or escalation) and sends notifications to stakeholders.
 
 ```mermaid
 sequenceDiagram

@@ -8,13 +8,13 @@ Data Flow Diagrams (DFD) show how data moves through AuthMed - from users, throu
 
 ```mermaid
 graph LR
-    Users["👥 Users"]
-    HealthFacility["🏥 Healthcare Facility"]
-    Regulators["⚖️ Regulators"]
-    
-    AuthMed["🔬 AUTHMED<br/>Medicine Inspection<br/>System"]
-    
-    Storage["💾 Data Storage<br/>- Database<br/>- S3 Objects"]
+    Users["Users"]
+    HealthFacility["Healthcare Facility"]
+    Regulators["Regulators"]
+
+    AuthMed["AUTHMED<br/>Medicine Inspection<br/>System"]
+
+    Storage["Data Storage<br/>- Database<br/>- S3 Objects"]
     
     Users -->|Inspections, Decisions| AuthMed
     HealthFacility -->|Batch Data| AuthMed
@@ -23,21 +23,17 @@ graph LR
     AuthMed -->|Batch Status| HealthFacility
     AuthMed -.->|Read/Write| Storage
     
-    style AuthMed fill:#4a90e2,color:#fff
-    style Storage fill:#95a5a6,color:#fff
-    style Users fill:#9b59b6,color:#fff
-    style HealthFacility fill:#50c878,color:#fff
-    style Regulators fill:#e74c3c,color:#fff
+    %% Styles removed for neutral diagram presentation
 ```
 
 ## Level 1: Major Processes DFD
 
 ```mermaid
 graph TD
-    Users["👥 Users"]
-    HealthFacility["🏥 Healthcare Facility"]
+    Users["Users"]
+    HealthFacility["Healthcare Facility"]
     
-    subgraph AUTHMED["🔬 AUTHMED SYSTEM"]
+    subgraph AUTHMED["AUTHMED SYSTEM"]
         Process1["1.0 Inspection<br/>Reception<br/>& Registration"]
         Process2["2.0 Evidence<br/>Capture &<br/>Data Entry"]
         Process3["3.0 Risk<br/>Scoring &<br/>Analysis"]
@@ -45,7 +41,7 @@ graph TD
         Process5["5.0 Reporting<br/>& Compliance"]
     end
     
-    subgraph STORAGE["💾 DATA STORAGE"]
+    subgraph STORAGE["DATA STORAGE"]
         DB["Database<br/>- Batches<br/>- Users<br/>- Decisions"]
         ObjStore["Object Store<br/>- Photos<br/>- Documents"]
     end
@@ -68,13 +64,7 @@ graph TD
     Process5 -->|Reports| Users
     Process5 -->|Compliance Data| HealthFacility
     
-    style Process1 fill:#3498db,color:#fff
-    style Process2 fill:#e74c3c,color:#fff
-    style Process3 fill:#e67e22,color:#fff
-    style Process4 fill:#9b59b6,color:#fff
-    style Process5 fill:#16a085,color:#fff
-    style DB fill:#95a5a6,color:#fff
-    style ObjStore fill:#95a5a6,color:#fff
+    %% Styles removed for neutral diagram presentation
 ```
 
 ## Level 2: Detailed Process Flows
@@ -83,7 +73,7 @@ graph TD
 
 ```mermaid
 graph TD
-    Batch["📦 Batch Received"]
+    Batch["Batch Received"]
     
     Reg["1.1 Register<br/>Batch"]
     
@@ -105,7 +95,7 @@ graph TD
     Assign -->|Inspector ID| DB
     
     Assign -->|Notify Inspector| Notify
-    Notify -->|Push Notification| Users["📱 Mobile App"]
+    Notify -->|Push Notification| Users["Mobile App"]
     
     style Batch fill:#27ae60,color:#fff
     style Reg fill:#3498db,color:#fff
@@ -120,7 +110,7 @@ graph TD
 
 ```mermaid
 graph TD
-    Mobile["📱 Mobile App"]
+    Mobile["Mobile App"]
     
     Capture["2.1 Capture<br/>Evidence<br/>Photos/Notes"]
     
@@ -132,7 +122,7 @@ graph TD
     
     Store["2.5 Store<br/>in DB"]
     
-    S3["💾 Object Store"]
+    S3["Object Store"]
     DB[(Database)]
     
     Mobile --> Capture
@@ -174,7 +164,7 @@ graph TD
     Store["3.6 Store<br/>Result"]
     
     DB[(Database)]
-    RiskEngine["⚠️ Risk Scoring<br/>Engine"]
+    RiskEngine["Risk Scoring<br/>Engine"]
     
     Trigger --> Fetch
     Fetch -->|Batch Data| DB
@@ -202,7 +192,7 @@ graph TD
 
 ```mermaid
 graph TD
-    Queue["📋 Add to<br/>Review Queue"]
+    Queue["Add to<br/>Review Queue"]
     
     Assign["4.1 Assign<br/>Reviewer"]
     
@@ -217,7 +207,7 @@ graph TD
     Record["4.6 Record<br/>Decision"]
     
     DB[(Database)]
-    Dashboard["📊 Dashboard"]
+    Dashboard["Dashboard"]
     
     Queue --> Assign
     Assign -->|Reviewer ID| DB
@@ -226,7 +216,7 @@ graph TD
     
     Dashboard -->|User Action| Fetch
     Fetch -->|Batch Data| DB
-    Fetch -->|Evidence| S3["💾 Storage"]
+    Fetch -->|Evidence| S3["Storage"]
     
     Fetch --> Review
     Review -->|User Decision| Decide
@@ -248,7 +238,7 @@ graph TD
 
 ```mermaid
 graph TD
-    Request["📊 Report<br/>Request"]
+    Request["Report<br/>Request"]
     
     Query["5.1 Query<br/>Data"]
     
@@ -259,8 +249,8 @@ graph TD
     Archive["5.4 Archive<br/>Batch"]
     
     DB[(Database)]
-    Reports["📄 Reports<br/>- CSV<br/>- PDF"]
-    Archive_Store["📦 Archive<br/>Storage"]
+    Reports["Reports<br/>- CSV<br/>- PDF"]
+    Archive_Store["Archive<br/>Storage"]
     
     Request -->|User/System| Query
     Query -->|SQL Query| DB

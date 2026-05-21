@@ -8,149 +8,135 @@ This diagram shows the detailed activities, decisions, and flows for the complet
 
 ```mermaid
 flowchart TD
-    Start(["▶️ Lot Arrived"])
-    
-    Receive["📥 Reçu à la pharmacie"]
-    Register["📋 Enregistrement lot<br/>- Lot number<br/>- Supplier<br/>- Product<br/>- Date/Heure"]
-    
-    RegisterOK{"ℹ️ Données<br/>complètes?"}
-    
-    RegisterErr["❌ Erreur saisie<br/>Corriger données"]
-    RegisterOK -->|Non| RegisterErr
-    RegisterErr --> Register
-    
-    InspectorAssign["🔍 Assignment inspecteur<br/>- Chercher inspecteur disponible<br/>- Envoyer notification<br/>- Status = Draft"]
-    
-    InspectorAck{"👥 Inspecteur<br/>accepte?"}
-    
-    InspectorWait["⏳ En attente inspecteur<br/>- Notifier inspecteur<br/>- Attendre réponse<br/>- Timeout 30 min"]
-    
-    InspectorAck -->|Non| InspectorWait
-    InspectorWait --> InspectorAck
-    
-    FieldInspection["🏭 INSPECTION TERRAIN<br/>- Aller à warehouse<br/>- Localiser lot<br/>- Vérification identité<br/>- Observation physique"]
-    
-    CapturePhotos["📸 Capture photos<br/>- Exterior package<br/>- Labels/seals<br/>- Damage/anomalies<br/>- Storage conditions<br/>- Multiple angles"]
-    
-    RecordNotes["🖊️ Saisir observations<br/>- Conditions observées<br/>- Anomalies notées<br/>- Température/Humidité<br/>- Red flags"]
-    
-    UploadEvidence["☁️ Upload preuves<br/>- Photos to S3<br/>- Métadonnées<br/>- Timestamped<br/>- Validated"]
-    
-    EnterBatchData["🖊️ Saisir détails batch<br/>- Lot size<br/>- Manufacturing date<br/>- Expiration<br/>- Conditions<br/>- Anomalies"]
-    
-    ValidateData{"✅ Données<br/>valides?"}
-    
-    DataErr["❌ Erreur données<br/>Corriger"]
-    ValidateData -->|Non| DataErr
-    DataErr --> EnterBatchData
-    
-    SubmitInspection["✅ Soumettre inspection<br/>Status = Evidence Captured"]
-    
-    TriggerScoring["⚙️ Déclencher scoring<br/>- Backend job<br/>- Récupérer données<br/>- Appeler scoring engine"]
-    
-    RiskCalculation["⚠️ Calcul risque<br/>- Analyser conditions<br/>- Détecter anomalies<br/>- Appliquer règles<br/>- Score 0-100"]
-    
-    GenerateRecommendation["💡 Générer recommandation<br/>- Score < 20 → ACCEPT<br/>- Score 20-60 → ISOLATE<br/>- Score > 60 → ESCALATE"]
-    
-    NeedReview{"👁️ Revue humaine<br/>requise?<br/>Score 20-60?"}
-    
-    AutoApprove["✅ Auto-accepté<br/>Score < 20<br/>Status = Accepted"]
-    AutoEscalate["🔴 Auto-escaladé<br/>Score > 60<br/>Notify management"]
-    
-    NeedReview -->|Non| AutoApprove
-    NeedReview -->|Oui| ReviewQueue
-    NeedReview -->|High Risk| AutoEscalate
-    
-    ReviewQueue["📋 QUEUE DE RÉVISION<br/>- Ajouter à queue reviewer<br/>- Priority = risk score<br/>- Status = Pending Review"]
-    
-    ReviewerAssign["👁️ Assignation reviewer<br/>- Assigner reviewer dispo<br/>- Envoyer notification<br/>- Priority sort"]
-    
-    ReviewerOpen["📖 Reviewer lit inspection<br/>- Voir photos<br/>- Lire notes inspecteur<br/>- Voir score risque<br/>- Voir historique supplier"]
-    
-    ReviewEvaluate["🔍 Évaluer décision<br/>- Analyser preuves<br/>- Vérifier anomalies<br/>- Valider score<br/>- Juger acceptable?"]
-    
-    ReviewDecide{"👁️ Approbation<br/>reviewer?"}
-    
-    ReviewApprove["✅ Approuvé<br/>Decision = Accepted"]
-    ReviewIsolate["⚠️ Isoler<br/>Decision = Isolated<br/>Raison noted"]
-    ReviewEscalate["🔴 Escalader<br/>Decision = Escalated<br/>Notify management"]
-    
-    ReviewDecide -->|ACCEPT| ReviewApprove
-    ReviewDecide -->|ISOLATE| ReviewIsolate
-    ReviewDecide -->|ESCALATE| ReviewEscalate
-    
-    RecordDecision["🔗 Enregistrer décision<br/>- Audit log entry<br/>- Timestamp<br/>- Actor = reviewer<br/>- Decision + notes"]
-    
-    ReviewApprove --> RecordDecision
-    ReviewIsolate --> RecordDecision
-    ReviewEscalate --> RecordDecision
-    AutoApprove --> RecordDecision
-    AutoEscalate --> RecordDecision
-    
-    ExecuteDecision{"⚙️ Exécuter<br/>décision"}
-    
-    ExecAccept["✓ ACCEPTÉ<br/>- Lot released<br/>- Moved to storage<br/>- Available for use<br/>- Notify pharmacy"]
-    
-    ExecIsolate["⚠️ ISOLÉ<br/>- Batch quarantined<br/>- Mark Do Not Use<br/>- Notify QA<br/>- Pending investigation"]
-    
-    ExecEscalate["🔴 ESCALADÉ<br/>- Batch held<br/>- Notify director<br/>- Investigate<br/>- Potential reject"]
-    
-    ExecuteDecision -->|ACCEPT| ExecAccept
-    ExecuteDecision -->|ISOLATE| ExecIsolate
-    ExecuteDecision -->|ESCALATE| ExecEscalate
-    
-    UpdateDashboard["📊 Mettre à jour KPI<br/>- Total processed<br/>- Acceptance rate<br/>- Rejection rate<br/>- Trends"]
-    
-    Archive["📦 Archiver inspection<br/>- Mark completed<br/>- Evidence immutable<br/>- Audit trail sealed<br/>- Searchable"]
-    
-    End(["✅ INSPECTION COMPLÈTE"])
-    
-    Start --> Receive
-    Receive --> Register
-    Register --> RegisterOK
-    RegisterOK -->|Oui| InspectorAssign
-    InspectorAssign --> InspectorAck
-    InspectorAck -->|Oui| FieldInspection
-    FieldInspection --> CapturePhotos
-    CapturePhotos --> RecordNotes
-    RecordNotes --> UploadEvidence
-    UploadEvidence --> EnterBatchData
-    EnterBatchData --> ValidateData
-    ValidateData -->|Oui| SubmitInspection
-    SubmitInspection --> TriggerScoring
-    TriggerScoring --> RiskCalculation
-    RiskCalculation --> GenerateRecommendation
-    GenerateRecommendation --> NeedReview
-    AutoApprove --> ExecuteDecision
-    AutoEscalate --> ExecuteDecision
-    ReviewQueue --> ReviewerAssign
-    ReviewerAssign --> ReviewerOpen
-    ReviewerOpen --> ReviewEvaluate
-    ReviewEvaluate --> ReviewDecide
-    ReviewApprove --> RecordDecision
-    ReviewIsolate --> RecordDecision
-    ReviewEscalate --> RecordDecision
-    RecordDecision --> ExecuteDecision
-    ExecAccept --> UpdateDashboard
-    ExecIsolate --> UpdateDashboard
-    ExecEscalate --> UpdateDashboard
-    UpdateDashboard --> Archive
-    Archive --> End
-    
-    style Start fill:#27ae60,color:#fff,stroke-width:3px
-    style End fill:#27ae60,color:#fff,stroke-width:3px
-    style ReviewQueue fill:#9b59b6,color:#fff
-    style ReviewerAssign fill:#8e44ad,color:#fff
-    style ReviewerOpen fill:#8e44ad,color:#fff
-    style ReviewEvaluate fill:#8e44ad,color:#fff
-    style ReviewDecide fill:#8e44ad,color:#fff
-    style TriggerScoring fill:#e67e22,color:#fff
-    style RiskCalculation fill:#e67e22,color:#fff
-    style GenerateRecommendation fill:#e67e22,color:#fff
-    style RecordDecision fill:#16a085,color:#fff
-    style ExecuteDecision fill:#27ae60,color:#fff
-    style UpdateDashboard fill:#2980b9,color:#fff
-    style Archive fill:#34495e,color:#fff
+  Start(["Batch Arrived"])
+
+  Receive["Received at facility"]
+  Register["Register Batch\n- batch number\n- supplier\n- product\n- received at"]
+
+  RegisterOK{"Data complete?"}
+
+  RegisterErr["Data error - correct and retry"]
+  RegisterOK -->|No| RegisterErr
+  RegisterErr --> Register
+
+  InspectorAssign["Assign Inspector\n- find available inspector\n- send notification\n- set status to Draft"]
+
+  InspectorAck{"Inspector accepts?"}
+
+  InspectorWait["Waiting for inspector\n- notify inspector\n- timeout behavior"]
+
+  InspectorAck -->|No| InspectorWait
+  InspectorWait --> InspectorAck
+
+  FieldInspection["Field Inspection\n- go to warehouse\n- verify lot\n- inspect physically"]
+
+  CapturePhotos["Capture Photos\n- exterior, labels, seals, anomalies"]
+
+  RecordNotes["Record Observations\n- conditions, anomalies, temp/humidity"]
+
+  UploadEvidence["Upload Evidence\n- store files, metadata, timestamps"]
+
+  EnterBatchData["Enter Batch Details\n- lot size, MFG date, expiry, anomalies"]
+
+  ValidateData{"Data valid?"}
+
+  DataErr["Data error - correct"]
+  ValidateData -->|No| DataErr
+  DataErr --> EnterBatchData
+
+  SubmitInspection["Submit Inspection\n- status = Evidence Captured"]
+
+  TriggerScoring["Trigger Scoring\n- backend job calls scoring engine"]
+
+  RiskCalculation["Risk Calculation\n- analyze conditions and anomalies\n- compute score 0-100"]
+
+  GenerateRecommendation["Generate Recommendation\n- Score < 20 → ACCEPT\n- Score 20-60 → ISOLATE\n- Score > 60 → ESCALATE"]
+
+  NeedReview{"Human review required?"}
+
+  AutoApprove["Auto-accept (score < 20)"]
+  AutoEscalate["Auto-escalate (score > 60)"]
+
+  NeedReview -->|No| AutoApprove
+  NeedReview -->|Yes| ReviewQueue
+  NeedReview -->|High Risk| AutoEscalate
+
+  ReviewQueue["Review Queue\n- add to reviewer queue\n- priority by risk score"]
+
+  ReviewerAssign["Assign Reviewer\n- assign available reviewer\n- notify reviewer"]
+
+  ReviewerOpen["Reviewer opens inspection\n- view photos and notes\n- view supplier history"]
+
+  ReviewEvaluate["Evaluate Decision\n- analyze evidence and score"]
+
+  ReviewDecide{"Reviewer approval?"}
+
+  ReviewApprove["Approved - Decision = Accepted"]
+  ReviewIsolate["Isolate - Decision = Isolated"]
+  ReviewEscalate["Escalate - Decision = Escalated"]
+
+  ReviewDecide -->|ACCEPT| ReviewApprove
+  ReviewDecide -->|ISOLATE| ReviewIsolate
+  ReviewDecide -->|ESCALATE| ReviewEscalate
+
+  RecordDecision["Record Decision\n- create AuditLog entry\n- timestamp and actor recorded"]
+
+  ReviewApprove --> RecordDecision
+  ReviewIsolate --> RecordDecision
+  ReviewEscalate --> RecordDecision
+  AutoApprove --> RecordDecision
+  AutoEscalate --> RecordDecision
+
+  ExecuteDecision{"Execute decision"}
+
+  ExecAccept["Accept - release to storage\n- make available for use"]
+
+  ExecIsolate["Isolate - quarantined\n- mark DO NOT USE\n- notify QA"]
+
+  ExecEscalate["Escalate - hold and notify management"]
+
+  ExecuteDecision -->|ACCEPT| ExecAccept
+  ExecuteDecision -->|ISOLATE| ExecIsolate
+  ExecuteDecision -->|ESCALATE| ExecEscalate
+
+  UpdateDashboard["Update KPIs\n- processed, acceptance rate, trends"]
+
+  Archive["Archive Inspection\n- mark completed, evidence immutable, audit sealed"]
+
+  End(["Inspection Complete"])
+
+  Start --> Receive
+  Receive --> Register
+  Register --> RegisterOK
+  RegisterOK -->|Yes| InspectorAssign
+  InspectorAssign --> InspectorAck
+  InspectorAck -->|Yes| FieldInspection
+  FieldInspection --> CapturePhotos
+  CapturePhotos --> RecordNotes
+  RecordNotes --> UploadEvidence
+  UploadEvidence --> EnterBatchData
+  EnterBatchData --> ValidateData
+  ValidateData -->|Yes| SubmitInspection
+  SubmitInspection --> TriggerScoring
+  TriggerScoring --> RiskCalculation
+  RiskCalculation --> GenerateRecommendation
+  GenerateRecommendation --> NeedReview
+  AutoApprove --> ExecuteDecision
+  AutoEscalate --> ExecuteDecision
+  ReviewQueue --> ReviewerAssign
+  ReviewerAssign --> ReviewerOpen
+  ReviewerOpen --> ReviewEvaluate
+  ReviewEvaluate --> ReviewDecide
+  ReviewApprove --> RecordDecision
+  ReviewIsolate --> RecordDecision
+  ReviewEscalate --> RecordDecision
+  RecordDecision --> ExecuteDecision
+  ExecAccept --> UpdateDashboard
+  ExecIsolate --> UpdateDashboard
+  ExecEscalate --> UpdateDashboard
+  UpdateDashboard --> Archive
+  Archive --> End
+
 ```
 
 ## Activity Details

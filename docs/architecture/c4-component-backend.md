@@ -1,84 +1,78 @@
 # C4 Component Diagram (Backend)
 
-**Explication courte**
-Détail des composants backend Django/DRF : authentification, gestion organisation, inspections, preuve, scoring, décision, revue et audit.
+## Overview
+
+Backend component view showing responsibilities and internal services implemented in the Django application.
 
 ```mermaid
 graph TB
-    subgraph "AUTH_SECURITY"
-        JWT["🔐 JWT Auth<br/>- Token generation<br/>- Token validation<br/>- Refresh logic"]
-        Permissions["🔒 Permissions<br/>- Role-based access<br/>- Site scoping<br/>- Feature gates"]
+    subgraph AUTH
+        JWT["JWT Authentication\n- Token generation and validation\n- Refresh logic"]
+        Permissions["Permissions\n- Role-based access control\n- Site scoping\n- Feature flags"]
     end
-    
-    subgraph "CORE_FEATURES"
-        OrgMgmt["🏢 Organization Mgmt<br/>- Org CRUD<br/>- Multi-site support"]
-        UserMgmt["👥 User Mgmt<br/>- User CRUD<br/>- Role assignment<br/>- Active/inactive"]
-        InspectionMgmt["🔍 Inspection Mgmt<br/>- Batch creation<br/>- Status workflow<br/>- Lot tracking"]
-        SupplierMgmt["📦 Supplier Mgmt<br/>- Supplier registry<br/>- Performance history"]
-        ProductLib["📚 Product Library<br/>- Product catalog<br/>- SKU management"]
+
+    subgraph CORE
+        OrgMgmt["Organization Management\n- CRUD, multi-site support"]
+        UserMgmt["User Management\n- CRUD, roles, activation"]
+        InspectionMgmt["Inspection Management\n- BatchInspection lifecycle\n- Status transitions"]
+        SupplierMgmt["Supplier Management\n- Registry and history"]
+        ProductLib["Product Library\n- ProductReference catalog"]
     end
-    
-    subgraph "INSPECTION_WORKFLOW"
-        EvidenceService["📸 Evidence Service<br/>- File upload<br/>- Storage mgmt<br/>- Metadata"]
-        DataExtraction["🖊️ Data Extraction<br/>- Batch parsing<br/>- Field validation<br/>- Data enrichment"]
-        RiskEngine["⚠️ Risk Engine<br/>- Scoring logic<br/>- Rule evaluation<br/>- Anomaly detection"]
-        DecisionEngine["✅ Decision Engine<br/>- Decision logic<br/>- Outcome assignment<br/>- Escalation rules"]
+
+    subgraph WORKFLOW
+        EvidenceService["Evidence Service\n- File uploads and metadata"]
+        DataExtraction["Data Extraction\n- Parsing and enrichment (OCR)"]
+        RiskEngine["Risk Engine\n- Scoring rules and anomaly detection"]
+        DecisionEngine["Decision Engine\n- Outcome determination and escalation rules"]
     end
-    
-    subgraph "REVIEW_WORKFLOW"
-        ReviewQueue["📋 Review Queue<br/>- Queue management<br/>- Assignment<br/>- Priority"]
-        ReviewService["👁️ Review Service<br/>- Evidence display<br/>- Decision validation<br/>- Approval/rejection"]
+
+    subgraph REVIEW
+        ReviewQueue["Review Queue\n- Assignment and priority"]
+        ReviewService["Review Service\n- Evidence display and validation"]
     end
-    
-    subgraph "AUDIT_MONITORING"
-        AuditService["🔗 Audit Service<br/>- Event logging<br/>- User tracking<br/>- Change history"]
-        Monitoring["📊 Monitoring<br/>- Metrics collection<br/>- Performance tracking"]
+
+    subgraph AUDIT
+        AuditService["Audit Service\n- Event logging and change history"]
+        Monitoring["Monitoring\n- Metrics collection and alerts"]
     end
-    
-    subgraph "REPORTING_DASHBOARD"
-        Dashboard["📈 Dashboard API<br/>- KPI endpoints<br/>- Batch status<br/>- Historical view"]
-        Export["📄 Export Service<br/>- Report generation<br/>- PDF/CSV export"]
+
+    subgraph REPORTING
+        Dashboard["Dashboard API\n- KPIs and historical views"]
+        Export["Export Service\n- Reports (PDF/CSV)"]
     end
-    
-    subgraph "SHARED_UTILITIES"
-        Logging["📝 Logging<br/>- Application logs<br/>- Debug info"]
-        Config["⚙️ Configuration<br/>- Settings mgmt<br/>- Feature flags"]
+
+    subgraph UTIL
+        Logging["Application Logging"]
+        Config["Configuration and feature flags"]
     end
-    
+
     JWT --> Permissions
-    Permissions -->|controls access to| OrgMgmt
-    Permissions -->|controls access to| UserMgmt
-    Permissions -->|controls access to| InspectionMgmt
-    
+    Permissions --> OrgMgmt
+    Permissions --> UserMgmt
+    Permissions --> InspectionMgmt
+
     OrgMgmt --> InspectionMgmt
     UserMgmt --> InspectionMgmt
     SupplierMgmt --> InspectionMgmt
     ProductLib --> InspectionMgmt
-    
+
     InspectionMgmt --> EvidenceService
     EvidenceService --> DataExtraction
     DataExtraction --> RiskEngine
     RiskEngine --> DecisionEngine
-    
+
     DecisionEngine --> ReviewQueue
     ReviewQueue --> ReviewService
-    
+
     InspectionMgmt --> AuditService
     ReviewService --> AuditService
-    
+
     AuditService --> Monitoring
     AuditService --> Dashboard
-    
+
     Dashboard --> Export
-    
-    Logging -.->|used by all| OrgMgmt
-    Config -.->|used by all| RiskEngine
-    
-    style AUTH_SECURITY fill:#fef5e7,stroke:#f39c12
-    style CORE_FEATURES fill:#ecf0f1,stroke:#34495e
-    style INSPECTION_WORKFLOW fill:#fadbd8,stroke:#e74c3c
-    style REVIEW_WORKFLOW fill:#d5f4e6,stroke:#27ae60
-    style AUDIT_MONITORING fill:#f4ecf7,stroke:#9b59b6
-    style REPORTING_DASHBOARD fill:#e8f8f5,stroke:#16a085
-    style SHARED_UTILITIES fill:#fdebd0,stroke:#d68910
+
+    Logging -.-> OrgMgmt
+    Config -.-> RiskEngine
+
 ```

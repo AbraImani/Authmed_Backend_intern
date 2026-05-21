@@ -8,21 +8,21 @@ The C4 model is a hierarchical approach to system architecture visualization. Th
 
 ```mermaid
 graph TB
-    HealthFacility["🏥 Healthcare Facility<br/>(Pharmacy/Hospital)"]
-    
-    Users["👥 Users<br/>- Inspector<br/>- Reviewer<br/>- Manager<br/>- Admin"]
-    
-    AuthMed["🔬 AUTHMED SYSTEM<br/>Medicine Intake Inspection<br/>& Risk-Control Platform"]
-    
-    SupplierDB["📦 Supplier Systems<br/>- Product catalogs<br/>- Delivery tracking<br/>- Quality history"]
-    
-    Dashboard["📊 Web Dashboard<br/>- Monitoring<br/>- Reporting<br/>- KPI tracking"]
-    
-    MobileApp["📱 Mobile App<br/>- Inspection<br/>- Evidence capture"]
-    
-    StorageDB["💾 Cloud Storage<br/>- Evidence files<br/>- Photos<br/>- Documents"]
-    
-    RegulatoryAuth["⚖️ Regulatory<br/>Authorities<br/>- Audit requests<br/>- Compliance reporting"]
+    HealthFacility["Healthcare Facility<br/>(Pharmacy/Hospital)"]
+
+    Users["Users<br/>- Inspector<br/>- Reviewer<br/>- Manager<br/>- Admin"]
+
+    AuthMed["AUTHMED SYSTEM<br/>Medicine Intake Inspection<br/>& Risk-Control Platform"]
+
+    SupplierDB["Supplier Systems<br/>- Product catalogs<br/>- Delivery tracking<br/>- Quality history"]
+
+    Dashboard["Web Dashboard<br/>- Monitoring<br/>- Reporting<br/>- KPI tracking"]
+
+    MobileApp["Mobile App<br/>- Inspection<br/>- Evidence capture"]
+
+    StorageDB["Cloud Storage<br/>- Evidence files<br/>- Photos<br/>- Documents"]
+
+    RegulatoryAuth["Regulatory Authorities<br/>- Audit requests<br/>- Compliance reporting"]
     
     HealthFacility -->|Incoming batches| AuthMed
     Users -->|Use| AuthMed
@@ -33,14 +33,7 @@ graph TB
     AuthMed -->|Compliance data| RegulatoryAuth
     RegulatoryAuth -->|Audits| AuthMed
     
-    style AuthMed fill:#4a90e2,stroke:#2c5aa0,color:#fff,stroke-width:3px
-    style HealthFacility fill:#50c878,stroke:#2d7a4a
-    style Users fill:#9b59b6,stroke:#6c3d7f
-    style Dashboard fill:#3498db,stroke:#1f618d
-    style MobileApp fill:#27ae60,stroke:#1a5c39
-    style StorageDB fill:#95a5a6,stroke:#5d6d7b
-    style RegulatoryAuth fill:#e74c3c,stroke:#a93226
-    style SupplierDB fill:#f39c12,stroke:#b36b00
+    %% Styles removed for consistency and accessibility
 ```
 
 ## System Scope
