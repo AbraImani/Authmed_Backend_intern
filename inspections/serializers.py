@@ -57,6 +57,11 @@ class InspectionSerializer(serializers.ModelSerializer):
     evidences = EvidenceSerializer(many=True, read_only=True)
     risk_result = RiskResultSerializer(read_only=True)
     decisions = ReviewDecisionSerializer(many=True, read_only=True)
+    organization_display = serializers.SerializerMethodField(read_only=True)
+    site_display = serializers.SerializerMethodField(read_only=True)
+    supplier_display = serializers.SerializerMethodField(read_only=True)
+    product_display = serializers.SerializerMethodField(read_only=True)
+    inspector_display = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BatchInspection
@@ -67,7 +72,11 @@ class InspectionSerializer(serializers.ModelSerializer):
             "supplier",
             "product",
             "inspector",
+            "inspector_display",
             "batch_number",
+            "expiry_date",
+            "notes",
+            "status",
             "received_at",
             "created_at",
             "evidences",
@@ -98,4 +107,50 @@ class InspectionSerializer(serializers.ModelSerializer):
             if inspector is not None and inspector.organization is not None and organization is not None and inspector.organization != organization:
                 raise serializers.ValidationError("Inspector must belong to the selected organization.")
 
+            # Validate expiry_date does not precede received_at
+            expiry = attrs.get("expiry_date") or getattr(self.instance, "expiry_date", None)
+            received = attrs.get("received_at") or getattr(self.instance, "received_at", None)
+            if expiry is not None and received is not None:
+                try:
+                    rec_date = received.date()
+                except Exception:
+                    rec_date = None
+                if rec_date is not None and expiry < rec_date:
+                    raise serializers.ValidationError("Expiry date cannot be before the received date.")
+
         return attrs
+
+    def get_organization_display(self, obj):
+        return getattr(obj.organization, "name", None)
+
+    def get_site_display(self, obj):
+        return getattr(obj.site, "name", None)
+
+    def get_supplier_display(self, obj):
+        return getattr(obj.supplier, "name", None) if obj.supplier else None
+
+    def get_product_display(self, obj):
+        return getattr(obj.product, "name", None) if obj.product else None
+
+    def get_inspector_display(self, obj):
+        if obj.inspector:
+            return {"id": obj.inspector.id, "username": getattr(obj.inspector, "username", None)}
+        return None
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        # Ensure organization and inspector default to request user when available
+        if user and user.is_authenticated:
+            if "organization" not in validated_data:
+                validated_data["organization"] = getattr(user, "organization", None)
+            if "inspector" not in validated_data:
+                validated_data["inspector"] = user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Allow partial updates from mobile; do not overwrite organization unintentionally
+        if "organization" in validated_data and getattr(instance, "organization", None) is not None:
+            # prevent changing organization through update
+            validated_data.pop("organization", None)
+        return super().update(instance, validated_data)
