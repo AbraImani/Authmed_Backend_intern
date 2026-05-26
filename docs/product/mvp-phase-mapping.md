@@ -4,7 +4,7 @@
 
 This diagram shows the distribution of features and capabilities across MVP, Phase 1, Phase 2, and Future phases, along with what is already implemented in the current backend foundation.
 
-## Deliverable Mapping
+## MVP / Phase Mapping
 
 ```mermaid
 graph TB
