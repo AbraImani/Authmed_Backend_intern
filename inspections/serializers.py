@@ -68,6 +68,8 @@ class InspectionSerializer(serializers.ModelSerializer):
     supplier_display = serializers.SerializerMethodField(read_only=True)
     product_display = serializers.SerializerMethodField(read_only=True)
     inspector_display = serializers.SerializerMethodField(read_only=True)
+    outcome = serializers.CharField(read_only=True)
+    outcome_display = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BatchInspection
@@ -88,6 +90,7 @@ class InspectionSerializer(serializers.ModelSerializer):
             "notes",
             "status",
             "outcome",
+            "outcome_display",
             "received_at",
             "created_at",
             "evidences",
@@ -147,6 +150,12 @@ class InspectionSerializer(serializers.ModelSerializer):
         if obj.inspector:
             return {"id": obj.inspector.id, "username": getattr(obj.inspector, "username", None)}
         return None
+
+    def get_outcome_display(self, obj):
+        try:
+            return obj.get_outcome_display()
+        except Exception:
+            return getattr(obj, "outcome", None)
 
     def create(self, validated_data):
         request = self.context.get("request")
