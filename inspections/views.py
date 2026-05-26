@@ -20,9 +20,10 @@ class InspectionViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_authenticated and getattr(user, "role", None) == "admin":
             qs = BatchInspection.objects.all()
-        organization = getattr(user, "organization", None)
-        if organization is None:
-            return BatchInspection.objects.none()
+        else:
+            organization = getattr(user, "organization", None)
+            if organization is None:
+                return BatchInspection.objects.none()
             qs = BatchInspection.objects.filter(organization=organization)
 
         # apply optional filters for mobile convenience
