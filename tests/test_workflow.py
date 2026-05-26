@@ -1,3 +1,20 @@
+"""
+AuthMed Inspection Workflow Test Suite
+
+Imports:
+- pytest: Testing framework with Django integration
+- django.contrib.auth: User authentication utilities
+- django.test.Client: HTTP test client for API testing
+- django.utils.timezone: Datetime utilities for testing time-based features
+- rest_framework: Status codes and DRF testing utilities
+- rest_framework_simplejwt: JWT token generation and refresh mechanisms
+- organizations.models: Organization and Site multi-tenancy models
+- suppliers.models: Supplier data management
+- products.models: ProductReference catalog management
+- inspections.models: Core inspection workflow models (BatchInspection, Evidence, RiskResult, ReviewDecision)
+- audits.models: Audit trail logging for compliance
+"""
+
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import Client
@@ -16,6 +33,8 @@ User = get_user_model()
 
 @pytest.mark.django_db
 class TestJWTAuth:
+    """JWT authentication and token management tests."""
+    
     def test_jwt_token_obtain(self):
         """Test JWT token obtain endpoint."""
         user = User.objects.create_user(username="testuser", password="testpass123", email="test@example.com")
@@ -37,6 +56,8 @@ class TestJWTAuth:
 
 @pytest.mark.django_db
 class TestOrganizationAndSite:
+    """Multi-tenancy structure tests: Organizations and Sites creation."""
+    
     def test_create_organization(self):
         """Test organization creation."""
         org = Organization.objects.create(name="Test Org", address="123 Test St")
@@ -53,8 +74,10 @@ class TestOrganizationAndSite:
 
 @pytest.mark.django_db
 class TestBatchInspectionWorkflow:
+    """Core batch inspection workflow lifecycle tests (receive, inspect, decide)."""
+    
     def setup_method(self):
-        """Set up test data."""
+        """Set up test data for batch inspection tests."""
         self.org = Organization.objects.create(name="Test Hospital")
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
         self.supplier = Supplier.objects.create(name="Test Supplier")
@@ -93,8 +116,10 @@ class TestBatchInspectionWorkflow:
 
 @pytest.mark.django_db
 class TestEvidenceCapture:
+    """Evidence capture and attachment to batch inspections tests."""
+    
     def setup_method(self):
-        """Set up test data."""
+        """Set up test data for evidence tests."""
         self.org = Organization.objects.create(name="Test Hospital")
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
         self.inspector = User.objects.create_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
