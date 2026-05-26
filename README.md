@@ -82,3 +82,7 @@ How this supports the workflow
 3. A `RiskResult` is stored (one-to-one) describing risk score and reason from automated or manual evaluation.
 4. A `ReviewDecision` is recorded when a reviewer approves or rejects; the `BatchInspection` also stores an `outcome` (`accepted`, `isolated`, `escalated`).
 5. All create/update/delete events are recorded into `AuditLog` for internal traceability.
+
+Status vs Outcome
+- **status**: represents workflow progression used by mobile and UI to track the inspection lifecycle (values: `pending`, `in_progress`, `completed`). This is a transient workflow state.
+- **outcome**: represents the final business decision resulting from review/decision workflows (values: `accepted`, `isolated`, `escalated`). This is set by reviewers and should be considered the authoritative final disposition.
