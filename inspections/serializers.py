@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import BatchInspection, Evidence, RiskResult, ReviewDecision
+from organizations.models import Organization
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
@@ -57,6 +61,8 @@ class InspectionSerializer(serializers.ModelSerializer):
     evidences = EvidenceSerializer(many=True, read_only=True)
     risk_result = RiskResultSerializer(read_only=True)
     decisions = ReviewDecisionSerializer(many=True, read_only=True)
+    organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), required=False, allow_null=True)
+    inspector = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
     organization_display = serializers.SerializerMethodField(read_only=True)
     site_display = serializers.SerializerMethodField(read_only=True)
     supplier_display = serializers.SerializerMethodField(read_only=True)
