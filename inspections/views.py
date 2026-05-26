@@ -19,16 +19,37 @@ class InspectionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated and getattr(user, "role", None) == "admin":
-            return BatchInspection.objects.all()
+            qs = BatchInspection.objects.all()
         organization = getattr(user, "organization", None)
         if organization is None:
             return BatchInspection.objects.none()
-        return BatchInspection.objects.filter(organization=organization)
+            qs = BatchInspection.objects.filter(organization=organization)
+
+        # apply optional filters for mobile convenience
+        site_id = self.request.query_params.get("site")
+        supplier_id = self.request.query_params.get("supplier")
+        product_id = self.request.query_params.get("product")
+        status = self.request.query_params.get("status")
+
+        if site_id:
+            qs = qs.filter(site_id=site_id)
+        if supplier_id:
+            qs = qs.filter(supplier_id=supplier_id)
+        if product_id:
+            qs = qs.filter(product_id=product_id)
+        if status:
+            qs = qs.filter(status=status)
+
+        return qs.order_by("-received_at")
 
     def perform_create(self, serializer):
         user = self.request.user
         organization = getattr(user, "organization", None)
-        serializer.save(organization=organization, inspector=user)
+        # rely on serializer.create defaults but ensure organization/inspector set when available
+        if organization is not None:
+            serializer.save(organization=organization, inspector=user)
+        else:
+            serializer.save(inspector=user)
 
     @action(detail=True, methods=["post"])
     def add_evidence(self, request, pk=None):
