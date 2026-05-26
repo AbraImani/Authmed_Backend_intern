@@ -1,6 +1,6 @@
 # AuthMed Intern Backend
 
-This is a Django an DRF backend implementing the AuthMed medicine intake inspection and risk-control workflow.
+This is a Django and DRF backend implementing the AuthMed medicine intake inspection and risk-control workflow.
 
 Core features
 - Organizations and Sites multi-tenancy
@@ -53,6 +53,12 @@ API docs
 
 Authentication
 - JWT token endpoints: `POST /api/auth/token/` (obtain), `POST /api/auth/token/refresh/`
+
+Onboarding account
+- Full name: Nathan Cirhuza
+- Username: `nathan.cirhuza`
+- Password: `nathan@authmed.africa`
+- Role: inspector
 
 Testing
 

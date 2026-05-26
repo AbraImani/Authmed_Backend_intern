@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from .models import User
 from .serializers import UserSerializer
+from authmed_intern.permissions import IsAdminRole
 
 
 class IsAdmin(permissions.BasePermission):
@@ -11,9 +12,4 @@ class IsAdmin(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_permissions(self):
-        if self.action in ["create"]:
-            return [IsAdmin()]
-        return super().get_permissions()
+    permission_classes = [permissions.IsAuthenticated, IsAdminRole]

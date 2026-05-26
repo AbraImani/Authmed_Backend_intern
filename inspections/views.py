@@ -16,6 +16,20 @@ class InspectionViewSet(viewsets.ModelViewSet):
     serializer_class = InspectionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            return BatchInspection.objects.all()
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return BatchInspection.objects.none()
+        return BatchInspection.objects.filter(organization=organization)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        organization = getattr(user, "organization", None)
+        serializer.save(organization=organization, inspector=user)
+
     @action(detail=True, methods=["post"])
     def add_evidence(self, request, pk=None):
         insp = self.get_object()
@@ -31,14 +45,50 @@ class EvidenceViewSet(viewsets.ModelViewSet):
     serializer_class = EvidenceSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            return Evidence.objects.all()
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return Evidence.objects.none()
+        return Evidence.objects.filter(inspection__organization=organization)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
 
 class RiskResultViewSet(viewsets.ModelViewSet):
     queryset = RiskResult.objects.all()
     serializer_class = RiskResultSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            return RiskResult.objects.all()
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return RiskResult.objects.none()
+        return RiskResult.objects.filter(inspection__organization=organization)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
 
 class ReviewDecisionViewSet(viewsets.ModelViewSet):
     queryset = ReviewDecision.objects.all()
     serializer_class = ReviewDecisionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            return ReviewDecision.objects.all()
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return ReviewDecision.objects.none()
+        return ReviewDecision.objects.filter(inspection__organization=organization)
+
+    def perform_create(self, serializer):
+        serializer.save()

@@ -1,6 +1,20 @@
 from rest_framework import permissions
 
 
+class IsAdminRole(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and getattr(request.user, "role", None) == "admin")
+
+
+class IsAdminOrReviewer(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and getattr(request.user, "role", None) in {"admin", "reviewer"}
+        )
+
+
 class IsOrgMember(permissions.BasePermission):
     """Allow access only to users belonging to the same organization or staff."""
 

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from organizations.models import Organization, Site
@@ -33,6 +34,21 @@ class TestJWTAuth:
         response = client.post("/api/auth/token/refresh/", {"refresh": str(refresh)}, content_type="application/json")
         assert response.status_code == status.HTTP_200_OK
         assert "access" in response.json()
+
+    def test_seeded_nathan_can_obtain_jwt(self):
+        """Seeded onboarding account should be able to log in through JWT."""
+        from django.core.management import call_command
+
+        call_command("seed_demo")
+        client = Client()
+        response = client.post(
+            "/api/auth/token/",
+            {"username": "nathan.cirhuza", "password": "nathan@authmed.africa"},
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert "access" in response.json()
+        assert "refresh" in response.json()
 
 
 @pytest.mark.django_db
@@ -89,6 +105,73 @@ class TestBatchInspectionWorkflow:
                 received_at=timezone.now(),
             )
             assert insp.outcome == outcome
+
+
+@pytest.mark.django_db
+class TestInspectionApiScoping:
+    def setup_method(self):
+        self.org_one = Organization.objects.create(name="Org One")
+        self.site_one = Site.objects.create(organization=self.org_one, name="Site One")
+        self.org_two = Organization.objects.create(name="Org Two")
+        self.site_two = Site.objects.create(organization=self.org_two, name="Site Two")
+        self.supplier = Supplier.objects.create(name="Test Supplier")
+        self.product_one = ProductReference.objects.create(organization=self.org_one, name="Product One", sku="ONE")
+        self.product_two = ProductReference.objects.create(organization=self.org_two, name="Product Two", sku="TWO")
+        self.inspector_one = User.objects.create_user(
+            username="inspector-one",
+            password="pass",
+            role="inspector",
+            organization=self.org_one,
+            site=self.site_one,
+        )
+        self.inspector_two = User.objects.create_user(
+            username="inspector-two",
+            password="pass",
+            role="inspector",
+            organization=self.org_two,
+            site=self.site_two,
+        )
+        BatchInspection.objects.create(
+            organization=self.org_one,
+            site=self.site_one,
+            supplier=self.supplier,
+            product=self.product_one,
+            inspector=self.inspector_one,
+            batch_number="ORG1-BATCH",
+            received_at=timezone.now(),
+        )
+        BatchInspection.objects.create(
+            organization=self.org_two,
+            site=self.site_two,
+            supplier=self.supplier,
+            product=self.product_two,
+            inspector=self.inspector_two,
+            batch_number="ORG2-BATCH",
+            received_at=timezone.now(),
+        )
+
+    def _get_token(self, username, password):
+        client = APIClient()
+        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        return response.json()["access"]
+
+    def test_inspector_sees_only_own_organization_batches(self):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {self._get_token('inspector-one', 'pass')}")
+        response = client.get("/api/batch-inspections/")
+        assert response.status_code == status.HTTP_200_OK
+        batch_numbers = {item["batch_number"] for item in response.json()}
+        assert batch_numbers == {"ORG1-BATCH"}
+
+    def test_admin_sees_all_batches(self):
+        admin = User.objects.create_user(username="admin-user", password="pass", role="admin", organization=self.org_one, site=self.site_one)
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {self._get_token('admin-user', 'pass')}")
+        response = client.get("/api/batch-inspections/")
+        assert response.status_code == status.HTTP_200_OK
+        batch_numbers = {item["batch_number"] for item in response.json()}
+        assert batch_numbers == {"ORG1-BATCH", "ORG2-BATCH"}
 
 
 @pytest.mark.django_db

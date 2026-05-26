@@ -79,7 +79,7 @@ class Command(BaseCommand):
             "is_staff": False,
             "is_superuser": False,
         }
-        nathan, nathan_created = User.objects.get_or_create(username="nathan", defaults=nathan_defaults)
+        nathan, nathan_created = User.objects.get_or_create(username="nathan.cirhuza", defaults=nathan_defaults)
         for field, value in nathan_defaults.items():
             setattr(nathan, field, value)
         nathan.set_password("nathan@authmed.africa")
@@ -87,7 +87,7 @@ class Command(BaseCommand):
         if nathan_created:
             self.stdout.write(self.style.SUCCESS("Created onboarding user Nathan Cirhuza with password: nathan@authmed.africa"))
         else:
-            self.stdout.write("Updated onboarding user nathan")
+            self.stdout.write("Updated onboarding user nathan.cirhuza")
 
         supplier, _ = Supplier.objects.get_or_create(name="Acme Pharma", defaults={"contact": "+1 555", "address": "Factory Rd"})
         product, _ = Product.objects.get_or_create(organization=org, name="PainAway 100mg", defaults={"sku": "PA100"})

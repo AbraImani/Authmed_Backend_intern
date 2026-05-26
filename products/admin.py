@@ -6,3 +6,5 @@ from .models import ProductReference
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "organization", "sku", "created_at")
     list_filter = ("organization",)
+    search_fields = ("name", "sku", "description")
+    date_hierarchy = "created_at"
