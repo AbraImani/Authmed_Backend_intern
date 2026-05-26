@@ -87,6 +87,7 @@ class InspectionSerializer(serializers.ModelSerializer):
             "expiry_date",
             "notes",
             "status",
+            "outcome",
             "received_at",
             "created_at",
             "evidences",

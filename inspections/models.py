@@ -22,7 +22,12 @@ class BatchInspection(models.Model):
         ("completed", "Completed"),
     )
 
-    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="pending")
+    status = models.CharField(
+        max_length=32,
+        choices=STATUS_CHOICES,
+        default="pending",
+        help_text="Inspection workflow status (pending -> in_progress -> completed).\nDo not use for final business outcome; see `outcome`.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     OUTCOME_CHOICES = (
@@ -31,7 +36,13 @@ class BatchInspection(models.Model):
         ("escalated", "Escalated"),
     )
 
-    outcome = models.CharField(max_length=32, choices=OUTCOME_CHOICES, null=True, blank=True)
+    outcome = models.CharField(
+        max_length=32,
+        choices=OUTCOME_CHOICES,
+        null=True,
+        blank=True,
+        help_text="Final business decision for the inspection (accepted, isolated, escalated). Set by review/decision workflow.",
+    )
 
     def __str__(self):
         prod = self.product or "Unknown"
