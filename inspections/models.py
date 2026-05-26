@@ -13,6 +13,16 @@ class BatchInspection(models.Model):
     inspector = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     batch_number = models.CharField(max_length=128, blank=True)
     received_at = models.DateTimeField()
+    expiry_date = models.DateField(null=True, blank=True)
+    notes = models.TextField(blank=True)
+
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+    )
+
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
 
     OUTCOME_CHOICES = (
@@ -24,7 +34,8 @@ class BatchInspection(models.Model):
     outcome = models.CharField(max_length=32, choices=OUTCOME_CHOICES, null=True, blank=True)
 
     def __str__(self):
-        return f"BatchInspection {self.id} - {self.product or 'Unknown'}"
+        prod = self.product or "Unknown"
+        return f"BatchInspection {self.id} - {prod} ({self.status})"
 
 
 class Evidence(models.Model):
