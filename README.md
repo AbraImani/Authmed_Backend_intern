@@ -86,3 +86,8 @@ How this supports the workflow
 Status vs Outcome
 - **status**: represents workflow progression used by mobile and UI to track the inspection lifecycle (values: `pending`, `in_progress`, `completed`). This is a transient workflow state.
 - **outcome**: represents the final business decision resulting from review/decision workflows (values: `accepted`, `isolated`, `escalated`). This is set by reviewers and should be considered the authoritative final disposition.
+
+Phase 3 mobile handoff
+- `risk_result_summary` is a small stable summary object for Flutter.
+- `decision_summary` is the final decision object Flutter can render directly.
+- When a decision is submitted, the inspection is marked `completed` and the `outcome` is updated to match the decision.
