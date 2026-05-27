@@ -23,6 +23,7 @@ class BatchInspection(models.Model):
         ("completed", "Completed"),
     )
 
+    # `status` tracks the inspection lifecycle while `outcome` stores the final business decision.
     status = models.CharField(
         max_length=32,
         choices=STATUS_CHOICES,
@@ -37,6 +38,7 @@ class BatchInspection(models.Model):
         ("escalated", "Escalated"),
     )
 
+    # Final decision is written by the review workflow, not by mobile capture.
     outcome = models.CharField(
         max_length=32,
         choices=OUTCOME_CHOICES,
@@ -55,6 +57,7 @@ class Evidence(models.Model):
     image = models.ImageField(upload_to="evidences/")
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # Captures who uploaded the evidence so the mobile client can show attribution.
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     EVIDENCE_TYPE_CHOICES = (
         ("photo", "Photo"),
@@ -70,6 +73,7 @@ class Evidence(models.Model):
 class RiskResult(models.Model):
     inspection = models.OneToOneField(BatchInspection, on_delete=models.CASCADE, related_name="risk_result")
     risk_score = models.DecimalField(max_digits=5, decimal_places=2)
+    # Suspicion is derived from the score unless an explicit value is supplied by the workflow.
     SUSPICION_LEVEL_CHOICES = (
         ("low", "Low"),
         ("medium", "Medium"),
@@ -80,6 +84,7 @@ class RiskResult(models.Model):
     confidence = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     flags = models.JSONField(default=list, blank=True)
     reason = models.TextField(blank=True)
+    # Separate calculation time from `created_at` so the app can distinguish scoring time from persistence time.
     calculated_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -89,6 +94,7 @@ class RiskResult(models.Model):
 
 class ReviewDecision(models.Model):
     inspection = models.ForeignKey(BatchInspection, on_delete=models.CASCADE, related_name="decisions")
+    # Reviewer is optional at the model layer but the API defaults it to the authenticated user.
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     DECISION_CHOICES = (
         ("accepted", "Accepted"),

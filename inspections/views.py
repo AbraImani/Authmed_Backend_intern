@@ -24,9 +24,10 @@ class InspectionViewSet(viewsets.ModelViewSet):
             organization = getattr(user, "organization", None)
             if organization is None:
                 return BatchInspection.objects.none()
+            # Non-admin users only see inspections from their own organization.
             qs = BatchInspection.objects.filter(organization=organization)
 
-        # apply optional filters for mobile convenience
+        # Mobile list screens filter locally by site, supplier, product, and workflow status.
         site_id = self.request.query_params.get("site")
         supplier_id = self.request.query_params.get("supplier")
         product_id = self.request.query_params.get("product")
@@ -46,7 +47,7 @@ class InspectionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         organization = getattr(user, "organization", None)
-        # rely on serializer.create defaults but ensure organization/inspector set when available
+        # Default organization and inspector from the authenticated user so mobile clients send less data.
         if organization is not None:
             serializer.save(organization=organization, inspector=user)
         else:
@@ -56,6 +57,7 @@ class InspectionViewSet(viewsets.ModelViewSet):
     def add_evidence(self, request, pk=None):
         insp = self.get_object()
         data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+        # The action is inspection-scoped, so the inspection id is injected server-side.
         data["inspection"] = insp.id
         serializer = EvidenceSerializer(data=data, context={"request": request})
         if serializer.is_valid():
@@ -101,6 +103,7 @@ class RiskResultViewSet(viewsets.ModelViewSet):
             organization = getattr(user, "organization", None)
             if organization is None:
                 return RiskResult.objects.none()
+            # Risk results are visible only inside the caller's organization.
             qs = RiskResult.objects.filter(inspection__organization=organization)
 
         inspection_id = self.request.query_params.get("inspection")
@@ -139,6 +142,7 @@ class ReviewDecisionViewSet(viewsets.ModelViewSet):
             organization = getattr(user, "organization", None)
             if organization is None:
                 return ReviewDecision.objects.none()
+            # Decisions are filtered by organization so a reviewer cannot read cross-org final states.
             qs = ReviewDecision.objects.filter(inspection__organization=organization)
 
         inspection_id = self.request.query_params.get("inspection")
@@ -149,6 +153,7 @@ class ReviewDecisionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         decision = serializer.save()
         inspection = decision.inspection
+        # Final decision closes the workflow: the inspection becomes completed and outcome mirrors the choice.
         inspection.outcome = decision.decision
         inspection.status = "completed"
         inspection.save(update_fields=["outcome", "status"])

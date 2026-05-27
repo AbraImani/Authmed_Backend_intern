@@ -19,7 +19,7 @@ class EvidenceSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
         request = self.context.get("request")
-        # require image on creation
+        # The mobile workflow treats evidence as incomplete without a real image.
         img = attrs.get("image") or getattr(self.instance, "image", None)
         if img is None:
             raise serializers.ValidationError({"image": "Image is required for evidence."})
@@ -103,6 +103,7 @@ class RiskResultSerializer(serializers.ModelSerializer):
             if confidence_value < 0 or confidence_value > 100:
                 raise serializers.ValidationError({"confidence": "Confidence must be between 0 and 100."})
 
+        # Keep the inspection/result relationship one-to-one even if the database relation changes later.
         existing = RiskResult.objects.filter(inspection=inspection)
         if self.instance is not None:
             existing = existing.exclude(pk=self.instance.pk)
@@ -134,6 +135,7 @@ class RiskResultSerializer(serializers.ModelSerializer):
         return obj.suspicion_level in {"high", "critical"}
 
     def create(self, validated_data):
+        # Flutter can omit suspicion_level; the backend derives it from the score to keep payloads stable.
         if "suspicion_level" not in validated_data and "risk_score" in validated_data:
             validated_data["suspicion_level"] = self._infer_suspicion_level(validated_data["risk_score"])
         return super().create(validated_data)
@@ -171,6 +173,7 @@ class ReviewDecisionSerializer(serializers.ModelSerializer):
         if inspection is None:
             raise serializers.ValidationError({"inspection": "Inspection is required for decisions."})
 
+        # Only one final decision should survive for an inspection in this workflow.
         existing = ReviewDecision.objects.filter(inspection=inspection)
         if self.instance is not None:
             existing = existing.exclude(pk=self.instance.pk)
@@ -202,6 +205,7 @@ class ReviewDecisionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get("request")
         user = getattr(request, "user", None)
+        # The API defaults reviewer to the authenticated user so Flutter does not have to send it.
         if user and user.is_authenticated and "reviewer" not in validated_data:
             validated_data["reviewer"] = user
         return super().create(validated_data)
@@ -315,6 +319,7 @@ class InspectionSerializer(serializers.ModelSerializer):
         risk = getattr(obj, "risk_result", None)
         if not risk:
             return {"exists": False}
+        # Stable, compact summary so the mobile app does not need to remap nested risk result objects.
         return {
             "exists": True,
             "id": risk.id,
@@ -329,6 +334,7 @@ class InspectionSerializer(serializers.ModelSerializer):
         latest_decision = obj.decisions.order_by("-created_at").first()
         if not latest_decision:
             return {"exists": False}
+        # Always expose the latest decision because the inspection detail screen renders a single final state.
         return {
             "exists": True,
             "id": latest_decision.id,
