@@ -1,5 +1,6 @@
 import pytest
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from organizations.models import Organization, Site
 from suppliers.models import Supplier
@@ -27,26 +28,44 @@ class TestEvidenceMobileAPI:
         assert response.status_code == 200
         return response.json()["access"]
 
+    def _sample_image(self, name="evidence.jpg"):
+        tiny_gif = (
+            b"GIF87a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff"
+            b"!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02L\x01\x00;"
+        )
+        return SimpleUploadedFile(name, tiny_gif, content_type="image/gif")
+
     def test_create_evidence_for_inspection(self):
         insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-1", received_at=timezone.now())
         client = APIClient()
         token = self._get_token("ev-inspector", "pass")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        payload = {"inspection": insp.id, "notes": "Photo of label", "evidence_type": "photo"}
-        resp = client.post("/api/evidences/", payload, format="json")
+        payload = {
+            "inspection": insp.id,
+            "notes": "Photo of label",
+            "evidence_type": "photo",
+            "image": self._sample_image(),
+        }
+        resp = client.post("/api/evidences/", payload, format="multipart")
         assert resp.status_code == 201
         data = resp.json()
         assert data["inspection"] == insp.id
         assert data["notes"] == "Photo of label"
-        assert data["created_by"]["username"] == "ev-inspector" if isinstance(data.get("created_by"), dict) else True
+        assert data["evidence_type"] == "photo"
+        assert data["created_by_display"]["username"] == "ev-inspector"
+        assert data["image_url"] is not None
 
     def test_add_evidence_via_inspection_action(self):
         insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-2", received_at=timezone.now())
         client = APIClient()
         token = self._get_token("ev-inspector", "pass")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        payload = {"notes": "Attached via action", "evidence_type": "photo"}
-        resp = client.post(f"/api/batch-inspections/{insp.id}/add_evidence/", payload, format="json")
+        payload = {
+            "notes": "Attached via action",
+            "evidence_type": "photo",
+            "image": self._sample_image(name="action.jpg"),
+        }
+        resp = client.post(f"/api/batch-inspections/{insp.id}/add_evidence/", payload, format="multipart")
         assert resp.status_code == 201
         data = resp.json()
         assert data["inspection"] == insp.id
@@ -70,6 +89,31 @@ class TestEvidenceMobileAPI:
         client = APIClient()
         token = self._get_token("other-user", "pass")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        payload = {"inspection": insp.id, "notes": "Should be rejected", "evidence_type": "photo"}
+        payload = {
+            "inspection": insp.id,
+            "notes": "Should be rejected",
+            "evidence_type": "photo",
+            "image": self._sample_image(name="cross-org.jpg"),
+        }
+        resp = client.post("/api/evidences/", payload, format="multipart")
+        assert resp.status_code == 400
+
+    def test_create_evidence_requires_image(self):
+        insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-5", received_at=timezone.now())
+        client = APIClient()
+        token = self._get_token("ev-inspector", "pass")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        payload = {"inspection": insp.id, "notes": "Missing image", "evidence_type": "photo"}
         resp = client.post("/api/evidences/", payload, format="json")
         assert resp.status_code == 400
+        assert "image" in resp.json()
+
+    def test_add_evidence_requires_image(self):
+        insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-6", received_at=timezone.now())
+        client = APIClient()
+        token = self._get_token("ev-inspector", "pass")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        payload = {"notes": "Missing image via action", "evidence_type": "photo"}
+        resp = client.post(f"/api/batch-inspections/{insp.id}/add_evidence/", payload, format="json")
+        assert resp.status_code == 400
+        assert "image" in resp.json()

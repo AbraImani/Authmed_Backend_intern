@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=False, allow_null=True, allow_empty_file=True)
+    image = serializers.ImageField(required=True)
     image_url = serializers.SerializerMethodField(read_only=True)
     created_by_display = serializers.SerializerMethodField(read_only=True)
 
@@ -19,6 +19,10 @@ class EvidenceSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
         request = self.context.get("request")
+        # require image on creation
+        img = attrs.get("image") or getattr(self.instance, "image", None)
+        if img is None:
+            raise serializers.ValidationError({"image": "Image is required for evidence."})
         if not inspection:
             raise serializers.ValidationError({"inspection": "Inspection is required for evidence."})
         if request and request.user.is_authenticated and inspection is not None:

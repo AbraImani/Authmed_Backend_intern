@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.utils import timezone
 from rest_framework import status
@@ -189,9 +190,16 @@ class TestEvidenceCapture:
             received_at=timezone.now(),
         )
 
+    def _sample_image(self, name="workflow.jpg"):
+        tiny_gif = (
+            b"GIF87a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff"
+            b"!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02L\x01\x00;"
+        )
+        return SimpleUploadedFile(name, tiny_gif, content_type="image/gif")
+
     def test_create_evidence(self):
         """Test evidence creation (attachment to batch inspection)."""
-        evidence = Evidence.objects.create(inspection=self.insp, notes="Damage on label")
+        evidence = Evidence.objects.create(inspection=self.insp, image=self._sample_image(), notes="Damage on label")
         assert evidence.inspection == self.insp
         assert evidence.notes == "Damage on label"
         assert self.insp.evidences.count() == 1
@@ -199,7 +207,7 @@ class TestEvidenceCapture:
     def test_multiple_evidences_per_inspection(self):
         """Test that multiple evidence items can be attached."""
         for i in range(3):
-            Evidence.objects.create(inspection=self.insp, notes=f"Evidence {i}")
+            Evidence.objects.create(inspection=self.insp, image=self._sample_image(name=f"workflow-{i}.jpg"), notes=f"Evidence {i}")
         assert self.insp.evidences.count() == 3
 
 
