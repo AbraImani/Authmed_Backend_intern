@@ -73,4 +73,3 @@ class TestEvidenceMobileAPI:
         payload = {"inspection": insp.id, "notes": "Should be rejected", "evidence_type": "photo"}
         resp = client.post("/api/evidences/", payload, format="json")
         assert resp.status_code == 400
-*** End Patch
