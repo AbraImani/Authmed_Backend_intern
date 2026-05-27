@@ -145,15 +145,38 @@ class RiskResultSerializer(serializers.ModelSerializer):
 
 
 class ReviewDecisionSerializer(serializers.ModelSerializer):
+    reviewer_display = serializers.SerializerMethodField(read_only=True)
+    decision_display = serializers.SerializerMethodField(read_only=True)
+    reviewed_at = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = ReviewDecision
-        fields = ["id", "inspection", "reviewer", "decision", "notes", "created_at"]
+        fields = [
+            "id",
+            "inspection",
+            "reviewer",
+            "reviewer_display",
+            "decision",
+            "decision_display",
+            "notes",
+            "reviewed_at",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
 
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
         reviewer = attrs.get("reviewer") or getattr(self.instance, "reviewer", None)
         request = self.context.get("request")
+        if inspection is None:
+            raise serializers.ValidationError({"inspection": "Inspection is required for decisions."})
+
+        existing = ReviewDecision.objects.filter(inspection=inspection)
+        if self.instance is not None:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError({"inspection": "This inspection already has a submitted decision."})
+
         if request and request.user.is_authenticated:
             organization = getattr(request.user, "organization", None)
             if organization is not None and inspection is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
@@ -161,6 +184,27 @@ class ReviewDecisionSerializer(serializers.ModelSerializer):
             if reviewer is not None and reviewer.organization is not None and organization is not None and reviewer.organization != organization and getattr(request.user, "role", None) != "admin":
                 raise serializers.ValidationError("Reviewer must belong to the same organization as the inspection.")
         return attrs
+
+    def get_reviewer_display(self, obj):
+        if obj.reviewer:
+            return {"id": obj.reviewer.id, "username": getattr(obj.reviewer, "username", None)}
+        return None
+
+    def get_decision_display(self, obj):
+        try:
+            return obj.get_decision_display()
+        except Exception:
+            return obj.decision
+
+    def get_reviewed_at(self, obj):
+        return obj.created_at
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if user and user.is_authenticated and "reviewer" not in validated_data:
+            validated_data["reviewer"] = user
+        return super().create(validated_data)
 
 
 class InspectionSerializer(serializers.ModelSerializer):
@@ -177,6 +221,7 @@ class InspectionSerializer(serializers.ModelSerializer):
     outcome = serializers.CharField(read_only=True)
     outcome_display = serializers.SerializerMethodField(read_only=True)
     risk_result_summary = serializers.SerializerMethodField(read_only=True)
+    decision_summary = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BatchInspection
@@ -203,6 +248,7 @@ class InspectionSerializer(serializers.ModelSerializer):
             "evidences",
             "risk_result",
             "risk_result_summary",
+            "decision_summary",
             "decisions",
         ]
 
@@ -277,6 +323,25 @@ class InspectionSerializer(serializers.ModelSerializer):
             "reason": risk.reason,
             "confidence": str(risk.confidence) if risk.confidence is not None else None,
             "calculated_at": risk.calculated_at,
+        }
+
+    def get_decision_summary(self, obj):
+        latest_decision = obj.decisions.order_by("-created_at").first()
+        if not latest_decision:
+            return {"exists": False}
+        return {
+            "exists": True,
+            "id": latest_decision.id,
+            "decision": latest_decision.decision,
+            "decision_display": latest_decision.get_decision_display(),
+            "notes": latest_decision.notes,
+            "reviewer_display": {
+                "id": latest_decision.reviewer.id,
+                "username": getattr(latest_decision.reviewer, "username", None),
+            }
+            if latest_decision.reviewer
+            else None,
+            "reviewed_at": latest_decision.created_at,
         }
 
     def create(self, validated_data):
