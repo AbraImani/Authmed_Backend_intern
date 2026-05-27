@@ -55,9 +55,9 @@ class InspectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def add_evidence(self, request, pk=None):
         insp = self.get_object()
-        serializer = EvidenceSerializer(data=request.data)
+        serializer = EvidenceSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
-            serializer.save(inspection=insp)
+            serializer.save(inspection=insp, created_by=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -74,10 +74,16 @@ class EvidenceViewSet(viewsets.ModelViewSet):
         organization = getattr(user, "organization", None)
         if organization is None:
             return Evidence.objects.none()
-        return Evidence.objects.filter(inspection__organization=organization)
+        qs = Evidence.objects.filter(inspection__organization=organization)
+        inspection_id = self.request.query_params.get("inspection")
+        if inspection_id:
+            qs = qs.filter(inspection_id=inspection_id)
+        return qs.order_by("-created_at")
 
     def perform_create(self, serializer):
-        serializer.save()
+        # Ensure created_by is set and validate inspection scoping via serializer
+        user = self.request.user
+        serializer.save(created_by=user)
 
 
 class RiskResultViewSet(viewsets.ModelViewSet):
