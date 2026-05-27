@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from organizations.models import Site, Organization
 from products.models import ProductReference
 from suppliers.models import Supplier
@@ -69,7 +70,17 @@ class Evidence(models.Model):
 class RiskResult(models.Model):
     inspection = models.OneToOneField(BatchInspection, on_delete=models.CASCADE, related_name="risk_result")
     risk_score = models.DecimalField(max_digits=5, decimal_places=2)
+    SUSPICION_LEVEL_CHOICES = (
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("critical", "Critical"),
+    )
+    suspicion_level = models.CharField(max_length=16, choices=SUSPICION_LEVEL_CHOICES, default="low")
+    confidence = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    flags = models.JSONField(default=list, blank=True)
     reason = models.TextField(blank=True)
+    calculated_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
