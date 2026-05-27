@@ -54,9 +54,16 @@ class Evidence(models.Model):
     image = models.ImageField(upload_to="evidences/")
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    EVIDENCE_TYPE_CHOICES = (
+        ("photo", "Photo"),
+        ("document", "Document"),
+        ("other", "Other"),
+    )
+    evidence_type = models.CharField(max_length=32, choices=EVIDENCE_TYPE_CHOICES, default="photo")
 
     def __str__(self):
-        return f"Evidence {self.id} for inspection {self.inspection_id}"
+        return f"Evidence {self.id} for inspection {self.inspection_id} by {self.created_by or 'unknown'}"
 
 
 class RiskResult(models.Model):
