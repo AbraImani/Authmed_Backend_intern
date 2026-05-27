@@ -53,19 +53,95 @@ class EvidenceSerializer(serializers.ModelSerializer):
 
 
 class RiskResultSerializer(serializers.ModelSerializer):
+    inspection_display = serializers.SerializerMethodField(read_only=True)
+    suspicion_level_display = serializers.SerializerMethodField(read_only=True)
+    is_high_risk = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = RiskResult
-        fields = ["id", "inspection", "risk_score", "reason", "created_at"]
+        fields = [
+            "id",
+            "inspection",
+            "inspection_display",
+            "risk_score",
+            "suspicion_level",
+            "suspicion_level_display",
+            "confidence",
+            "flags",
+            "reason",
+            "is_high_risk",
+            "calculated_at",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
+
+    def _infer_suspicion_level(self, risk_score):
+        score = float(risk_score)
+        if score >= 85:
+            return "critical"
+        if score >= 60:
+            return "high"
+        if score >= 30:
+            return "medium"
+        return "low"
 
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
         request = self.context.get("request")
+        if inspection is None:
+            raise serializers.ValidationError({"inspection": "Inspection is required for risk results."})
+
+        risk_score = attrs.get("risk_score")
+        if risk_score is not None:
+            score = float(risk_score)
+            if score < 0 or score > 100:
+                raise serializers.ValidationError({"risk_score": "Risk score must be between 0 and 100."})
+
+        confidence = attrs.get("confidence")
+        if confidence is not None:
+            confidence_value = float(confidence)
+            if confidence_value < 0 or confidence_value > 100:
+                raise serializers.ValidationError({"confidence": "Confidence must be between 0 and 100."})
+
+        existing = RiskResult.objects.filter(inspection=inspection)
+        if self.instance is not None:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError({"inspection": "This inspection already has a risk result."})
+
         if request and request.user.is_authenticated and inspection is not None:
             organization = getattr(request.user, "organization", None)
             if organization is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
                 raise serializers.ValidationError("Risk results must belong to the authenticated user's organization.")
         return attrs
+
+    def get_inspection_display(self, obj):
+        if obj.inspection:
+            return {
+                "id": obj.inspection.id,
+                "batch_number": getattr(obj.inspection, "batch_number", None),
+                "status": getattr(obj.inspection, "status", None),
+            }
+        return None
+
+    def get_suspicion_level_display(self, obj):
+        try:
+            return obj.get_suspicion_level_display()
+        except Exception:
+            return obj.suspicion_level
+
+    def get_is_high_risk(self, obj):
+        return obj.suspicion_level in {"high", "critical"}
+
+    def create(self, validated_data):
+        if "suspicion_level" not in validated_data and "risk_score" in validated_data:
+            validated_data["suspicion_level"] = self._infer_suspicion_level(validated_data["risk_score"])
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if "suspicion_level" not in validated_data and "risk_score" in validated_data:
+            validated_data["suspicion_level"] = self._infer_suspicion_level(validated_data["risk_score"])
+        return super().update(instance, validated_data)
 
 
 class ReviewDecisionSerializer(serializers.ModelSerializer):
@@ -100,6 +176,7 @@ class InspectionSerializer(serializers.ModelSerializer):
     inspector_display = serializers.SerializerMethodField(read_only=True)
     outcome = serializers.CharField(read_only=True)
     outcome_display = serializers.SerializerMethodField(read_only=True)
+    risk_result_summary = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BatchInspection
@@ -125,6 +202,7 @@ class InspectionSerializer(serializers.ModelSerializer):
             "created_at",
             "evidences",
             "risk_result",
+            "risk_result_summary",
             "decisions",
         ]
 
@@ -186,6 +264,20 @@ class InspectionSerializer(serializers.ModelSerializer):
             return obj.get_outcome_display()
         except Exception:
             return getattr(obj, "outcome", None)
+
+    def get_risk_result_summary(self, obj):
+        risk = getattr(obj, "risk_result", None)
+        if not risk:
+            return {"exists": False}
+        return {
+            "exists": True,
+            "id": risk.id,
+            "risk_score": str(risk.risk_score),
+            "suspicion_level": risk.suspicion_level,
+            "reason": risk.reason,
+            "confidence": str(risk.confidence) if risk.confidence is not None else None,
+            "calculated_at": risk.calculated_at,
+        }
 
     def create(self, validated_data):
         request = self.context.get("request")

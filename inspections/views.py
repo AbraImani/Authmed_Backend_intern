@@ -96,14 +96,34 @@ class RiskResultViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated and getattr(user, "role", None) == "admin":
-            return RiskResult.objects.all()
-        organization = getattr(user, "organization", None)
-        if organization is None:
-            return RiskResult.objects.none()
-        return RiskResult.objects.filter(inspection__organization=organization)
+            qs = RiskResult.objects.all()
+        else:
+            organization = getattr(user, "organization", None)
+            if organization is None:
+                return RiskResult.objects.none()
+            qs = RiskResult.objects.filter(inspection__organization=organization)
+
+        inspection_id = self.request.query_params.get("inspection")
+        if inspection_id:
+            qs = qs.filter(inspection_id=inspection_id)
+        return qs.order_by("-created_at")
 
     def perform_create(self, serializer):
         serializer.save()
+
+    @action(detail=False, methods=["get"], url_path="by-inspection")
+    def by_inspection(self, request):
+        inspection_id = request.query_params.get("inspection")
+        if not inspection_id:
+            return Response({"inspection": "Query parameter 'inspection' is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = self.get_queryset().filter(inspection_id=inspection_id)
+        risk_result = queryset.first()
+        if risk_result is None:
+            return Response({"detail": "No risk result found for this inspection."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(risk_result)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ReviewDecisionViewSet(viewsets.ModelViewSet):
