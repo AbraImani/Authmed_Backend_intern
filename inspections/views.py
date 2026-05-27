@@ -55,7 +55,9 @@ class InspectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def add_evidence(self, request, pk=None):
         insp = self.get_object()
-        serializer = EvidenceSerializer(data=request.data, context={"request": request})
+        data = dict(request.data) if isinstance(request.data, dict) else {**request.data}
+        data["inspection"] = insp.id
+        serializer = EvidenceSerializer(data=data, context={"request": request})
         if serializer.is_valid():
             serializer.save(inspection=insp, created_by=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
