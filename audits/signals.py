@@ -9,6 +9,7 @@ AuditLog = apps.get_model("audits", "AuditLog")
 
 def _audit_table_exists():
     try:
+        # During migrations or test setup the audit table may not exist yet, so skip safely.
         return AuditLog._meta.db_table in connection.introspection.table_names()
     except Exception:
         return False
@@ -22,6 +23,7 @@ def model_saved(sender, instance, created, **kwargs):
     if not _audit_table_exists():
         return
     try:
+        # Use inspector username when available so the audit trail reflects the mobile workflow actor.
         AuditLog.objects.create(
             actor=getattr(instance, "inspector", None) and getattr(instance.inspector, "username", "") or "",
             action=("created" if created else "updated"),
@@ -41,6 +43,7 @@ def model_deleted(sender, instance, **kwargs):
     if not _audit_table_exists():
         return
     try:
+        # Deletions are still recorded even when we cannot reliably infer the original actor.
         AuditLog.objects.create(
             actor="",
             action="deleted",

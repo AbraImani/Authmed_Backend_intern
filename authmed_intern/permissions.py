@@ -22,12 +22,14 @@ class IsOrgMember(permissions.BasePermission):
         user = request.user
         if not user or not user.is_authenticated:
             return False
+        # Admin users are allowed to inspect any object regardless of organization.
         if user.is_superuser or user.role == "admin":
             return True
         # If object has organization attribute, compare
         org = getattr(obj, "organization", None)
         if org is None:
             return True
+        # For org-scoped resources, the object's organization must match the caller's organization.
         return getattr(user, "organization", None) == org
 
     def has_permission(self, request, view):
