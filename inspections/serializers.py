@@ -7,19 +7,45 @@ User = get_user_model()
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False, allow_null=True, allow_empty_file=True)
+    image_url = serializers.SerializerMethodField(read_only=True)
+    created_by_display = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Evidence
-        fields = ["id", "inspection", "image", "notes", "created_at"]
-        read_only_fields = ["id", "created_at"]
+        fields = ["id", "inspection", "image", "image_url", "evidence_type", "notes", "created_by", "created_by_display", "created_at"]
+        read_only_fields = ["id", "created_at", "created_by"]
 
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
         request = self.context.get("request")
+        if not inspection:
+            raise serializers.ValidationError({"inspection": "Inspection is required for evidence."})
         if request and request.user.is_authenticated and inspection is not None:
             organization = getattr(request.user, "organization", None)
             if organization is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
                 raise serializers.ValidationError("Evidence must belong to the authenticated user's organization.")
         return attrs
+
+    def get_image_url(self, obj):
+        try:
+            if obj.image and hasattr(obj.image, 'url'):
+                return obj.image.url
+        except Exception:
+            return None
+        return None
+
+    def get_created_by_display(self, obj):
+        if obj.created_by:
+            return {"id": obj.created_by.id, "username": getattr(obj.created_by, "username", None)}
+        return None
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if user and user.is_authenticated:
+            validated_data["created_by"] = user
+        return super().create(validated_data)
 
 
 class RiskResultSerializer(serializers.ModelSerializer):
