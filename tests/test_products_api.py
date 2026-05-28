@@ -1,9 +1,8 @@
 import pytest
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.utils import timezone
 
-from organizations.models import Organization, Site
+from organizations.models import Organization
 from suppliers.models import Supplier
 from products.models import ProductReference
 from django.contrib.auth import get_user_model
@@ -38,17 +37,33 @@ class TestProductReferenceAPI:
         token = self._get_token("user-one", "pass")
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        resp = client.get("/api/products/products/")
+        resp = client.get("/api/products/")
         assert resp.status_code == status.HTTP_200_OK
         names = {p["name"] for p in resp.json()}
         assert names == {"Product A"}
+
+    def test_product_payload_is_simple_and_predictable(self):
+        token = self._get_token("user-one", "pass")
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        resp = client.get(f"/api/products/{self.prod_one.id}/")
+        assert resp.status_code == status.HTTP_200_OK
+        payload = resp.json()
+        assert payload["id"] == self.prod_one.id
+        assert payload["organization"] == self.org_one.id
+        assert payload["organization_display"] == self.org_one.name
+        assert payload["supplier"] == self.supplier.id
+        assert payload["supplier_display"] == self.supplier.name
+        assert payload["name"] == "Product A"
+        assert payload["sku"] == "A001"
+        assert payload["is_active"] is True
 
     def test_create_product_sets_organization_and_prevents_duplicate(self):
         token = self._get_token("user-one", "pass")
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         payload = {"name": "New Ref", "sku": "NR-01", "form": "tablet", "strength": "500 mg"}
-        resp = client.post("/api/products/products/", payload, format="json")
+        resp = client.post("/api/products/", payload, format="json")
         assert resp.status_code == status.HTTP_201_CREATED
         data = resp.json()
         assert data["name"] == "New Ref"
@@ -56,12 +71,30 @@ class TestProductReferenceAPI:
         assert data["organization"] == self.user_one.organization.id
 
         # Attempt to create duplicate name in same org
-        resp2 = client.post("/api/products/products/", {"name": "New Ref"}, format="json")
+        resp2 = client.post("/api/products/", {"name": "New Ref"}, format="json")
         assert resp2.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_user_without_organization_cannot_create(self):
         token = self._get_token("no-org", "pass")
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        resp = client.post("/api/products/products/", {"name": "Orphan"}, format="json")
+        resp = client.post("/api/products/", {"name": "Orphan"}, format="json")
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_scoping_blocks_cross_organization_detail_and_updates(self):
+        token = self._get_token("user-one", "pass")
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+
+        own_detail = client.get(f"/api/products/{self.prod_one.id}/")
+        assert own_detail.status_code == status.HTTP_200_OK
+
+        other_detail = client.get(f"/api/products/{self.prod_two.id}/")
+        assert other_detail.status_code == status.HTTP_404_NOT_FOUND
+
+        patch_own = client.patch(f"/api/products/{self.prod_one.id}/", {"name": "Product A Updated"}, format="json")
+        assert patch_own.status_code == status.HTTP_200_OK
+        assert patch_own.json()["name"] == "Product A Updated"
+
+        patch_other = client.patch(f"/api/products/{self.prod_two.id}/", {"name": "Should Not Work"}, format="json")
+        assert patch_other.status_code == status.HTTP_404_NOT_FOUND

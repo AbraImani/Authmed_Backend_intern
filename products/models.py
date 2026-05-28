@@ -16,8 +16,14 @@ class ProductReference(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     sku = models.CharField(max_length=128, blank=True)
-    # Link to an optional supplier/manufacturer record for provenance.
-    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True)
+    # Link to the supplier/manufacturer source used for reference provenance.
+    supplier = models.ForeignKey(
+        Supplier,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Supplier or manufacturer source for this reference.",
+    )
     # Simple inspection-relevant attributes
     form = models.CharField(
         max_length=64,
