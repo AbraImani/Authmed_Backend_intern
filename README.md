@@ -73,6 +73,11 @@ Project structure (essential files)
 - `organizations/` - Organization and Site models
 - `suppliers/` - Supplier model
 - `products/` - ProductReference model
+ - `products/` - ProductReference model
+
+Product Reference
+-----------------
+`ProductReference` is the canonical, organization-scoped reference for medicines used to align inspections with known products. It stores a human name, optional SKU, supplier linkage, simple dosage/form/strength attributes, packaging notes and a representative image. Inspections reference `ProductReference` to enable consistent comparison and future dataset building.
 - `inspections/` - `BatchInspection`, `Evidence`, `RiskResult`, `ReviewDecision` and seed command
 - `audits/` - `AuditLog` model and automatic signals
 
