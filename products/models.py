@@ -154,3 +154,86 @@ class ProductReferenceImage(models.Model):
         self.full_clean()
         self._update_checksum()
         super().save(*args, **kwargs)
+
+
+class DatasetGroup(models.Model):
+    """Organize reference images for future labeling and ML dataset readiness."""
+
+    ANNOTATION_STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("in_progress", "In progress"),
+        ("completed", "Completed"),
+        ("needs_review", "Needs review"),
+    )
+
+    QUALITY_FLAG_CHOICES = (
+        ("good", "Good"),
+        ("needs_review", "Needs review"),
+        ("duplicate", "Duplicate"),
+        ("blurry", "Blurry"),
+        ("corrupt", "Corrupt"),
+    )
+
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    labeling_ready = models.BooleanField(default=False)
+    annotation_status = models.CharField(max_length=32, choices=ANNOTATION_STATUS_CHOICES, default="pending")
+    quality_flag = models.CharField(max_length=32, choices=QUALITY_FLAG_CHOICES, default="needs_review")
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    reference_images = models.ManyToManyField(
+        ProductReferenceImage,
+        related_name="dataset_groups",
+        blank=True,
+        through="DatasetGroupImage",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["organization", "name"]
+        unique_together = ("organization", "name")
+        indexes = [
+            models.Index(fields=["organization", "annotation_status"]),
+            models.Index(fields=["organization", "quality_flag"]),
+            models.Index(fields=["organization", "labeling_ready"]),
+        ]
+
+    def __str__(self):
+        return f"{self.organization.name} - {self.name}"
+
+    def clean(self):
+        if self.name:
+            self.name = self.name.strip()
+        if self.description:
+            self.description = self.description.strip()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+
+class DatasetGroupImage(models.Model):
+    """Through table that stores per-image annotation preparation metadata."""
+
+    ANNOTATION_STATUS_CHOICES = DatasetGroup.ANNOTATION_STATUS_CHOICES
+    QUALITY_FLAG_CHOICES = DatasetGroup.QUALITY_FLAG_CHOICES
+
+    dataset_group = models.ForeignKey(DatasetGroup, on_delete=models.CASCADE)
+    reference_image = models.ForeignKey(ProductReferenceImage, on_delete=models.CASCADE)
+    annotation_status = models.CharField(max_length=32, choices=ANNOTATION_STATUS_CHOICES, default="pending")
+    quality_flag = models.CharField(max_length=32, choices=QUALITY_FLAG_CHOICES, default="needs_review")
+    annotation_notes = models.TextField(blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["sort_order", "created_at"]
+        unique_together = ("dataset_group", "reference_image")
+        indexes = [
+            models.Index(fields=["dataset_group", "annotation_status"]),
+            models.Index(fields=["dataset_group", "quality_flag"]),
+        ]
+
+    def __str__(self):
+        return f"{self.dataset_group.name} - {self.reference_image_id}"

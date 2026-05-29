@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import ProductReference, ProductReferenceImage
-from .serializers import ProductSerializer, ProductReferenceImageSerializer
+from .models import DatasetGroup
+from .serializers import ProductSerializer, ProductReferenceImageSerializer, DatasetGroupSerializer
 from authmed_intern.permissions import IsOrgMember
 
 
@@ -14,6 +16,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = ProductReference.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["supplier", "form", "is_active"]
+    search_fields = ["name", "sku", "description", "packaging_notes", "supplier__name"]
+    ordering_fields = ["name", "sku", "created_at", "updated_at"]
 
     def get_queryset(self):
         user = self.request.user
@@ -48,6 +54,10 @@ class ProductReferenceImageViewSet(viewsets.ModelViewSet):
     queryset = ProductReferenceImage.objects.all()
     serializer_class = ProductReferenceImageSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["product_reference", "image_type"]
+    search_fields = ["notes", "source", "checksum", "product_reference__name"]
+    ordering_fields = ["display_order", "created_at"]
 
     def get_queryset(self):
         user = self.request.user
@@ -79,3 +89,31 @@ class ProductReferenceImageViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
+
+
+class DatasetGroupViewSet(viewsets.ModelViewSet):
+    """Org-scoped CRUD for dataset readiness groups."""
+
+    queryset = DatasetGroup.objects.all()
+    serializer_class = DatasetGroupSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["annotation_status", "quality_flag", "labeling_ready"]
+    search_fields = ["name", "description"]
+    ordering_fields = ["name", "created_at", "updated_at"]
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = DatasetGroup.objects.prefetch_related("reference_images", "reference_images__product_reference")
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            organization_id = self.request.query_params.get("organization")
+            if organization_id:
+                qs = qs.filter(organization_id=organization_id)
+            return qs.order_by("name")
+
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return DatasetGroup.objects.none()
+
+        qs = qs.filter(organization=organization)
+        return qs.order_by("name")
