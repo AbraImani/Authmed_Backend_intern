@@ -35,7 +35,16 @@ class ReviewDecisionAdmin(admin.ModelAdmin):
 
 @admin.register(OCRTask)
 class OCRTaskAdmin(admin.ModelAdmin):
-    list_display = ("evidence", "status", "retry_count", "processor_version", "created_at")
-    list_filter = ("status",)
-    search_fields = ("evidence__inspection__batch_number", "processor_version", "error_message")
+    list_display = (
+        "evidence",
+        "status",
+        "provider_name",
+        "retry_count",
+        "execution_started_at",
+        "execution_completed_at",
+        "processing_time",
+        "created_at",
+    )
+    list_filter = ("status", "provider_name")
+    search_fields = ("evidence__inspection__batch_number", "processor_version", "error_message", "provider_name")
     date_hierarchy = "created_at"

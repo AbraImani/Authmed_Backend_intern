@@ -121,6 +121,23 @@ class OCRTaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    @action(detail=True, methods=["post"])
+    def retry(self, request, pk=None):
+        task = self.get_object()
+        task.increment_retry()
+        task.status = "queued"
+        task.error_message = ""
+        task.append_log("Task re-queued via API.")
+        task.save(update_fields=["status", "error_message", "processing_log", "updated_at", "retry_count"])
+        return Response(self.get_serializer(task).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def cancel(self, request, pk=None):
+        task = self.get_object()
+        reason = request.data.get("reason", "Cancelled via API.")
+        task.mark_cancelled(reason=reason)
+        return Response(self.get_serializer(task).data, status=status.HTTP_200_OK)
+
 
 class RiskResultViewSet(viewsets.ModelViewSet):
     queryset = RiskResult.objects.all()

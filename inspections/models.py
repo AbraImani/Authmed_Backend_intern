@@ -141,17 +141,24 @@ class Evidence(models.Model):
 class OCRTask(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending"),
+        ("queued", "Queued"),
         ("processing", "Processing"),
         ("completed", "Completed"),
         ("failed", "Failed"),
+        ("cancelled", "Cancelled"),
     )
 
     evidence = models.ForeignKey(Evidence, on_delete=models.CASCADE, related_name="ocr_tasks")
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="pending")
     retry_count = models.PositiveIntegerField(default=0)
+    execution_started_at = models.DateTimeField(null=True, blank=True)
+    execution_completed_at = models.DateTimeField(null=True, blank=True)
     processing_time = models.DurationField(null=True, blank=True)
+    provider_name = models.CharField(max_length=64, blank=True)
     processor_version = models.CharField(max_length=64, blank=True)
     raw_output = models.JSONField(default=dict, blank=True)
+    normalized_output = models.JSONField(default=dict, blank=True)
+    processing_log = models.JSONField(default=list, blank=True)
     error_message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -165,6 +172,89 @@ class OCRTask(models.Model):
 
     def __str__(self):
         return f"OCRTask {self.id} for evidence {self.evidence_id} ({self.status})"
+
+    def append_log(self, message, level="info", payload=None):
+        log_entry = {
+            "level": level,
+            "message": message,
+            "payload": payload or {},
+            "timestamp": timezone.now().isoformat(),
+        }
+        log = list(self.processing_log or [])
+        log.append(log_entry)
+        self.processing_log = log
+        return log_entry
+
+    def mark_queued(self, provider_name="", processor_version=""):
+        self.status = "queued"
+        if provider_name:
+            self.provider_name = provider_name
+        if processor_version:
+            self.processor_version = processor_version
+        self.append_log("Task queued.")
+        self.save(update_fields=["status", "provider_name", "processor_version", "processing_log", "updated_at"])
+
+    def mark_processing(self):
+        if not self.execution_started_at:
+            self.execution_started_at = timezone.now()
+        self.status = "processing"
+        self.append_log("Task started processing.")
+        self.save(update_fields=["status", "execution_started_at", "processing_log", "updated_at"])
+
+    def mark_completed(self, *, normalized_output=None, raw_output=None, provider_name="", processor_version="", extracted_text="", confidence=None):
+        self.status = "completed"
+        self.execution_completed_at = timezone.now()
+        if self.execution_started_at is not None:
+            self.processing_time = self.execution_completed_at - self.execution_started_at
+        if provider_name:
+            self.provider_name = provider_name
+        if processor_version:
+            self.processor_version = processor_version
+        if normalized_output is not None:
+            self.normalized_output = normalized_output
+        if raw_output is not None:
+            self.raw_output = raw_output
+        self.error_message = ""
+        self.append_log("Task completed successfully.")
+        self.save(update_fields=["status", "execution_completed_at", "processing_time", "provider_name", "processor_version", "normalized_output", "raw_output", "error_message", "processing_log", "updated_at"])
+
+        self.evidence.extracted_text = extracted_text or self.evidence.extracted_text
+        self.evidence.extraction_status = "completed"
+        if confidence is not None:
+            self.evidence.extraction_confidence = confidence
+        self.evidence.metadata = dict(self.evidence.metadata or {})
+        self.evidence.metadata["ocr_task_id"] = self.id
+        self.evidence.metadata["ocr_provider"] = self.provider_name
+        self.evidence.metadata["ocr_completed_at"] = self.execution_completed_at.isoformat()
+        self.evidence.save(update_fields=["extracted_text", "extraction_status", "extraction_confidence", "metadata"])
+
+    def mark_failed(self, failure_reason, provider_name="", processor_version=""):
+        self.status = "failed"
+        self.execution_completed_at = timezone.now()
+        if self.execution_started_at is not None:
+            self.processing_time = self.execution_completed_at - self.execution_started_at
+        if provider_name:
+            self.provider_name = provider_name
+        if processor_version:
+            self.processor_version = processor_version
+        self.error_message = failure_reason
+        self.append_log("Task failed.", level="error", payload={"failure_reason": failure_reason})
+        self.save(update_fields=["status", "execution_completed_at", "processing_time", "provider_name", "processor_version", "error_message", "processing_log", "updated_at"])
+        self.evidence.extraction_status = "failed"
+        self.evidence.metadata = dict(self.evidence.metadata or {})
+        self.evidence.metadata["ocr_error"] = failure_reason
+        self.evidence.save(update_fields=["extraction_status", "metadata"])
+
+    def mark_cancelled(self, reason=""):
+        self.status = "cancelled"
+        self.execution_completed_at = timezone.now()
+        self.error_message = reason
+        self.append_log("Task cancelled.", level="warning", payload={"reason": reason})
+        self.save(update_fields=["status", "execution_completed_at", "error_message", "processing_log", "updated_at"])
+
+    def increment_retry(self):
+        self.retry_count += 1
+        self.save(update_fields=["retry_count", "updated_at"])
 
 
 class RiskResult(models.Model):

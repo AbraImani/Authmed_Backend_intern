@@ -90,6 +90,8 @@ class OCRTaskSerializer(serializers.ModelSerializer):
     """Serialize OCR preparation tasks without invoking any OCR provider."""
 
     evidence_display = serializers.SerializerMethodField(read_only=True)
+    inspection_display = serializers.SerializerMethodField(read_only=True)
+    lifecycle_summary = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = OCRTask
@@ -97,12 +99,19 @@ class OCRTaskSerializer(serializers.ModelSerializer):
             "id",
             "evidence",
             "evidence_display",
+            "inspection_display",
             "status",
             "retry_count",
+            "execution_started_at",
+            "execution_completed_at",
             "processing_time",
+            "provider_name",
             "processor_version",
             "raw_output",
+            "normalized_output",
+            "processing_log",
             "error_message",
+            "lifecycle_summary",
             "created_at",
             "updated_at",
         ]
@@ -115,6 +124,25 @@ class OCRTaskSerializer(serializers.ModelSerializer):
             "inspection_id": evidence.inspection_id,
             "evidence_type": evidence.evidence_type,
             "evidence_status": evidence.evidence_status,
+        }
+
+    def get_inspection_display(self, obj):
+        inspection = obj.evidence.inspection
+        return {
+            "id": inspection.id,
+            "batch_number": inspection.batch_number,
+            "status": inspection.status,
+            "outcome": inspection.outcome,
+        }
+
+    def get_lifecycle_summary(self, obj):
+        return {
+            "status": obj.status,
+            "retry_count": obj.retry_count,
+            "provider_name": obj.provider_name,
+            "has_error": bool(obj.error_message),
+            "execution_started_at": obj.execution_started_at,
+            "execution_completed_at": obj.execution_completed_at,
         }
 
     def validate(self, attrs):
@@ -303,6 +331,7 @@ class InspectionSerializer(serializers.ModelSerializer):
     outcome_display = serializers.SerializerMethodField(read_only=True)
     risk_result_summary = serializers.SerializerMethodField(read_only=True)
     decision_summary = serializers.SerializerMethodField(read_only=True)
+    processing_summary = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BatchInspection
@@ -330,6 +359,7 @@ class InspectionSerializer(serializers.ModelSerializer):
             "risk_result",
             "risk_result_summary",
             "decision_summary",
+            "processing_summary",
             "decisions",
         ]
 
@@ -425,6 +455,23 @@ class InspectionSerializer(serializers.ModelSerializer):
             if latest_decision.reviewer
             else None,
             "reviewed_at": latest_decision.created_at,
+        }
+
+    def get_processing_summary(self, obj):
+        ocr_tasks = OCRTask.objects.filter(evidence__inspection=obj).order_by("-created_at")
+        latest_task = ocr_tasks.first()
+        if not latest_task:
+            return {"exists": False}
+        return {
+            "exists": True,
+            "latest_task_id": latest_task.id,
+            "latest_status": latest_task.status,
+            "latest_provider": latest_task.provider_name,
+            "queued_count": ocr_tasks.filter(status="queued").count(),
+            "processing_count": ocr_tasks.filter(status="processing").count(),
+            "completed_count": ocr_tasks.filter(status="completed").count(),
+            "failed_count": ocr_tasks.filter(status="failed").count(),
+            "cancelled_count": ocr_tasks.filter(status="cancelled").count(),
         }
 
     def create(self, validated_data):
