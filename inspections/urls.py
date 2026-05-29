@@ -5,11 +5,13 @@ from .views import (
     EvidenceViewSet,
     RiskResultViewSet,
     ReviewDecisionViewSet,
+    OCRTaskViewSet,
 )
 
 router = DefaultRouter()
 router.register(r"batch-inspections", InspectionViewSet)
 router.register(r"evidences", EvidenceViewSet)
+router.register(r"ocr-tasks", OCRTaskViewSet)
 router.register(r"risk-results", RiskResultViewSet)
 router.register(r"decisions", ReviewDecisionViewSet)
 

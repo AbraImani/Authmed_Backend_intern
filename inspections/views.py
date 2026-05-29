@@ -2,11 +2,13 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import BatchInspection, Evidence, RiskResult, ReviewDecision
+from .models import OCRTask
 from .serializers import (
     InspectionSerializer,
     EvidenceSerializer,
     RiskResultSerializer,
     ReviewDecisionSerializer,
+    OCRTaskSerializer,
 )
 from authmed_intern.permissions import IsOrgMember
 
@@ -78,16 +80,46 @@ class EvidenceViewSet(viewsets.ModelViewSet):
         organization = getattr(user, "organization", None)
         if organization is None:
             return Evidence.objects.none()
-        qs = Evidence.objects.filter(inspection__organization=organization)
+        qs = Evidence.objects.select_related("inspection", "inspection__organization", "created_by").filter(inspection__organization=organization)
         inspection_id = self.request.query_params.get("inspection")
+        evidence_type = self.request.query_params.get("evidence_type")
+        evidence_status = self.request.query_params.get("evidence_status")
         if inspection_id:
             qs = qs.filter(inspection_id=inspection_id)
-        return qs.order_by("-created_at")
+        if evidence_type:
+            qs = qs.filter(evidence_type=evidence_type)
+        if evidence_status:
+            qs = qs.filter(evidence_status=evidence_status)
+        return qs.order_by("display_order", "created_at")
 
     def perform_create(self, serializer):
         # Ensure created_by is set and validate inspection scoping via serializer
         user = self.request.user
         serializer.save(created_by=user)
+
+
+class OCRTaskViewSet(viewsets.ModelViewSet):
+    queryset = OCRTask.objects.all()
+    serializer_class = OCRTaskSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            qs = OCRTask.objects.all()
+        else:
+            organization = getattr(user, "organization", None)
+            if organization is None:
+                return OCRTask.objects.none()
+            qs = OCRTask.objects.filter(evidence__inspection__organization=organization)
+
+        status_filter = self.request.query_params.get("status")
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+        return qs.select_related("evidence", "evidence__inspection", "evidence__inspection__organization").order_by("-created_at")
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class RiskResultViewSet(viewsets.ModelViewSet):

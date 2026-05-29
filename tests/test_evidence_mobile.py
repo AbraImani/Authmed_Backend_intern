@@ -6,7 +6,7 @@ from organizations.models import Organization, Site
 from suppliers.models import Supplier
 from products.models import ProductReference
 from django.contrib.auth import get_user_model
-from inspections.models import BatchInspection, Evidence
+from inspections.models import BatchInspection, Evidence, OCRTask
 
 User = get_user_model()
 
@@ -52,8 +52,34 @@ class TestEvidenceMobileAPI:
         assert data["inspection"] == insp.id
         assert data["notes"] == "Photo of label"
         assert data["evidence_type"] == "photo"
+        assert data["evidence_status"] == "pending"
+        assert data["display_order"] == 0
         assert data["created_by_display"]["username"] == "ev-inspector"
         assert data["image_url"] is not None
+        assert data["checksum"]
+
+    def test_create_structured_evidence_and_filter(self):
+        insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-1B", received_at=timezone.now())
+        client = APIClient()
+        token = self._get_token("ev-inspector", "pass")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        payload = {
+            "inspection": insp.id,
+            "notes": "Batch label evidence",
+            "evidence_type": "batch_label",
+            "evidence_status": "reviewed",
+            "display_order": 4,
+            "image": self._sample_image(name="batch-label.gif"),
+        }
+        resp = client.post("/api/evidences/", payload, format="multipart")
+        assert resp.status_code == 201
+        data = resp.json()
+        assert data["evidence_type"] == "batch_label"
+        assert data["evidence_status"] == "reviewed"
+
+        filtered = client.get(f"/api/evidences/?inspection={insp.id}&evidence_type=batch_label&evidence_status=reviewed")
+        assert filtered.status_code == 200
+        assert len(filtered.json()) == 1
 
     def test_add_evidence_via_inspection_action(self):
         insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-2", received_at=timezone.now())
@@ -74,7 +100,13 @@ class TestEvidenceMobileAPI:
     def test_list_evidence_for_inspection(self):
         insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-3", received_at=timezone.now())
         for i in range(3):
-            Evidence.objects.create(inspection=insp, notes=f"note {i}", evidence_type="photo", created_by=self.inspector)
+            Evidence.objects.create(
+                inspection=insp,
+                notes=f"note {i}",
+                evidence_type="photo",
+                created_by=self.inspector,
+                image=self._sample_image(name=f"list-{i}.gif"),
+            )
         client = APIClient()
         token = self._get_token("ev-inspector", "pass")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -117,3 +149,28 @@ class TestEvidenceMobileAPI:
         resp = client.post(f"/api/batch-inspections/{insp.id}/add_evidence/", payload, format="json")
         assert resp.status_code == 400
         assert "image" in resp.json()
+
+    def test_create_ocr_task_and_filter_by_status(self):
+        insp = BatchInspection.objects.create(organization=self.org, site=self.site, inspector=self.inspector, batch_number="E-7", received_at=timezone.now())
+        evidence = Evidence.objects.create(
+            inspection=insp,
+            notes="OCR candidate",
+            evidence_type="invoice",
+            created_by=self.inspector,
+            image=self._sample_image(name="ocr.gif"),
+        )
+        client = APIClient()
+        token = self._get_token("ev-inspector", "pass")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+
+        create_resp = client.post(
+            "/api/ocr-tasks/",
+            {"evidence": evidence.id, "status": "pending", "processor_version": "stub-v1"},
+            format="json",
+        )
+        assert create_resp.status_code == 201
+        assert create_resp.json()["evidence_display"]["evidence_type"] == "invoice"
+
+        list_resp = client.get("/api/ocr-tasks/?status=pending")
+        assert list_resp.status_code == 200
+        assert len(list_resp.json()) == 1

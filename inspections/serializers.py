@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BatchInspection, Evidence, RiskResult, ReviewDecision
+from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask
 from organizations.models import Organization
 from django.contrib.auth import get_user_model
 
@@ -7,14 +7,36 @@ User = get_user_model()
 
 
 class EvidenceSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=True)
+    image = serializers.FileField(required=True)
     image_url = serializers.SerializerMethodField(read_only=True)
     created_by_display = serializers.SerializerMethodField(read_only=True)
+    evidence_type_display = serializers.SerializerMethodField(read_only=True)
+    evidence_status_display = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Evidence
-        fields = ["id", "inspection", "image", "image_url", "evidence_type", "notes", "created_by", "created_by_display", "created_at"]
-        read_only_fields = ["id", "created_at", "created_by"]
+        fields = [
+            "id",
+            "inspection",
+            "image",
+            "image_url",
+            "evidence_type",
+            "evidence_type_display",
+            "evidence_status",
+            "evidence_status_display",
+            "display_order",
+            "notes",
+            "extracted_text",
+            "extraction_status",
+            "extraction_confidence",
+            "metadata",
+            "file_size_bytes",
+            "checksum",
+            "created_by",
+            "created_by_display",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at", "created_by", "file_size_bytes", "checksum"]
 
     def validate(self, attrs):
         inspection = attrs.get("inspection") or getattr(self.instance, "inspection", None)
@@ -44,12 +66,67 @@ class EvidenceSerializer(serializers.ModelSerializer):
             return {"id": obj.created_by.id, "username": getattr(obj.created_by, "username", None)}
         return None
 
+    def get_evidence_type_display(self, obj):
+        try:
+            return obj.get_evidence_type_display()
+        except Exception:
+            return obj.evidence_type
+
+    def get_evidence_status_display(self, obj):
+        try:
+            return obj.get_evidence_status_display()
+        except Exception:
+            return obj.evidence_status
+
     def create(self, validated_data):
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if user and user.is_authenticated:
             validated_data["created_by"] = user
         return super().create(validated_data)
+
+
+class OCRTaskSerializer(serializers.ModelSerializer):
+    """Serialize OCR preparation tasks without invoking any OCR provider."""
+
+    evidence_display = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = OCRTask
+        fields = [
+            "id",
+            "evidence",
+            "evidence_display",
+            "status",
+            "retry_count",
+            "processing_time",
+            "processor_version",
+            "raw_output",
+            "error_message",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+    def get_evidence_display(self, obj):
+        evidence = obj.evidence
+        return {
+            "id": evidence.id,
+            "inspection_id": evidence.inspection_id,
+            "evidence_type": evidence.evidence_type,
+            "evidence_status": evidence.evidence_status,
+        }
+
+    def validate(self, attrs):
+        evidence = attrs.get("evidence") or getattr(self.instance, "evidence", None)
+        request = self.context.get("request")
+        if evidence is None:
+            raise serializers.ValidationError({"evidence": "Evidence is required for OCR tasks."})
+        if request and request.user.is_authenticated:
+            organization = getattr(request.user, "organization", None)
+            if organization is not None and evidence.inspection.organization != organization and getattr(request.user, "role", None) != "admin":
+                raise serializers.ValidationError("OCR tasks must belong to the authenticated user's organization.")
+        return attrs
 
 
 class RiskResultSerializer(serializers.ModelSerializer):
