@@ -1,7 +1,14 @@
+import hashlib
+
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 from organizations.models import Organization
 from suppliers.models import Supplier
+from .upload_paths import product_reference_cover_upload_to, product_reference_image_upload_to
+from .validators import validate_reference_image_file_size, validate_reference_image_extension
+
+User = get_user_model()
 
 
 class ProductReference(models.Model):
@@ -36,7 +43,12 @@ class ProductReference(models.Model):
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True, help_text="If false, this reference is archived/inactive")
     # Lightweight optional image to associate a single representative reference image.
-    reference_image = models.ImageField(upload_to="product_references/", null=True, blank=True)
+    reference_image = models.ImageField(
+        upload_to=product_reference_cover_upload_to,
+        null=True,
+        blank=True,
+        validators=[validate_reference_image_extension, validate_reference_image_file_size],
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -67,4 +79,78 @@ class ProductReference(models.Model):
         # Ensure model-level validation runs on save to keep DB consistent when created
         # outside serializers (admin, shell, migrations).
         self.full_clean()
+        super().save(*args, **kwargs)
+
+
+class ProductReferenceImage(models.Model):
+    """Additional reference imagery for inspection alignment.
+
+    Each image stores lightweight metadata so future comparison and dataset
+    workflows can distinguish packaging views without requiring ML logic now.
+    """
+
+    IMAGE_TYPE_CHOICES = (
+        ("front_packaging", "Front packaging"),
+        ("back_packaging", "Back packaging"),
+        ("blister", "Blister"),
+        ("label", "Label"),
+        ("barcode", "Barcode"),
+        ("leaflet", "Leaflet"),
+        ("carton", "Carton"),
+        ("seal", "Seal"),
+    )
+
+    product_reference = models.ForeignKey(ProductReference, on_delete=models.CASCADE, related_name="reference_images")
+    image = models.ImageField(
+        upload_to=product_reference_image_upload_to,
+        validators=[validate_reference_image_extension, validate_reference_image_file_size],
+    )
+    image_type = models.CharField(max_length=32, choices=IMAGE_TYPE_CHOICES, default="front_packaging")
+    angle = models.CharField(max_length=64, blank=True)
+    lighting_condition = models.CharField(max_length=64, blank=True)
+    source = models.CharField(max_length=128, blank=True, help_text="Source of the reference image (manual, import, partner, etc.).")
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    checksum = models.CharField(max_length=64, blank=True, db_index=True)
+    notes = models.TextField(blank=True)
+    display_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["display_order", "created_at"]
+        indexes = [
+            models.Index(fields=["product_reference", "image_type"]),
+            models.Index(fields=["product_reference", "display_order"]),
+        ]
+
+    def __str__(self):
+        return f"{self.product_reference.name} - {self.image_type}"
+
+    @property
+    def organization(self):
+        return getattr(self.product_reference, "organization", None)
+
+    def clean(self):
+        if self.angle:
+            self.angle = self.angle.strip()
+        if self.lighting_condition:
+            self.lighting_condition = self.lighting_condition.strip()
+        if self.source:
+            self.source = self.source.strip()
+        if self.notes:
+            self.notes = self.notes.strip()
+
+    def _update_checksum(self):
+        if not self.image:
+            self.checksum = ""
+            return
+        hasher = hashlib.sha256()
+        self.image.seek(0)
+        for chunk in self.image.chunks():
+            hasher.update(chunk)
+        self.checksum = hasher.hexdigest()
+        self.image.seek(0)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        self._update_checksum()
         super().save(*args, **kwargs)
