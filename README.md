@@ -96,3 +96,10 @@ Phase 3 mobile handoff
 - `risk_result_summary` is a small stable summary object for Flutter.
 - `decision_summary` is the final decision object Flutter can render directly.
 - When a decision is submitted, the inspection is marked `completed` and the `outcome` is updated to match the decision.
+
+Phase 4 operational foundation
+- `ProductReferenceImage` stores multiple reference views per medicine reference with deterministic upload paths and lightweight metadata.
+- `Evidence` now carries evidence categories, ordering, file metadata, and OCR placeholder fields for later extraction work.
+- `OCRTask` tracks processing state without connecting an external OCR provider yet.
+- `DatasetGroup` organizes reference images for labeling readiness, review, and future dataset preparation.
+- CSV import preview helpers exist for product reference ingestion planning and duplicate detection.
