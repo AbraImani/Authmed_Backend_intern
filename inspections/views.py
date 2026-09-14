@@ -1,16 +1,17 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import BatchInspection, Evidence, RiskResult, ReviewDecision
-from .models import OCRTask
+from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
 from .serializers import (
     InspectionSerializer,
     EvidenceSerializer,
     RiskResultSerializer,
     ReviewDecisionSerializer,
     OCRTaskSerializer,
+    InspectionProcessingRunSerializer,
 )
 from authmed_intern.permissions import IsOrgMember
+from inspections.services.processing import InspectionProcessingService
 
 
 class InspectionViewSet(viewsets.ModelViewSet):
@@ -66,6 +67,25 @@ class InspectionViewSet(viewsets.ModelViewSet):
             serializer.save(inspection=insp, created_by=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["post"], url_path="process-intelligence")
+    def process_intelligence(self, request, pk=None):
+        inspection = self.get_object()
+        enabled_steps = request.data.get("enabled_steps") if isinstance(request.data, dict) else None
+        run, created = InspectionProcessingService().schedule(
+            inspection,
+            triggered_by=request.user,
+            enabled_steps=enabled_steps,
+        )
+        payload = InspectionProcessingRunSerializer(run, context={"request": request}).data
+        payload["scheduled"] = created
+        return Response(payload, status=status.HTTP_202_ACCEPTED if created else status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"], url_path="processing-status")
+    def processing_status(self, request, pk=None):
+        inspection = self.get_object()
+        summary = InspectionSerializer(inspection, context={"request": request}).data.get("processing_summary")
+        return Response(summary, status=status.HTTP_200_OK)
 
 
 class EvidenceViewSet(viewsets.ModelViewSet):
@@ -137,6 +157,37 @@ class OCRTaskViewSet(viewsets.ModelViewSet):
         reason = request.data.get("reason", "Cancelled via API.")
         task.mark_cancelled(reason=reason)
         return Response(self.get_serializer(task).data, status=status.HTTP_200_OK)
+
+
+class InspectionProcessingRunViewSet(viewsets.ModelViewSet):
+    queryset = InspectionProcessingRun.objects.all()
+    serializer_class = InspectionProcessingRunSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = InspectionProcessingRun.objects.select_related("inspection", "created_by")
+        if user.is_authenticated and getattr(user, "role", None) == "admin":
+            organization_id = self.request.query_params.get("organization")
+            if organization_id:
+                qs = qs.filter(inspection__organization_id=organization_id)
+            return qs.order_by("-created_at")
+
+        organization = getattr(user, "organization", None)
+        if organization is None:
+            return InspectionProcessingRun.objects.none()
+
+        qs = qs.filter(inspection__organization=organization)
+        inspection_id = self.request.query_params.get("inspection")
+        status_filter = self.request.query_params.get("status")
+        if inspection_id:
+            qs = qs.filter(inspection_id=inspection_id)
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+        return qs.order_by("-created_at")
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 class RiskResultViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask
+from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
 
 
 @admin.register(BatchInspection)
@@ -47,4 +47,12 @@ class OCRTaskAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "provider_name")
     search_fields = ("evidence__inspection__batch_number", "processor_version", "error_message", "provider_name")
+    date_hierarchy = "created_at"
+
+
+@admin.register(InspectionProcessingRun)
+class InspectionProcessingRunAdmin(admin.ModelAdmin):
+    list_display = ("inspection", "status", "current_stage", "risk_level", "retry_count", "queued_at", "execution_started_at", "execution_completed_at")
+    list_filter = ("status", "current_stage", "risk_level")
+    search_fields = ("inspection__batch_number", "failure_reason", "explanation")
     date_hierarchy = "created_at"

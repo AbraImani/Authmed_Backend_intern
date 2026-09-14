@@ -6,6 +6,7 @@ from .views import (
     RiskResultViewSet,
     ReviewDecisionViewSet,
     OCRTaskViewSet,
+    InspectionProcessingRunViewSet,
 )
 
 router = DefaultRouter()
@@ -14,5 +15,6 @@ router.register(r"evidences", EvidenceViewSet)
 router.register(r"ocr-tasks", OCRTaskViewSet)
 router.register(r"risk-results", RiskResultViewSet)
 router.register(r"decisions", ReviewDecisionViewSet)
+router.register(r"processing-runs", InspectionProcessingRunViewSet)
 
 urlpatterns = [path("", include(router.urls))]

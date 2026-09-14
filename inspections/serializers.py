@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask
+from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
 from organizations.models import Organization
 from django.contrib.auth import get_user_model
 
@@ -460,19 +460,94 @@ class InspectionSerializer(serializers.ModelSerializer):
     def get_processing_summary(self, obj):
         ocr_tasks = OCRTask.objects.filter(evidence__inspection=obj).order_by("-created_at")
         latest_task = ocr_tasks.first()
-        if not latest_task:
+        latest_run = InspectionProcessingRun.objects.filter(inspection=obj).order_by("-created_at").first()
+        if not latest_task and not latest_run:
             return {"exists": False}
         return {
             "exists": True,
-            "latest_task_id": latest_task.id,
-            "latest_status": latest_task.status,
-            "latest_provider": latest_task.provider_name,
+            "latest_run_id": latest_run.id if latest_run else None,
+            "latest_run_status": latest_run.status if latest_run else None,
+            "latest_run_stage": latest_run.current_stage if latest_run else None,
+            "latest_run_queued_at": latest_run.queued_at if latest_run else None,
+            "latest_run_started_at": latest_run.execution_started_at if latest_run else None,
+            "latest_run_completed_at": latest_run.execution_completed_at if latest_run else None,
+            "latest_risk_level": latest_run.risk_level if latest_run else None,
+            "latest_risk_score": float(latest_run.risk_score) if latest_run and latest_run.risk_score is not None else None,
+            "latest_confidence": float(latest_run.confidence) if latest_run and latest_run.confidence is not None else None,
+            "latest_task_id": latest_task.id if latest_task else None,
+            "latest_status": latest_task.status if latest_task else None,
+            "latest_provider": latest_task.provider_name if latest_task else None,
             "queued_count": ocr_tasks.filter(status="queued").count(),
             "processing_count": ocr_tasks.filter(status="processing").count(),
             "completed_count": ocr_tasks.filter(status="completed").count(),
             "failed_count": ocr_tasks.filter(status="failed").count(),
             "cancelled_count": ocr_tasks.filter(status="cancelled").count(),
         }
+
+
+class InspectionProcessingRunSerializer(serializers.ModelSerializer):
+    """Expose a compact inspection processing history payload."""
+
+    inspection_display = serializers.SerializerMethodField(read_only=True)
+    status_display = serializers.SerializerMethodField(read_only=True)
+    stage_display = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = InspectionProcessingRun
+        fields = [
+            "id",
+            "inspection",
+            "inspection_display",
+            "created_by",
+            "status",
+            "status_display",
+            "current_stage",
+            "stage_display",
+            "retry_count",
+            "execution_started_at",
+            "execution_completed_at",
+            "queued_at",
+            "failed_at",
+            "cancelled_at",
+            "processing_duration",
+            "provider_name",
+            "ocr_summary",
+            "comparison_summary",
+            "scoring_summary",
+            "enrichment_summary",
+            "triggered_rules",
+            "risk_level",
+            "risk_score",
+            "confidence",
+            "explanation",
+            "failure_reason",
+            "processing_log",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+
+    def get_inspection_display(self, obj):
+        return {"id": obj.inspection.id, "batch_number": obj.inspection.batch_number, "status": obj.inspection.status}
+
+    def get_status_display(self, obj):
+        try:
+            return obj.get_status_display()
+        except Exception:
+            return obj.status
+
+    def get_stage_display(self, obj):
+        try:
+            return obj.get_current_stage_display()
+        except Exception:
+            return obj.current_stage
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if user and user.is_authenticated:
+            validated_data["created_by"] = user
+        return super().create(validated_data)
 
     def create(self, validated_data):
         request = self.context.get("request")

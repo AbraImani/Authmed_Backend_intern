@@ -294,3 +294,192 @@ class ReviewDecision(models.Model):
 
     def __str__(self):
         return f"Decision {self.id} - {self.decision}"
+
+
+class InspectionProcessingRun(models.Model):
+    """Persist a single intelligence pipeline execution for an inspection."""
+
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("queued", "Queued"),
+        ("processing", "Processing"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+        ("cancelled", "Cancelled"),
+    )
+
+    STAGE_CHOICES = (
+        ("ocr", "OCR"),
+        ("normalization", "Normalization"),
+        ("comparison", "Comparison"),
+        ("scoring", "Scoring"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+        ("cancelled", "Cancelled"),
+    )
+
+    RISK_LEVEL_CHOICES = (
+        ("LOW", "LOW"),
+        ("MEDIUM", "MEDIUM"),
+        ("HIGH", "HIGH"),
+        ("CRITICAL", "CRITICAL"),
+    )
+
+    inspection = models.ForeignKey(BatchInspection, on_delete=models.CASCADE, related_name="processing_runs")
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="pending")
+    current_stage = models.CharField(max_length=32, choices=STAGE_CHOICES, default="ocr")
+    retry_count = models.PositiveIntegerField(default=0)
+    queued_at = models.DateTimeField(null=True, blank=True)
+    execution_started_at = models.DateTimeField(null=True, blank=True)
+    execution_completed_at = models.DateTimeField(null=True, blank=True)
+    failed_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    processing_duration = models.DurationField(null=True, blank=True)
+    provider_name = models.CharField(max_length=64, blank=True)
+    ocr_summary = models.JSONField(default=dict, blank=True)
+    comparison_summary = models.JSONField(default=dict, blank=True)
+    scoring_summary = models.JSONField(default=dict, blank=True)
+    triggered_rules = models.JSONField(default=list, blank=True)
+    risk_level = models.CharField(max_length=16, choices=RISK_LEVEL_CHOICES, blank=True)
+    risk_score = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    confidence = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    explanation = models.TextField(blank=True)
+    failure_reason = models.TextField(blank=True)
+    processing_log = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["inspection", "status"]),
+            models.Index(fields=["inspection", "created_at"]),
+            models.Index(fields=["status", "current_stage"]),
+        ]
+
+    def __str__(self):
+        return f"ProcessingRun {self.id} for inspection {self.inspection_id} ({self.status})"
+
+    def append_log(self, message, level="info", payload=None):
+        entry = {
+            "level": level,
+            "message": message,
+            "payload": payload or {},
+            "timestamp": timezone.now().isoformat(),
+        }
+        log = list(self.processing_log or [])
+        log.append(entry)
+        self.processing_log = log
+        return entry
+
+    def _assert_transition(self, allowed_from):
+        if self.status not in allowed_from:
+            raise ValueError(f"Cannot transition inspection run from {self.status}.")
+
+    def mark_queued(self, stage="ocr"):
+        if self.status not in {"pending", "failed", "cancelled"}:
+            raise ValueError(f"Cannot queue inspection run from {self.status}.")
+        self.status = "queued"
+        self.current_stage = stage or self.current_stage
+        self.queued_at = timezone.now()
+        self.append_log("Run queued.", payload={"stage": self.current_stage})
+        self.save(update_fields=["status", "current_stage", "queued_at", "processing_log", "updated_at"])
+
+    def mark_processing(self, stage=None):
+        self._assert_transition({"queued", "pending"})
+        if self.execution_started_at is None:
+            self.execution_started_at = timezone.now()
+        self.status = "processing"
+        if stage:
+            self.current_stage = stage
+        self.append_log("Run started.", payload={"stage": self.current_stage})
+        self.save(update_fields=["status", "current_stage", "execution_started_at", "processing_log", "updated_at"])
+
+    def mark_completed(self, stage="completed"):
+        self._assert_transition({"processing", "queued"})
+        self.status = "completed"
+        self.current_stage = stage
+        self.execution_completed_at = timezone.now()
+        if self.execution_started_at is not None:
+            self.processing_duration = self.execution_completed_at - self.execution_started_at
+        self.append_log("Run completed.", payload={"stage": self.current_stage})
+        self.save(update_fields=["status", "current_stage", "execution_completed_at", "processing_duration", "processing_log", "updated_at"])
+
+    def mark_failed(self, failure_reason, stage="failed"):
+        self.status = "failed"
+        self.current_stage = stage
+        self.failed_at = timezone.now()
+        self.execution_completed_at = self.failed_at
+        if self.execution_started_at is not None:
+            self.processing_duration = self.execution_completed_at - self.execution_started_at
+        self.failure_reason = failure_reason
+        self.append_log("Run failed.", level="error", payload={"failure_reason": failure_reason, "stage": self.current_stage})
+        self.save(update_fields=["status", "current_stage", "failed_at", "execution_completed_at", "processing_duration", "failure_reason", "processing_log", "updated_at"])
+
+    def mark_cancelled(self, reason=""):
+        self.status = "cancelled"
+        self.current_stage = "cancelled"
+        self.cancelled_at = timezone.now()
+        self.execution_completed_at = self.cancelled_at
+        if self.execution_started_at is not None:
+            self.processing_duration = self.execution_completed_at - self.execution_started_at
+        self.failure_reason = reason
+        self.append_log("Run cancelled.", level="warning", payload={"reason": reason})
+        self.save(update_fields=["status", "current_stage", "cancelled_at", "execution_completed_at", "processing_duration", "failure_reason", "processing_log", "updated_at"])
+
+    def increment_retry(self):
+        self.retry_count += 1
+        self.save(update_fields=["retry_count", "updated_at"])
+
+    def append_log(self, message, level="info", payload=None):
+        log_entry = {
+            "level": level,
+            "message": message,
+            "payload": payload or {},
+            "timestamp": timezone.now().isoformat(),
+        }
+        log = list(self.processing_log or [])
+        log.append(log_entry)
+        self.processing_log = log
+        return log_entry
+
+    def mark_queued(self):
+        self.status = "queued"
+        self.append_log("Processing run queued.")
+        self.save(update_fields=["status", "processing_log", "updated_at"])
+
+    def mark_processing(self, stage="ocr"):
+        if not self.execution_started_at:
+            self.execution_started_at = timezone.now()
+        self.status = "processing"
+        self.current_stage = stage
+        self.append_log(f"Processing run started at stage {stage}.")
+        self.save(update_fields=["status", "current_stage", "execution_started_at", "processing_log", "updated_at"])
+
+    def mark_completed(self):
+        self.status = "completed"
+        self.current_stage = "completed"
+        self.execution_completed_at = timezone.now()
+        if self.execution_started_at is not None:
+            self.processing_duration = self.execution_completed_at - self.execution_started_at
+        self.append_log("Processing run completed.")
+        self.save(update_fields=["status", "current_stage", "execution_completed_at", "processing_duration", "processing_log", "updated_at"])
+
+    def mark_failed(self, failure_reason, stage="failed"):
+        self.status = "failed"
+        self.current_stage = stage
+        self.execution_completed_at = timezone.now()
+        if self.execution_started_at is not None:
+            self.processing_duration = self.execution_completed_at - self.execution_started_at
+        self.failure_reason = failure_reason
+        self.append_log("Processing run failed.", level="error", payload={"failure_reason": failure_reason})
+        self.save(update_fields=["status", "current_stage", "execution_completed_at", "processing_duration", "failure_reason", "processing_log", "updated_at"])
+
+    def mark_cancelled(self, reason=""):
+        self.status = "cancelled"
+        self.current_stage = "cancelled"
+        self.execution_completed_at = timezone.now()
+        self.failure_reason = reason
+        self.append_log("Processing run cancelled.", level="warning", payload={"reason": reason})
+        self.save(update_fields=["status", "current_stage", "execution_completed_at", "failure_reason", "processing_log", "updated_at"])

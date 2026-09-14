@@ -88,6 +88,15 @@ CELERY_TASK_ALWAYS_EAGER = os.getenv("CELERY_TASK_ALWAYS_EAGER", "False") == "Tr
 CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_TASK_DEFAULT_QUEUE = os.getenv("CELERY_TASK_DEFAULT_QUEUE", "default")
 
+INSPECTION_INTELLIGENCE_STEPS = {
+    "ocr": os.getenv("INSPECTION_STEP_OCR", "True") == "True",
+    "comparison": os.getenv("INSPECTION_STEP_COMPARISON", "True") == "True",
+    "scoring": os.getenv("INSPECTION_STEP_SCORING", "True") == "True",
+    "ai_enrichment": os.getenv("INSPECTION_STEP_AI_ENRICHMENT", "False") == "True",
+}
+
+INSPECTION_USE_FAKE_PROVIDERS = os.getenv("INSPECTION_USE_FAKE_PROVIDERS", "False") == "True"
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",

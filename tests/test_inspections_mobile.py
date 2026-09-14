@@ -4,6 +4,7 @@ from rest_framework.test import APIClient
 from organizations.models import Organization, Site
 from suppliers.models import Supplier
 from products.models import ProductReference
+from inspections.models import BatchInspection, InspectionProcessingRun
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -64,7 +65,6 @@ class TestInspectionsMobileAPI:
         assert all(item["status"] == "pending" for item in items)
 
     def test_detail_and_patch_inspection_mobile(self):
-        from inspections.models import BatchInspection
         insp = BatchInspection.objects.create(organization=self.org, site=self.site, supplier=self.supplier, product=self.product, inspector=self.inspector, batch_number="PATCH-1", received_at=timezone.now(), status="pending")
         client = APIClient()
         token = self._get_token("mobile-inspector", "pass")
@@ -78,3 +78,32 @@ class TestInspectionsMobileAPI:
         updated = patch_resp.json()
         assert updated["notes"] == "Updated from mobile"
         assert updated["status"] == "in_progress"
+
+    def test_processing_summary_and_run_history(self):
+        insp = BatchInspection.objects.create(organization=self.org, site=self.site, supplier=self.supplier, product=self.product, inspector=self.inspector, batch_number="RUN-1", received_at=timezone.now(), status="pending")
+        InspectionProcessingRun.objects.create(
+            inspection=insp,
+            created_by=self.inspector,
+            status="completed",
+            current_stage="completed",
+            risk_level="MEDIUM",
+            risk_score=42,
+            confidence=88,
+            explanation="Sample run",
+        )
+
+        client = APIClient()
+        token = self._get_token("mobile-inspector", "pass")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+
+        detail = client.get(f"/api/batch-inspections/{insp.id}/")
+        assert detail.status_code == 200
+        summary = detail.json()["processing_summary"]
+        assert summary["exists"] is True
+        assert summary["latest_run_status"] == "completed"
+        assert summary["latest_risk_level"] == "MEDIUM"
+
+        runs = client.get("/api/processing-runs/?inspection=%s" % insp.id)
+        assert runs.status_code == 200
+        assert len(runs.json()) == 1
+        assert runs.json()[0]["risk_level"] == "MEDIUM"
