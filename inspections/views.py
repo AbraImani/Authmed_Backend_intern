@@ -1,4 +1,6 @@
 from rest_framework import viewsets, permissions, status
+from rest_framework.exceptions import ValidationError
+from inspections.services.processing.config import resolve_enabled_steps
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
@@ -72,7 +74,10 @@ class InspectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], url_path="process-intelligence")
     def process_intelligence(self, request, pk=None):
         inspection = self.get_object()
-        enabled_steps = request.data.get("enabled_steps") if isinstance(request.data, dict) else None
+        try:
+            enabled_steps = resolve_enabled_steps(request.data.get("enabled_steps"))
+        except (ValueError, AttributeError) as exc:
+            raise ValidationError({"enabled_steps": str(exc)})
         run, created = InspectionProcessingService(enqueue_inspection_run).schedule(
             inspection,
             triggered_by=request.user,
@@ -160,7 +165,7 @@ class OCRTaskViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(task).data, status=status.HTTP_200_OK)
 
 
-class InspectionProcessingRunViewSet(viewsets.ModelViewSet):
+class InspectionProcessingRunViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = InspectionProcessingRun.objects.all()
     serializer_class = InspectionProcessingRunSerializer
     permission_classes = [permissions.IsAuthenticated, IsOrgMember]
@@ -186,9 +191,6 @@ class InspectionProcessingRunViewSet(viewsets.ModelViewSet):
         if status_filter:
             qs = qs.filter(status=status_filter)
         return qs.order_by("-created_at")
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
 
 
 class RiskResultViewSet(viewsets.ModelViewSet):

@@ -3,8 +3,11 @@ from dataclasses import dataclass, field
 from typing import Any
 
 
-class OCRProviderError(RuntimeError):
-    pass
+from inspections.services.errors import ProcessingError
+
+
+class OCRProviderError(ProcessingError):
+    code = "ocr_failed"
 
 
 @dataclass

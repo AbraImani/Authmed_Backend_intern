@@ -4,6 +4,7 @@ from typing import Iterable
 from inspections.models import OCRTask
 from inspections.services.normalization import normalize_ocr_payload
 from .base import OCRProviderError
+from inspections.services.errors import ProviderUnavailable
 
 
 @dataclass
@@ -27,9 +28,12 @@ class OCRExtractionPipeline:
         self.adapters = list(adapters)
 
     def run(self, file_obj):
+        if not self.adapters:
+            raise ProviderUnavailable("No OCR provider is configured.")
         errors = []
         for adapter in self.adapters:
             try:
+                file_obj.seek(0)
                 result = adapter.extract(file_obj)
                 normalized = normalize_ocr_payload(
                     {

@@ -5,8 +5,10 @@ from decimal import Decimal
 @dataclass
 class InspectionComparisonResult:
     mismatch_categories: list[str] = field(default_factory=list)
-    weighted_score: Decimal = Decimal("100.00")
-    confidence: Decimal = Decimal("100.00")
+    weighted_score: Decimal | None = None
+    confidence: Decimal | None = None
+    sufficient_data: bool = False
+    compared_fields: list[str] = field(default_factory=list)
     summary: str = ""
     details: dict = field(default_factory=dict)
 
@@ -79,6 +81,20 @@ class InspectionComparisonService:
                 "observed": sorted(evidence_types),
             }
 
+        expected = {
+            "batch_number": inspection.batch_number,
+            "expiry_date": inspection.expiry_date,
+            "manufacturer": supplier_name or product_supplier_name,
+            "barcode_data": product_sku,
+        }
+        required = {key for key, value in expected.items() if value}
+        observed = {key for key in required if normalized_ocr_fields.get(key)}
+        missing = sorted(required - observed)
+        sufficient_data = bool(evidence_items and observed) and not missing
+        details["missing_comparison_fields"] = missing
+        if not required:
+            details["missing_reference_data"] = True
+
         total_penalty = sum(self.WEIGHTS.get(category, 10) for category in mismatches)
         weighted_score = max(0, 100 - total_penalty)
         confidence = max(0, 100 - (len(mismatches) * 10))
@@ -86,8 +102,10 @@ class InspectionComparisonService:
 
         return InspectionComparisonResult(
             mismatch_categories=mismatches,
-            weighted_score=Decimal(str(weighted_score)).quantize(Decimal("1.00")),
-            confidence=Decimal(str(confidence)).quantize(Decimal("1.00")),
-            summary=summary,
+            weighted_score=Decimal(str(weighted_score)).quantize(Decimal("1.00")) if sufficient_data else None,
+            confidence=Decimal(str(confidence)).quantize(Decimal("1.00")) if sufficient_data else None,
+            sufficient_data=sufficient_data,
+            compared_fields=sorted(observed),
+            summary=summary if sufficient_data else "Insufficient comparable data; human review required.",
             details=details,
         )

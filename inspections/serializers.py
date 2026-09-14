@@ -467,6 +467,8 @@ class InspectionSerializer(serializers.ModelSerializer):
             "exists": True,
             "latest_run_id": latest_run.id if latest_run else None,
             "latest_run_status": latest_run.status if latest_run else None,
+            "failure_reason": latest_run.failure_reason if latest_run else None,
+            "requires_review": bool(latest_run and latest_run.status == "failed"),
             "latest_run_stage": latest_run.current_stage if latest_run else None,
             "latest_run_queued_at": latest_run.queued_at if latest_run else None,
             "latest_run_started_at": latest_run.execution_started_at if latest_run else None,
@@ -514,7 +516,6 @@ class InspectionProcessingRunSerializer(serializers.ModelSerializer):
             "ocr_summary",
             "comparison_summary",
             "scoring_summary",
-            "enrichment_summary",
             "triggered_rules",
             "risk_level",
             "risk_score",
@@ -525,7 +526,7 @@ class InspectionProcessingRunSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+        read_only_fields = fields
 
     def get_inspection_display(self, obj):
         return {"id": obj.inspection.id, "batch_number": obj.inspection.batch_number, "status": obj.inspection.status}
@@ -541,28 +542,3 @@ class InspectionProcessingRunSerializer(serializers.ModelSerializer):
             return obj.get_current_stage_display()
         except Exception:
             return obj.current_stage
-
-    def create(self, validated_data):
-        request = self.context.get("request")
-        user = getattr(request, "user", None)
-        if user and user.is_authenticated:
-            validated_data["created_by"] = user
-        return super().create(validated_data)
-
-    def create(self, validated_data):
-        request = self.context.get("request")
-        user = getattr(request, "user", None)
-        # Ensure organization and inspector default to request user when available
-        if user and user.is_authenticated:
-            if "organization" not in validated_data:
-                validated_data["organization"] = getattr(user, "organization", None)
-            if "inspector" not in validated_data:
-                validated_data["inspector"] = user
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        # Allow partial updates from mobile; do not overwrite organization unintentionally
-        if "organization" in validated_data and getattr(instance, "organization", None) is not None:
-            # prevent changing organization through update
-            validated_data.pop("organization", None)
-        return super().update(instance, validated_data)
