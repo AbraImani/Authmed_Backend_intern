@@ -4,11 +4,6 @@ from .serializers import UserSerializer
 from authmed_intern.permissions import IsAdminRole
 
 
-class IsAdmin(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == "admin"
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

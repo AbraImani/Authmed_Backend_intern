@@ -1,11 +1,14 @@
 from django.db import transaction
 
 from inspections.models import BatchInspection, InspectionProcessingRun
-from inspections.tasks import process_inspection_run
 
 
 class InspectionProcessingService:
     """Create idempotent processing runs and queue them asynchronously."""
+
+    def __init__(self, enqueue_run):
+        # Inject transport at the application boundary, not from Celery tasks.
+        self.enqueue_run = enqueue_run
 
     def schedule(self, inspection: BatchInspection, triggered_by=None, enabled_steps=None):
         with transaction.atomic():
@@ -25,5 +28,5 @@ class InspectionProcessingService:
             )
             run.mark_queued(stage="ocr")
             enabled_steps = enabled_steps or {}
-            transaction.on_commit(lambda: process_inspection_run.delay(run.id, enabled_steps))
+            transaction.on_commit(lambda: self.enqueue_run(run.id, enabled_steps))
             return run, True

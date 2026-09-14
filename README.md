@@ -1,4 +1,18 @@
-# AuthMed Intern Backend
+# AuthMed Backend V1 - canonical Django repository
+
+This independent repository (`Authmed_Backend_intern`) is the canonical
+inspection backend. Its Git history remains independent of the parent
+`authmed-core` repository. The parent's `backend/` and Dockerfile are legacy
+and do not deploy this application.
+
+Phase 0 stabilizes this foundation; it does **not** make it pilot-ready.
+SimpleJWT, SQLite and local media remain temporary. Firebase identity,
+memberships/permissions, private storage, managed AI and deployment belong
+to subsequent phases. No Google Cloud credentials are needed for Phase 0.
+
+Use a virtual environment inside this repository. Python 3.11 is the Phase 0
+validation environment. Do not reuse or repair the parent's environment.
+
 
 This is a Django and DRF backend implementing the AuthMed medicine intake inspection and risk-control workflow.
 
@@ -25,7 +39,6 @@ pip install -r requirements.txt
 3. Run migrations
 
 ```powershell
-python manage.py makemigrations
 python manage.py migrate
 ```
 

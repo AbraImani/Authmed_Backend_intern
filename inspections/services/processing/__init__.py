@@ -1,3 +1,2 @@
 from .pipeline import InspectionIntelligencePipeline, InspectionIntelligenceSummary
 from .service import InspectionProcessingService
-from .pipeline import InspectionIntelligencePipeline

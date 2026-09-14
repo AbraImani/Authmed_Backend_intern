@@ -11,3 +11,11 @@ staticfiles/
 .pytest_cache/
 .coverage
 .DS_Store
+
+# Local credentials; examples must use placeholders only.
+service-account*.json
+firebase-admin*.json
+credentials.json
+credentials/
+*.pem
+*.key

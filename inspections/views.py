@@ -12,6 +12,7 @@ from .serializers import (
 )
 from authmed_intern.permissions import IsOrgMember
 from inspections.services.processing import InspectionProcessingService
+from inspections.dispatch import enqueue_inspection_run
 
 
 class InspectionViewSet(viewsets.ModelViewSet):
@@ -72,7 +73,7 @@ class InspectionViewSet(viewsets.ModelViewSet):
     def process_intelligence(self, request, pk=None):
         inspection = self.get_object()
         enabled_steps = request.data.get("enabled_steps") if isinstance(request.data, dict) else None
-        run, created = InspectionProcessingService().schedule(
+        run, created = InspectionProcessingService(enqueue_inspection_run).schedule(
             inspection,
             triggered_by=request.user,
             enabled_steps=enabled_steps,
