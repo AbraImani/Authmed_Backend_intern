@@ -31,7 +31,7 @@ Quick start (local)
 
 ```powershell
 python -m venv .venv; .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -r requirements-phase0.lock
 ```
 
 2. Create `.env` from `.env.example` and adjust secrets
@@ -116,3 +116,24 @@ Phase 4 operational foundation
 - `OCRTask` tracks processing state without connecting an external OCR provider yet.
 - `DatasetGroup` organizes reference images for labeling readiness, review, and future dataset preparation.
 - CSV import preview helpers exist for product reference ingestion planning and duplicate detection.
+
+
+Phase 0 validation and processing behavior
+-----------------------------------------
+
+See [the Phase 0 validation guide](docs/phase0/validation.md). The lock file
+records the tested environment; `requirements.txt` remains the dependency
+intent. Tests use isolated settings, real migrations and in-memory file
+storage. No local business database or uploaded files are required.
+
+No real OCR/AI provider is configured in Phase 0. Analysis reports a failed
+run with `provider_unavailable`, not a successful fake result. Empty or
+incomparable extraction reports `insufficient_data` and `requires_review`.
+Incomplete stage sets cannot publish a final risk. Existing historical risk
+records are retained on failure; inspect the latest processing status before
+using an old risk result. Versioned risk/run associations belong to Phase 5.
+
+Processing runs are created through `process-intelligence` and are read-only
+through `/api/processing-runs/`. Other historical CRUD permissions are not
+a security guarantee and remain subject to Phase 1/5 work. The current API
+and generated OpenAPI are not yet the frozen Flutter contract.
