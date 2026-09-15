@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,11 +17,11 @@ class TestEvidenceMobileAPI:
     def setup_method(self):
         self.org = Organization.objects.create(name="Ev Org")
         self.site = Site.objects.create(organization=self.org, name="Ev Site")
-        self.supplier = Supplier.objects.create(name="Ev Supplier")
+        self.supplier = Supplier.objects.create(organization=self.org, name="Ev Supplier")
         self.product = ProductReference.objects.create(organization=self.org, name="Ev Product", sku="EV001")
-        self.inspector = User.objects.create_user(username="ev-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="ev-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
         self.other_org = Organization.objects.create(name="Other Org")
-        self.other_user = User.objects.create_user(username="other-user", password="pass", role="inspector", organization=self.other_org)
+        self.other_user = create_member_user(username="other-user", password="pass", role="inspector", organization=self.other_org)
 
     def _get_token(self, username, password):
         client = APIClient()

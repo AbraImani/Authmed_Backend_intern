@@ -5,10 +5,12 @@ inspection backend. Its Git history remains independent of the parent
 `authmed-core` repository. The parent's `backend/` and Dockerfile are legacy
 and do not deploy this application.
 
-Phase 0 stabilizes this foundation; it does **not** make it pilot-ready.
-SimpleJWT, SQLite and local media remain temporary. Firebase identity,
-memberships/permissions, private storage, managed AI and deployment belong
-to subsequent phases. No Google Cloud credentials are needed for Phase 0.
+Phase 0 stabilized processing; Phase 1 adds Firebase identity, organization
+memberships, contextual roles and tenant isolation. See the [Phase 1 report](docs/phase1/report.md),
+[identity setup](docs/phase1/identity.md) and [authorization matrix](docs/phase1/tenancy.md).
+SQLite and local media remain temporary. Private storage, managed AI and
+deployment belong to later phases. Tests require no Google Cloud credentials.
+The whole application is not yet a pilot release.
 
 Use a virtual environment inside this repository. Python 3.11 is the Phase 0
 validation environment. Do not reuse or repair the parent's environment.
@@ -18,11 +20,11 @@ This is a Django and DRF backend implementing the AuthMed medicine intake inspec
 
 Core features
 - Organizations and Sites multi-tenancy
-- Custom `User` model with roles: `admin`, `inspector`, `reviewer`
+- Local `User` linked by Firebase UID; roles belong to `OrganizationMembership`
 - Suppliers, Product references
 - BatchInspection workflow: receive batch -> capture Evidence -> RiskResult -> ReviewDecision
 - AuditLog for traceability (create/update/delete recorded)
-- JWT authentication (SimpleJWT)
+- Firebase ID tokens by default; explicit legacy JWT development mode only
 - Admin UI and API docs (Swagger)
 
 Quick start (local)
@@ -31,7 +33,7 @@ Quick start (local)
 
 ```powershell
 python -m venv .venv; .\.venv\Scripts\Activate.ps1
-pip install -r requirements-phase0.lock
+pip install -r requirements-phase1.lock
 ```
 
 2. Create `.env` from `.env.example` and adjust secrets
@@ -48,7 +50,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-5. Seed demo data (creates demo org, site, users, supplier, product, a sample batch inspection)
+5. Optional development-only demo data (requires explicit legacy JWT mode and DEBUG=True)
 
 ```powershell
 python manage.py seed_demo
@@ -65,13 +67,13 @@ API docs
 - Open `http://127.0.0.1:8000/api/schema/` for OpenAPI JSON
 
 Authentication
-- JWT token endpoints: `POST /api/auth/token/` (obtain), `POST /api/auth/token/refresh/`
-
-Onboarding account
-- Full name: Nathan Cirhuza
-- Username: `nathan.cirhuza`
-- Password: `nathan@authmed.africa`
-- Role: inspector
+- Firebase clients send `Authorization: Bearer <Firebase ID token>`.
+- `GET /api/me/` returns the local profile, memberships and active capabilities.
+- Use `X-Organization-ID` to select one of multiple active memberships.
+- Active membership is required on all tenant APIs, including for superusers.
+- Django Admin retains internal session/password login.
+- Legacy token endpoints are available only in explicit development mode;
+  see [identity setup](docs/phase1/identity.md). Demo accounts are local-only.
 
 Testing
 
@@ -134,6 +136,6 @@ records are retained on failure; inspect the latest processing status before
 using an old risk result. Versioned risk/run associations belong to Phase 5.
 
 Processing runs are created through `process-intelligence` and are read-only
-through `/api/processing-runs/`. Other historical CRUD permissions are not
-a security guarantee and remain subject to Phase 1/5 work. The current API
-and generated OpenAPI are not yet the frozen Flutter contract.
+through `/api/processing-runs/`. Phase 1 enforces tenant and role boundaries
+around existing CRUD; final risk/review workflow guarantees remain Phase 5.
+The current API and generated OpenAPI are not yet the frozen Flutter contract.

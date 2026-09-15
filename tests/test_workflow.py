@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -20,7 +21,7 @@ User = get_user_model()
 class TestJWTAuth:
     def test_jwt_token_obtain(self):
         """Test JWT token obtain endpoint."""
-        user = User.objects.create_user(username="testuser", password="testpass123", email="test@example.com")
+        user = create_member_user(username="testuser", password="testpass123", email="test@example.com")
         client = Client()
         response = client.post("/api/auth/token/", {"username": "testuser", "password": "testpass123"}, content_type="application/json")
         assert response.status_code == status.HTTP_200_OK
@@ -29,7 +30,7 @@ class TestJWTAuth:
 
     def test_jwt_token_refresh(self):
         """Test JWT token refresh endpoint."""
-        user = User.objects.create_user(username="testuser", password="testpass123")
+        user = create_member_user(username="testuser", password="testpass123")
         refresh = RefreshToken.for_user(user)
         client = Client()
         response = client.post("/api/auth/token/refresh/", {"refresh": str(refresh)}, content_type="application/json")
@@ -76,8 +77,8 @@ class TestBatchInspectionWorkflow:
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
         self.supplier = Supplier.objects.create(name="Test Supplier")
         self.product = ProductReference.objects.create(organization=self.org, name="Test Product", sku="TST001")
-        self.inspector = User.objects.create_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
-        self.reviewer = User.objects.create_user(username="reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.reviewer = create_member_user(username="reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
 
     def test_create_batch_inspection(self):
         """Test batch inspection creation."""
@@ -118,14 +119,14 @@ class TestInspectionApiScoping:
         self.supplier = Supplier.objects.create(name="Test Supplier")
         self.product_one = ProductReference.objects.create(organization=self.org_one, name="Product One", sku="ONE")
         self.product_two = ProductReference.objects.create(organization=self.org_two, name="Product Two", sku="TWO")
-        self.inspector_one = User.objects.create_user(
+        self.inspector_one = create_member_user(
             username="inspector-one",
             password="pass",
             role="inspector",
             organization=self.org_one,
             site=self.site_one,
         )
-        self.inspector_two = User.objects.create_user(
+        self.inspector_two = create_member_user(
             username="inspector-two",
             password="pass",
             role="inspector",
@@ -165,14 +166,14 @@ class TestInspectionApiScoping:
         batch_numbers = {item["batch_number"] for item in response.json()}
         assert batch_numbers == {"ORG1-BATCH"}
 
-    def test_admin_sees_all_batches(self):
-        admin = User.objects.create_user(username="admin-user", password="pass", role="admin", organization=self.org_one, site=self.site_one)
+    def test_organization_admin_sees_only_own_batches(self):
+        admin = create_member_user(username="admin-user", password="pass", role="admin", organization=self.org_one, site=self.site_one)
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {self._get_token('admin-user', 'pass')}")
         response = client.get("/api/batch-inspections/")
         assert response.status_code == status.HTTP_200_OK
         batch_numbers = {item["batch_number"] for item in response.json()}
-        assert batch_numbers == {"ORG1-BATCH", "ORG2-BATCH"}
+        assert batch_numbers == {"ORG1-BATCH"}
 
 
 @pytest.mark.django_db
@@ -181,7 +182,7 @@ class TestEvidenceCapture:
         """Set up test data."""
         self.org = Organization.objects.create(name="Test Hospital")
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
-        self.inspector = User.objects.create_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
         self.insp = BatchInspection.objects.create(
             organization=self.org,
             site=self.site,
@@ -217,7 +218,7 @@ class TestRiskResult:
         """Set up test data."""
         self.org = Organization.objects.create(name="Test Hospital")
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
-        self.inspector = User.objects.create_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
         self.insp = BatchInspection.objects.create(
             organization=self.org,
             site=self.site,
@@ -246,8 +247,8 @@ class TestReviewDecision:
         """Set up test data."""
         self.org = Organization.objects.create(name="Test Hospital")
         self.site = Site.objects.create(organization=self.org, name="Test Pharmacy")
-        self.reviewer = User.objects.create_user(username="reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
-        self.inspector = User.objects.create_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.reviewer = create_member_user(username="reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="inspector", password="pass", role="inspector", organization=self.org, site=self.site)
         self.insp = BatchInspection.objects.create(
             organization=self.org,
             site=self.site,

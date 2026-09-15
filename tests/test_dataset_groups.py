@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,13 +17,13 @@ class TestDatasetGroupAPI:
     def setup_method(self):
         self.org_one = Organization.objects.create(name="Dataset Org One")
         self.org_two = Organization.objects.create(name="Dataset Org Two")
-        self.supplier = Supplier.objects.create(name="Dataset Supplier")
+        self.supplier = Supplier.objects.create(organization=self.org_one, name="Dataset Supplier")
 
         self.product_one = ProductReference.objects.create(organization=self.org_one, name="Dataset Product One", sku="D-1", supplier=self.supplier)
         self.product_two = ProductReference.objects.create(organization=self.org_two, name="Dataset Product Two", sku="D-2", supplier=self.supplier)
 
-        self.user_one = User.objects.create_user(username="dataset-user", password="pass", role="inspector", organization=self.org_one)
-        self.admin = User.objects.create_user(username="dataset-admin", password="pass", role="admin", organization=self.org_one)
+        self.user_one = create_member_user(username="dataset-user", password="pass", role="organization_manager", organization=self.org_one)
+        self.admin = create_member_user(username="dataset-admin", password="pass", role="admin", organization=self.org_one)
 
         self.image_one = ProductReferenceImage.objects.create(
             product_reference=self.product_one,

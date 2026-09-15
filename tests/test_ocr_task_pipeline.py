@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -33,9 +34,9 @@ class TestOCRTaskPipeline:
     def setup_method(self):
         self.org = Organization.objects.create(name="OCR Org")
         self.site = Site.objects.create(organization=self.org, name="OCR Site")
-        self.supplier = Supplier.objects.create(name="OCR Supplier")
+        self.supplier = Supplier.objects.create(organization=self.org, name="OCR Supplier")
         self.product = ProductReference.objects.create(organization=self.org, name="OCR Product", sku="OCR-1", supplier=self.supplier)
-        self.user = User.objects.create_user(username="ocr-user", password="pass", organization=self.org, site=self.site, role="inspector")
+        self.user = create_member_user(username="ocr-user", password="pass", organization=self.org, site=self.site, role="inspector")
         self.inspection = BatchInspection.objects.create(
             organization=self.org,
             site=self.site,

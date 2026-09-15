@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -15,9 +16,9 @@ class TestInspectionsMobileAPI:
     def setup_method(self):
         self.org = Organization.objects.create(name="Mobile Org")
         self.site = Site.objects.create(organization=self.org, name="Mobile Site")
-        self.supplier = Supplier.objects.create(name="Mobile Supplier")
+        self.supplier = Supplier.objects.create(organization=self.org, name="Mobile Supplier")
         self.product = ProductReference.objects.create(organization=self.org, name="Mobile Product", sku="MOB001")
-        self.inspector = User.objects.create_user(username="mobile-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="mobile-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
 
     def _get_token(self, username, password):
         client = APIClient()

@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -15,7 +16,7 @@ class TestProductReferenceAPI:
     def setup_method(self):
         self.org_one = Organization.objects.create(name="Org One")
         self.org_two = Organization.objects.create(name="Org Two")
-        self.supplier = Supplier.objects.create(name="Acme Pharma")
+        self.supplier = Supplier.objects.create(organization=self.org_one, name="Acme Pharma")
 
         self.prod_one = ProductReference.objects.create(
             organization=self.org_one, name="Product A", sku="A001", supplier=self.supplier
@@ -24,8 +25,8 @@ class TestProductReferenceAPI:
             organization=self.org_two, name="Product B", sku="B002", supplier=self.supplier
         )
 
-        self.user_one = User.objects.create_user(username="user-one", password="pass", role="inspector", organization=self.org_one)
-        self.user_no_org = User.objects.create_user(username="no-org", password="pass")
+        self.user_one = create_member_user(username="user-one", password="pass", role="organization_manager", organization=self.org_one)
+        self.user_no_org = create_member_user(username="no-org", password="pass")
 
     def _get_token(self, username, password):
         client = APIClient()
@@ -79,7 +80,7 @@ class TestProductReferenceAPI:
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         resp = client.post("/api/products/", {"name": "Orphan"}, format="json")
-        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+        assert resp.status_code == status.HTTP_403_FORBIDDEN
 
     def test_scoping_blocks_cross_organization_detail_and_updates(self):
         token = self._get_token("user-one", "pass")

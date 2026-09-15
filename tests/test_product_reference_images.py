@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,7 +17,7 @@ class TestProductReferenceImageAPI:
     def setup_method(self):
         self.org_one = Organization.objects.create(name="Org One")
         self.org_two = Organization.objects.create(name="Org Two")
-        self.supplier = Supplier.objects.create(name="Acme Pharma")
+        self.supplier = Supplier.objects.create(organization=self.org_one, name="Acme Pharma")
 
         self.product_one = ProductReference.objects.create(
             organization=self.org_one,
@@ -31,19 +32,19 @@ class TestProductReferenceImageAPI:
             supplier=self.supplier,
         )
 
-        self.user_one = User.objects.create_user(
+        self.user_one = create_member_user(
             username="user-one",
             password="pass",
-            role="inspector",
+            role="organization_manager",
             organization=self.org_one,
         )
-        self.admin = User.objects.create_user(
+        self.admin = create_member_user(
             username="admin-user",
             password="pass",
             role="admin",
             organization=self.org_one,
         )
-        self.no_org_user = User.objects.create_user(username="no-org", password="pass")
+        self.no_org_user = create_member_user(username="no-org", password="pass")
 
         self.image_one = self._sample_image("front.gif")
         self.image_two = self._sample_image("back.gif")
@@ -155,7 +156,7 @@ class TestProductReferenceImageAPI:
         response = client.post("/api/product-reference-images/", payload, format="multipart")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_admin_can_filter_by_organization_and_product_reference(self):
+    def test_organization_admin_cannot_filter_into_another_organization(self):
         token = self._get_token("admin-user", "pass")
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -163,7 +164,7 @@ class TestProductReferenceImageAPI:
         response = client.get(f"/api/product-reference-images/?organization={self.org_two.id}")
         assert response.status_code == status.HTTP_200_OK
         ids = {item["id"] for item in response.json()}
-        assert ids == {self.reference_image_two.id}
+        assert ids == set()
 
         response_by_product = client.get(f"/api/product-reference-images/?product_reference={self.product_one.id}")
         assert response_by_product.status_code == status.HTTP_200_OK

@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 from unittest.mock import Mock
 
 import pytest
@@ -25,7 +26,7 @@ pytestmark = pytest.mark.django_db
 def inspection():
     organization = Organization.objects.create(name="Phase0")
     site = Site.objects.create(organization=organization, name="Site")
-    user = User.objects.create_user(username="phase0", organization=organization, site=site)
+    user = create_member_user(username="phase0", organization=organization, site=site)
     obj = BatchInspection.objects.create(
         organization=organization, site=site, inspector=user,
         batch_number="B-01", received_at=timezone.now(),

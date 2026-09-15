@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -13,12 +14,12 @@ class TestDecisionWorkflowMobileAPI:
     def setup_method(self):
         self.org = Organization.objects.create(name="Decision Org")
         self.site = Site.objects.create(organization=self.org, name="Decision Site")
-        self.inspector = User.objects.create_user(username="decision-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
-        self.reviewer = User.objects.create_user(username="decision-reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
+        self.inspector = create_member_user(username="decision-inspector", password="pass", role="inspector", organization=self.org, site=self.site)
+        self.reviewer = create_member_user(username="decision-reviewer", password="pass", role="reviewer", organization=self.org, site=self.site)
 
         self.other_org = Organization.objects.create(name="Other Decision Org")
         self.other_site = Site.objects.create(organization=self.other_org, name="Other Decision Site")
-        self.other_user = User.objects.create_user(username="decision-other", password="pass", role="reviewer", organization=self.other_org, site=self.other_site)
+        self.other_user = create_member_user(username="decision-other", password="pass", role="reviewer", organization=self.other_org, site=self.other_site)
 
         self.inspection = BatchInspection.objects.create(
             organization=self.org,

@@ -1,3 +1,4 @@
+from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -13,20 +14,20 @@ class TestRiskResultsMobileAPI:
     def setup_method(self):
         self.org = Organization.objects.create(name="Risk Org")
         self.site = Site.objects.create(organization=self.org, name="Risk Site")
-        self.inspector = User.objects.create_user(
+        self.inspector = create_member_user(
             username="risk-inspector",
             password="pass",
-            role="inspector",
+            role="quality_officer",
             organization=self.org,
             site=self.site,
         )
 
         self.other_org = Organization.objects.create(name="Other Risk Org")
         self.other_site = Site.objects.create(organization=self.other_org, name="Other Risk Site")
-        self.other_user = User.objects.create_user(
+        self.other_user = create_member_user(
             username="risk-other",
             password="pass",
-            role="inspector",
+            role="quality_officer",
             organization=self.other_org,
             site=self.other_site,
         )
