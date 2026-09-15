@@ -15,3 +15,6 @@ class SiteAdmin(admin.ModelAdmin):
     list_filter = ("organization",)
     search_fields = ("name", "address")
     date_hierarchy = "created_at"
+
+from .models import OrganizationMembership
+admin.site.register(OrganizationMembership)

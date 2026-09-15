@@ -1,3 +1,5 @@
+from organizations.serializer_scope import TenantSerializerMixin
+from organizations.tenancy import get_request_organization
 from rest_framework import serializers
 from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
 from organizations.models import Organization
@@ -6,7 +8,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class EvidenceSerializer(serializers.ModelSerializer):
+class EvidenceSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     image = serializers.FileField(required=True)
     image_url = serializers.SerializerMethodField(read_only=True)
     created_by_display = serializers.SerializerMethodField(read_only=True)
@@ -48,10 +50,10 @@ class EvidenceSerializer(serializers.ModelSerializer):
         if not inspection:
             raise serializers.ValidationError({"inspection": "Inspection is required for evidence."})
         if request and request.user.is_authenticated and inspection is not None:
-            organization = getattr(request.user, "organization", None)
-            if organization is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
+            organization = get_request_organization(request)
+            if organization is not None and inspection.organization != organization:
                 raise serializers.ValidationError("Evidence must belong to the authenticated user's organization.")
-        return attrs
+        return super().validate(attrs)
 
     def get_image_url(self, obj):
         try:
@@ -86,7 +88,7 @@ class EvidenceSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class OCRTaskSerializer(serializers.ModelSerializer):
+class OCRTaskSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     """Serialize OCR preparation tasks without invoking any OCR provider."""
 
     evidence_display = serializers.SerializerMethodField(read_only=True)
@@ -151,13 +153,13 @@ class OCRTaskSerializer(serializers.ModelSerializer):
         if evidence is None:
             raise serializers.ValidationError({"evidence": "Evidence is required for OCR tasks."})
         if request and request.user.is_authenticated:
-            organization = getattr(request.user, "organization", None)
-            if organization is not None and evidence.inspection.organization != organization and getattr(request.user, "role", None) != "admin":
+            organization = get_request_organization(request)
+            if organization is not None and evidence.inspection.organization != organization:
                 raise serializers.ValidationError("OCR tasks must belong to the authenticated user's organization.")
-        return attrs
+        return super().validate(attrs)
 
 
-class RiskResultSerializer(serializers.ModelSerializer):
+class RiskResultSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     inspection_display = serializers.SerializerMethodField(read_only=True)
     suspicion_level_display = serializers.SerializerMethodField(read_only=True)
     is_high_risk = serializers.SerializerMethodField(read_only=True)
@@ -216,10 +218,10 @@ class RiskResultSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"inspection": "This inspection already has a risk result."})
 
         if request and request.user.is_authenticated and inspection is not None:
-            organization = getattr(request.user, "organization", None)
-            if organization is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
+            organization = get_request_organization(request)
+            if organization is not None and inspection.organization != organization:
                 raise serializers.ValidationError("Risk results must belong to the authenticated user's organization.")
-        return attrs
+        return super().validate(attrs)
 
     def get_inspection_display(self, obj):
         if obj.inspection:
@@ -251,7 +253,8 @@ class RiskResultSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class ReviewDecisionSerializer(serializers.ModelSerializer):
+class ReviewDecisionSerializer(TenantSerializerMixin, serializers.ModelSerializer):
+    reviewer = serializers.PrimaryKeyRelatedField(read_only=True)
     reviewer_display = serializers.SerializerMethodField(read_only=True)
     decision_display = serializers.SerializerMethodField(read_only=True)
     reviewed_at = serializers.SerializerMethodField(read_only=True)
@@ -286,12 +289,10 @@ class ReviewDecisionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"inspection": "This inspection already has a submitted decision."})
 
         if request and request.user.is_authenticated:
-            organization = getattr(request.user, "organization", None)
-            if organization is not None and inspection is not None and inspection.organization != organization and getattr(request.user, "role", None) != "admin":
+            organization = get_request_organization(request)
+            if organization is not None and inspection is not None and inspection.organization != organization:
                 raise serializers.ValidationError("Review decisions must belong to the authenticated user's organization.")
-            if reviewer is not None and reviewer.organization is not None and organization is not None and reviewer.organization != organization and getattr(request.user, "role", None) != "admin":
-                raise serializers.ValidationError("Reviewer must belong to the same organization as the inspection.")
-        return attrs
+        return super().validate(attrs)
 
     def get_reviewer_display(self, obj):
         if obj.reviewer:
@@ -316,12 +317,12 @@ class ReviewDecisionSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class InspectionSerializer(serializers.ModelSerializer):
+class InspectionSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     evidences = EvidenceSerializer(many=True, read_only=True)
     risk_result = RiskResultSerializer(read_only=True)
     decisions = ReviewDecisionSerializer(many=True, read_only=True)
     organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all(), required=False, allow_null=True)
-    inspector = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    inspector = serializers.PrimaryKeyRelatedField(read_only=True)
     organization_display = serializers.SerializerMethodField(read_only=True)
     site_display = serializers.SerializerMethodField(read_only=True)
     supplier_display = serializers.SerializerMethodField(read_only=True)
@@ -367,14 +368,14 @@ class InspectionSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if user and user.is_authenticated:
-            organization = attrs.get("organization") or getattr(self.instance, "organization", None)
+            organization = attrs.get("organization") or getattr(self.instance, "organization", None) or get_request_organization(request)
             site = attrs.get("site") or getattr(self.instance, "site", None)
             supplier = attrs.get("supplier") or getattr(self.instance, "supplier", None)
             product = attrs.get("product") or getattr(self.instance, "product", None)
             inspector = attrs.get("inspector") or getattr(self.instance, "inspector", None)
 
-            if organization is not None and getattr(user, "role", None) != "admin":
-                if user.organization != organization:
+            if organization is not None:
+                if get_request_organization(request) != organization:
                     raise serializers.ValidationError("Inspection organization must match the authenticated user's organization.")
 
             if site is not None and organization is not None and site.organization != organization:
@@ -383,8 +384,6 @@ class InspectionSerializer(serializers.ModelSerializer):
             if product is not None and organization is not None and product.organization != organization:
                 raise serializers.ValidationError("Product reference must belong to the selected organization.")
 
-            if inspector is not None and inspector.organization is not None and organization is not None and inspector.organization != organization:
-                raise serializers.ValidationError("Inspector must belong to the selected organization.")
 
             # Validate expiry_date does not precede received_at
             expiry = attrs.get("expiry_date") or getattr(self.instance, "expiry_date", None)
@@ -397,7 +396,7 @@ class InspectionSerializer(serializers.ModelSerializer):
                 if rec_date is not None and expiry < rec_date:
                     raise serializers.ValidationError("Expiry date cannot be before the received date.")
 
-        return attrs
+        return super().validate(attrs)
 
     def get_organization_display(self, obj):
         return getattr(obj.organization, "name", None)
@@ -487,7 +486,7 @@ class InspectionSerializer(serializers.ModelSerializer):
         }
 
 
-class InspectionProcessingRunSerializer(serializers.ModelSerializer):
+class InspectionProcessingRunSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     """Expose a compact inspection processing history payload."""
 
     inspection_display = serializers.SerializerMethodField(read_only=True)

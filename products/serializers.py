@@ -1,3 +1,5 @@
+from organizations.serializer_scope import TenantSerializerMixin
+from organizations.tenancy import get_request_organization
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import ProductReference, ProductReferenceImage, DatasetGroup, DatasetGroupImage
@@ -5,7 +7,7 @@ from .models import ProductReference, ProductReferenceImage, DatasetGroup, Datas
 User = get_user_model()
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     """Serialize product references as a compact, inspection-ready payload.
 
     The API keeps the reference structure intentionally simple so Flutter and
@@ -48,7 +50,7 @@ class ProductSerializer(serializers.ModelSerializer):
         """Enforce organization scoping and prevent duplicate names within an organization."""
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        org = getattr(user, "organization", None)
+        org = get_request_organization(request) if request else None
         # This serializer intentionally blocks cross-organization writes; the
         # ProductReference library is always managed inside one organization boundary.
         if request and request.method in ("POST", "PUT", "PATCH"):
@@ -63,19 +65,19 @@ class ProductSerializer(serializers.ModelSerializer):
                 qs = qs.exclude(pk=instance.pk)
             if qs.exists():
                 raise serializers.ValidationError({"name": "A product reference with this name already exists in your organization."})
-        return data
+        return super().validate(data)
 
     def create(self, validated_data):
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        org = getattr(user, "organization", None)
+        org = get_request_organization(request) if request else None
         if org:
             # The authenticated user's organization is the source of truth for new references.
             validated_data["organization"] = org
         return super().create(validated_data)
 
 
-class ProductReferenceImageSerializer(serializers.ModelSerializer):
+class ProductReferenceImageSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     """Serialize reference images as a lightweight upload-ready payload."""
 
     product_reference_display = serializers.SerializerMethodField(read_only=True)
@@ -140,10 +142,10 @@ class ProductReferenceImageSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"product_reference": "Product reference is required."})
 
         if request and user and user.is_authenticated:
-            organization = getattr(user, "organization", None)
-            if organization is not None and product_reference.organization != organization and getattr(user, "role", None) != "admin":
+            organization = get_request_organization(request) if request else None
+            if organization is not None and product_reference.organization != organization:
                 raise serializers.ValidationError("Reference images must belong to the authenticated user's organization.")
-        return attrs
+        return super().validate(attrs)
 
     def create(self, validated_data):
         request = self.context.get("request")
@@ -153,7 +155,7 @@ class ProductReferenceImageSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class DatasetGroupSerializer(serializers.ModelSerializer):
+class DatasetGroupSerializer(TenantSerializerMixin, serializers.ModelSerializer):
     """Serialize dataset groups used for labeling and review preparation."""
 
     organization_display = serializers.SerializerMethodField(read_only=True)
@@ -228,16 +230,16 @@ class DatasetGroupSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         user = getattr(request, "user", None)
         reference_images = attrs.get("reference_images") or []
-        organization = attrs.get("organization") or getattr(self.instance, "organization", None) or getattr(user, "organization", None)
+        organization = attrs.get("organization") or getattr(self.instance, "organization", None) or (get_request_organization(request) if request else None)
 
         if request and user and user.is_authenticated:
-            if organization is not None and getattr(user, "role", None) != "admin" and user.organization != organization:
+            if organization is not None and get_request_organization(request) != organization:
                 raise serializers.ValidationError("Dataset groups must belong to the authenticated user's organization.")
 
         for image in reference_images:
-            if organization is not None and image.product_reference.organization != organization and getattr(user, "role", None) != "admin":
+            if organization is not None and image.product_reference.organization != organization:
                 raise serializers.ValidationError("Dataset images must belong to the same organization as the dataset group.")
-        return attrs
+        return super().validate(attrs)
 
     def create(self, validated_data):
         reference_images = validated_data.pop("reference_images", [])
@@ -245,7 +247,7 @@ class DatasetGroupSerializer(serializers.ModelSerializer):
         user = getattr(request, "user", None)
         if user and user.is_authenticated:
             validated_data["created_by"] = user
-            validated_data["organization"] = getattr(user, "organization", None)
+            validated_data["organization"] = get_request_organization(request) if request else None
         dataset_group = super().create(validated_data)
         self._sync_reference_images(dataset_group, reference_images)
         return dataset_group

@@ -1,3 +1,4 @@
+from organizations.tenancy import TenantQuerysetMixin, get_request_organization
 from rest_framework import viewsets, permissions, status
 from rest_framework.exceptions import ValidationError
 from inspections.services.processing.config import resolve_enabled_steps
@@ -12,52 +13,24 @@ from .serializers import (
     OCRTaskSerializer,
     InspectionProcessingRunSerializer,
 )
-from authmed_intern.permissions import IsOrgMember
+from authmed_intern.permissions import TenantPermission
 from inspections.services.processing import InspectionProcessingService
 from inspections.dispatch import enqueue_inspection_run
 
 
-class InspectionViewSet(viewsets.ModelViewSet):
-    queryset = BatchInspection.objects.all()
+class InspectionViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
+    write_capability = 'inspect'
+    tenant_filters = {'site': 'site_id', 'supplier': 'supplier_id', 'product': 'product_id', 'status': 'status'}
+    queryset = BatchInspection.objects.select_related("organization", "site", "supplier", "product", "inspector").order_by("-received_at")
     serializer_class = InspectionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            qs = BatchInspection.objects.all()
-        else:
-            organization = getattr(user, "organization", None)
-            if organization is None:
-                return BatchInspection.objects.none()
-            # Non-admin users only see inspections from their own organization.
-            qs = BatchInspection.objects.filter(organization=organization)
-
-        # Mobile list screens filter locally by site, supplier, product, and workflow status.
-        site_id = self.request.query_params.get("site")
-        supplier_id = self.request.query_params.get("supplier")
-        product_id = self.request.query_params.get("product")
-        status = self.request.query_params.get("status")
-
-        if site_id:
-            qs = qs.filter(site_id=site_id)
-        if supplier_id:
-            qs = qs.filter(supplier_id=supplier_id)
-        if product_id:
-            qs = qs.filter(product_id=product_id)
-        if status:
-            qs = qs.filter(status=status)
-
-        return qs.order_by("-received_at")
 
     def perform_create(self, serializer):
         user = self.request.user
-        organization = getattr(user, "organization", None)
+        organization = get_request_organization(self.request)
         # Default organization and inspector from the authenticated user so mobile clients send less data.
-        if organization is not None:
-            serializer.save(organization=organization, inspector=user)
-        else:
-            serializer.save(inspector=user)
+        serializer.save(organization=organization, inspector=user)
 
     @action(detail=True, methods=["post"])
     def add_evidence(self, request, pk=None):
@@ -94,29 +67,13 @@ class InspectionViewSet(viewsets.ModelViewSet):
         return Response(summary, status=status.HTTP_200_OK)
 
 
-class EvidenceViewSet(viewsets.ModelViewSet):
-    queryset = Evidence.objects.all()
+class EvidenceViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
+    write_capability = 'inspect'
+    tenant_filters = {'inspection': 'inspection_id', 'evidence_type': 'evidence_type', 'evidence_status': 'evidence_status'}
+    queryset = Evidence.objects.select_related("inspection", "inspection__organization", "created_by").order_by("display_order", "created_at")
     serializer_class = EvidenceSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            return Evidence.objects.all()
-        organization = getattr(user, "organization", None)
-        if organization is None:
-            return Evidence.objects.none()
-        qs = Evidence.objects.select_related("inspection", "inspection__organization", "created_by").filter(inspection__organization=organization)
-        inspection_id = self.request.query_params.get("inspection")
-        evidence_type = self.request.query_params.get("evidence_type")
-        evidence_status = self.request.query_params.get("evidence_status")
-        if inspection_id:
-            qs = qs.filter(inspection_id=inspection_id)
-        if evidence_type:
-            qs = qs.filter(evidence_type=evidence_type)
-        if evidence_status:
-            qs = qs.filter(evidence_status=evidence_status)
-        return qs.order_by("display_order", "created_at")
 
     def perform_create(self, serializer):
         # Ensure created_by is set and validate inspection scoping via serializer
@@ -124,25 +81,13 @@ class EvidenceViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=user)
 
 
-class OCRTaskViewSet(viewsets.ModelViewSet):
-    queryset = OCRTask.objects.all()
+class OCRTaskViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
+    write_capability = 'inspect'
+    tenant_filters = {'status': 'status'}
+    queryset = OCRTask.objects.select_related("evidence", "evidence__inspection").order_by("-created_at")
     serializer_class = OCRTaskSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            qs = OCRTask.objects.all()
-        else:
-            organization = getattr(user, "organization", None)
-            if organization is None:
-                return OCRTask.objects.none()
-            qs = OCRTask.objects.filter(evidence__inspection__organization=organization)
-
-        status_filter = self.request.query_params.get("status")
-        if status_filter:
-            qs = qs.filter(status=status_filter)
-        return qs.select_related("evidence", "evidence__inspection", "evidence__inspection__organization").order_by("-created_at")
 
     def perform_create(self, serializer):
         serializer.save()
@@ -165,54 +110,22 @@ class OCRTaskViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(task).data, status=status.HTTP_200_OK)
 
 
-class InspectionProcessingRunViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = InspectionProcessingRun.objects.all()
+class InspectionProcessingRunViewSet(TenantQuerysetMixin, viewsets.ReadOnlyModelViewSet):
+    write_capability = None
+    tenant_filters = {'inspection': 'inspection_id', 'status': 'status'}
+    queryset = InspectionProcessingRun.objects.select_related("inspection", "created_by").order_by("-created_at")
     serializer_class = InspectionProcessingRunSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
-
-    def get_queryset(self):
-        user = self.request.user
-        qs = InspectionProcessingRun.objects.select_related("inspection", "created_by")
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            organization_id = self.request.query_params.get("organization")
-            if organization_id:
-                qs = qs.filter(inspection__organization_id=organization_id)
-            return qs.order_by("-created_at")
-
-        organization = getattr(user, "organization", None)
-        if organization is None:
-            return InspectionProcessingRun.objects.none()
-
-        qs = qs.filter(inspection__organization=organization)
-        inspection_id = self.request.query_params.get("inspection")
-        status_filter = self.request.query_params.get("status")
-        if inspection_id:
-            qs = qs.filter(inspection_id=inspection_id)
-        if status_filter:
-            qs = qs.filter(status=status_filter)
-        return qs.order_by("-created_at")
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
 
-class RiskResultViewSet(viewsets.ModelViewSet):
-    queryset = RiskResult.objects.all()
+
+class RiskResultViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
+    write_capability = 'quality'
+    tenant_filters = {'inspection': 'inspection_id'}
+    queryset = RiskResult.objects.select_related("inspection").order_by("-created_at")
     serializer_class = RiskResultSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            qs = RiskResult.objects.all()
-        else:
-            organization = getattr(user, "organization", None)
-            if organization is None:
-                return RiskResult.objects.none()
-            # Risk results are visible only inside the caller's organization.
-            qs = RiskResult.objects.filter(inspection__organization=organization)
-
-        inspection_id = self.request.query_params.get("inspection")
-        if inspection_id:
-            qs = qs.filter(inspection_id=inspection_id)
-        return qs.order_by("-created_at")
 
     def perform_create(self, serializer):
         serializer.save()
@@ -232,26 +145,13 @@ class RiskResultViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ReviewDecisionViewSet(viewsets.ModelViewSet):
-    queryset = ReviewDecision.objects.all()
+class ReviewDecisionViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
+    write_capability = 'review'
+    tenant_filters = {'inspection': 'inspection_id'}
+    queryset = ReviewDecision.objects.select_related("inspection", "reviewer").order_by("-created_at")
     serializer_class = ReviewDecisionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOrgMember]
+    permission_classes = [permissions.IsAuthenticated, TenantPermission]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated and getattr(user, "role", None) == "admin":
-            qs = ReviewDecision.objects.all()
-        else:
-            organization = getattr(user, "organization", None)
-            if organization is None:
-                return ReviewDecision.objects.none()
-            # Decisions are filtered by organization so a reviewer cannot read cross-org final states.
-            qs = ReviewDecision.objects.filter(inspection__organization=organization)
-
-        inspection_id = self.request.query_params.get("inspection")
-        if inspection_id:
-            qs = qs.filter(inspection_id=inspection_id)
-        return qs.order_by("-created_at")
 
     def perform_create(self, serializer):
         decision = serializer.save()

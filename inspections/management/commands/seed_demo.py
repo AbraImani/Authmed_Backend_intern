@@ -6,7 +6,11 @@ class Command(BaseCommand):
     help = "Seed demo data for AuthMed intern backend"
 
     def handle(self, *args, **options):
-        from organizations.models import Organization, Site
+        from organizations.models import Organization, Site, OrganizationMembership
+        from django.conf import settings
+        from django.core.management.base import CommandError
+        if settings.AUTHMED_API_AUTH_MODE != "legacy_jwt":
+            raise CommandError("Demo seeding requires explicit legacy development mode.")
         from users.models import User
         from suppliers.models import Supplier
         from products.models import ProductReference as Product
@@ -89,7 +93,10 @@ class Command(BaseCommand):
         else:
             self.stdout.write("Updated onboarding user nathan.cirhuza")
 
-        supplier, _ = Supplier.objects.get_or_create(name="Acme Pharma", defaults={"contact": "+1 555", "address": "Factory Rd"})
+        for identity in (admin_user, inspector, reviewer, nathan):
+            OrganizationMembership.objects.get_or_create(user=identity, organization=org, defaults={"role": identity.role, "primary_site": site})
+
+        supplier, _ = Supplier.objects.get_or_create(organization=org, name="Acme Pharma", defaults={"contact": "+1 555", "address": "Factory Rd"})
         product, _ = Product.objects.get_or_create(organization=org, name="PainAway 100mg", defaults={"sku": "PA100"})
 
         # Create a sample batch inspection

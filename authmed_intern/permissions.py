@@ -1,36 +1,24 @@
 from rest_framework import permissions
+from organizations.roles import CAPABILITIES
+from organizations.tenancy import get_active_membership, object_organization_id
 
-
-class IsAdminRole(permissions.BasePermission):
+class TenantPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_authenticated and getattr(request.user, "role", None) == "admin")
-
-
-class IsAdminOrReviewer(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return bool(
-            request.user
-            and request.user.is_authenticated
-            and getattr(request.user, "role", None) in {"admin", "reviewer"}
-        )
-
-
-class IsOrgMember(permissions.BasePermission):
-    """Allow access only to users belonging to the same organization or staff."""
+        if not request.user or not request.user.is_authenticated or not request.user.is_active:
+            return False
+        membership = get_active_membership(request)
+        if hasattr(view, "action_map") and getattr(view, "action", None) is None:
+            return True  # Let DRF return 405 for unsupported methods after membership validation.
+        capability = getattr(view, "read_capability", "read") if request.method in permissions.SAFE_METHODS else getattr(view, "write_capability", None)
+        return capability in CAPABILITIES.get(membership.role, ())
 
     def has_object_permission(self, request, view, obj):
-        user = request.user
-        if not user or not user.is_authenticated:
-            return False
-        # Admin users are allowed to inspect any object regardless of organization.
-        if user.is_superuser or user.role == "admin":
-            return True
-        # If object has organization attribute, compare
-        org = getattr(obj, "organization", None)
-        if org is None:
-            return True
-        # For org-scoped resources, the object's organization must match the caller's organization.
-        return getattr(user, "organization", None) == org
+        membership = get_active_membership(request)
+        if obj._meta.label_lower == "users.user":
+            return obj.memberships.filter(organization_id=membership.organization_id, is_active=True).exists()
+        return object_organization_id(obj) == membership.organization_id
 
-    def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated
+# Kept as compatibility imports, now contextual and fail-closed.
+IsOrgMember = TenantPermission
+IsAdminRole = TenantPermission
+IsAdminOrReviewer = TenantPermission
