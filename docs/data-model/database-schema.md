@@ -380,7 +380,7 @@ alembic downgrade -1
 See:
 1. [Domain Model](domain-model.md) - Entity relationships
 2. [Batch Inspection Entity](batch-inspection-entity.md) - Detailed entity spec
-3. [API Endpoints](../architecture/api-endpoints.md) - How to query this data
+3. [API Endpoints](../phase1_5/runtime.md) - How to query this data
 
 ---
 

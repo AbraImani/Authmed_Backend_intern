@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 from organizations.models import Organization, Site, OrganizationMembership
 from organizations.roles import Role
 from suppliers.models import Supplier
-from products.models import ProductReference, ProductReferenceImage, DatasetGroup
+from products.models import ProductReference, ProductReferenceImage
 from inspections.models import BatchInspection, Evidence, OCRTask, InspectionProcessingRun, RiskResult, ReviewDecision
 from audits.models import AuditLog
 
@@ -31,14 +31,13 @@ def tenants():
         decision = ReviewDecision.objects.create(inspection=inspection, decision="isolated")
         audit = AuditLog.objects.create(organization=org, action="test", object_type="BatchInspection", object_id=str(inspection.pk))
         image = ProductReferenceImage.objects.create(product_reference=product, image=SimpleUploadedFile("reference.gif", bytes.fromhex("47494638376101000100800000000000ffffff21f90401000000002c00000000010001000002024c01003b"), content_type="image/gif"))
-        group = DatasetGroup.objects.create(organization=org, name="Group " + suffix)
         users = {}
         for role in Role.values:
             user = User.objects.create_user(username=suffix + role)
             OrganizationMembership.objects.create(user=user, organization=org, role=role, primary_site=site)
             users[role] = user
         result.append(dict(org=org, site=site, supplier=supplier, product=product, inspection=inspection, evidence=evidence,
-                           task=task, run=run, risk=risk, decision=decision, audit=audit, image=image, group=group, users=users))
+                           task=task, run=run, risk=risk, decision=decision, audit=audit, image=image, users=users))
     return result
 
 def client_for(user):
@@ -49,7 +48,7 @@ def client_for(user):
 RESOURCES = [("organizations", "org"), ("sites", "site"), ("suppliers", "supplier"), ("products", "product"),
              ("batch-inspections", "inspection"), ("evidences", "evidence"), ("ocr-tasks", "task"),
              ("processing-runs", "run"), ("risk-results", "risk"), ("decisions", "decision"),
-             ("audit-logs", "audit"), ("product-reference-images", "image"), ("dataset-groups", "group")]
+             ("audit-logs", "audit"), ("product-reference-images", "image")]
 
 @pytest.mark.parametrize("route,key", RESOURCES)
 def test_outbound_lists_and_foreign_details_are_scoped(tenants, route, key):
@@ -89,7 +88,6 @@ def test_foreign_inspection_relations_rejected_without_explicit_organization(ten
     ("products", "supplier", "supplier", Role.MANAGER),
     ("sites", "organization", "org", Role.MANAGER),
     ("product-reference-images", "product_reference", "product", Role.MANAGER),
-    ("dataset-groups", "reference_images", "image", Role.MANAGER),
 ])
 def test_inbound_nested_relations_scoped(tenants, route, field, target, role):
     own, foreign = tenants
@@ -112,7 +110,10 @@ def test_foreign_ocr_actions_hidden(tenants, action):
 @pytest.mark.parametrize("route", [entry[0] for entry in RESOURCES] + ["users"])
 def test_no_active_membership_denies_all_business_apis(tenants, state, route):
     own, foreign = tenants
-    user = User.objects.create_user(username="unauthorized", role="admin", organization=own["org"] if state == "legacy_admin" else None, is_superuser=state == "platform", is_staff=state == "platform")
+    user = User.objects.create_user(username="unauthorized", is_superuser=state == "platform", is_staff=state == "platform")
+    if state == "legacy_admin":
+        user.role = "admin"  # A transient legacy attribute cannot grant access.
+        user.organization = own["org"]
     if state == "inactive":
         OrganizationMembership.objects.create(user=user, organization=own["org"], role=Role.ADMIN, is_active=False)
     client = client_for(user)

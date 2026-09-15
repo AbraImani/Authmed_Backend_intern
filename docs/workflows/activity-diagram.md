@@ -594,7 +594,7 @@ TOTAL: ~30-50 minutes (investigation included)
 See:
 1. [Batch Inspection State Machine](batch-inspection-state-machine.md) - State diagram
 2. [Sequence Diagrams](../sequences/) - Technical implementation
-3. [API Endpoints](../architecture/api-endpoints.md) - How to trigger activities
+3. [API Endpoints](../phase1_5/runtime.md) - How to trigger activities
 
 ---
 

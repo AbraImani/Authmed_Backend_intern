@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
@@ -169,8 +170,7 @@ class TestOCRTaskPipeline:
         service.queue(task, provider_name="dummy", processor_version="ocr-test")
 
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": "ocr-user", "password": "pass"}, format="json")
-        token = response.json()["access"]
+        token = firebase_token_for("ocr-user")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
         detail = client.get(f"/api/ocr-tasks/{task.id}/")
@@ -202,8 +202,7 @@ class TestOCRTaskPipeline:
         service.execute(task)
 
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": "ocr-user", "password": "pass"}, format="json")
-        token = response.json()["access"]
+        token = firebase_token_for("ocr-user")
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
         detail = client.get(f"/api/batch-inspections/{self.inspection.id}/")

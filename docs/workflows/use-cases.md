@@ -160,7 +160,7 @@ graph TB
 See:
 1. [Business Workflow](business-workflow.md)
 2. [Activity Diagram](activity-diagram.md)
-3. [RBAC Matrix](../architecture/rbac-matrix.md)
+3. [RBAC Matrix](../phase1_5/runtime.md)
 
 ---
 

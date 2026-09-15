@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from rest_framework.test import APIClient
@@ -30,9 +31,7 @@ class TestProductReferenceAPI:
 
     def _get_token(self, username, password):
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
-        assert response.status_code == status.HTTP_200_OK
-        return response.json()["access"]
+        return firebase_token_for(username)
 
     def test_inspector_sees_only_own_organization_products(self):
         token = self._get_token("user-one", "pass")
@@ -69,7 +68,7 @@ class TestProductReferenceAPI:
         data = resp.json()
         assert data["name"] == "New Ref"
         # organization should be set to the authenticated user's organization
-        assert data["organization"] == self.user_one.organization.id
+        assert data["organization"] == self.org_one.id
 
         # Attempt to create duplicate name in same org
         resp2 = client.post("/api/products/", {"name": "New Ref"}, format="json")

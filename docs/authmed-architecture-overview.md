@@ -388,7 +388,7 @@ For deeper dives, see:
 1. [Product Context](product/product-context.md) - Ecosystem view
 2. [Domain Model](data-model/domain-model.md) - Entities & relationships
 3. [C4 Container](architecture/c4-container.md) - System components
-4. [RBAC Matrix](architecture/rbac-matrix.md) - Permissions detail
+4. [RBAC Matrix](phase1_5/runtime.md) - Permissions detail
 5. [Deployment Diagram](deployment/deployment-diagram.md) - Ops view
 
 ---

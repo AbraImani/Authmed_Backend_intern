@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
@@ -40,9 +41,7 @@ class TestDecisionWorkflowMobileAPI:
 
     def _auth_client(self, username, password):
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
-        assert response.status_code == 200
-        client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {firebase_token_for(username)}")
         return client
 
     def test_submit_review_decision_updates_final_state(self):

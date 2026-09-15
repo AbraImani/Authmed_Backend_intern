@@ -1,16 +1,11 @@
 import os
 from pathlib import Path
-from datetime import timedelta
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "dev-please-change-this-to-a-secure-32+char-secret-for-production-2026",
-)
+SECRET_KEY = os.getenv("SECRET_KEY", "")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -22,7 +17,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "rest_framework_simplejwt",
     "drf_spectacular",
     "django_filters",
     "users",
@@ -95,11 +89,10 @@ INSPECTION_INTELLIGENCE_STEPS = {
     "ai_enrichment": os.getenv("INSPECTION_STEP_AI_ENRICHMENT", "False") == "True",
 }
 
-INSPECTION_USE_FAKE_PROVIDERS = os.getenv("INSPECTION_USE_FAKE_PROVIDERS", "False") == "True"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "users.authentication.AuthMedAuthentication",
+        "users.authentication.FirebaseAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -114,17 +107,6 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "0.1",
 }
 
-from datetime import timedelta
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-}
-
-# Firebase is the sole default end-user authentication contract.
+# Firebase is the only API identity mechanism; Django Admin uses sessions.
 FIREBASE_PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID", "")
-AUTHMED_API_AUTH_MODE = os.getenv("AUTHMED_API_AUTH_MODE", "firebase")
-if AUTHMED_API_AUTH_MODE not in {"firebase", "legacy_jwt"}:
-    raise ValueError("Unsupported AUTHMED_API_AUTH_MODE")
-if AUTHMED_API_AUTH_MODE == "legacy_jwt" and not DEBUG:
-    raise ValueError("Legacy JWT mode is restricted to explicit development environments")

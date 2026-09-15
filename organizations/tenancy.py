@@ -10,8 +10,6 @@ TENANT_PATHS = {
     "suppliers.supplier": "organization_id",
     "products.productreference": "organization_id",
     "products.productreferenceimage": "product_reference__organization_id",
-    "products.datasetgroup": "organization_id",
-    "products.datasetgroupimage": "dataset_group__organization_id",
     "inspections.batchinspection": "organization_id",
     "inspections.evidence": "inspection__organization_id",
     "inspections.ocrtask": "evidence__inspection__organization_id",

@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
@@ -78,9 +79,7 @@ class TestProductReferenceImageAPI:
 
     def _get_token(self, username, password):
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
-        assert response.status_code == status.HTTP_200_OK
-        return response.json()["access"]
+        return firebase_token_for(username)
 
     def test_list_is_org_scoped(self):
         token = self._get_token("user-one", "pass")

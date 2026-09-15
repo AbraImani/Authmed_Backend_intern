@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from django.utils import timezone
@@ -25,9 +26,7 @@ class TestEvidenceMobileAPI:
 
     def _get_token(self, username, password):
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
-        assert response.status_code == 200
-        return response.json()["access"]
+        return firebase_token_for(username)
 
     def _sample_image(self, name="evidence.jpg"):
         tiny_gif = (

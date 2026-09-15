@@ -1,5 +1,4 @@
 import uuid
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
@@ -33,11 +32,3 @@ class FirebaseAuthentication(BaseAuthentication):
         if not user.is_active:
             raise AuthenticationFailed("Account is inactive.")
         return user, {"provider": "firebase"}
-
-class AuthMedAuthentication(FirebaseAuthentication):
-    """One explicitly configured mechanism, never a Firebase-to-JWT fallback."""
-    def authenticate(self, request):
-        if settings.AUTHMED_API_AUTH_MODE == "legacy_jwt":
-            from rest_framework_simplejwt.authentication import JWTAuthentication
-            return JWTAuthentication().authenticate(request)
-        return super().authenticate(request)

@@ -1,3 +1,4 @@
+from tests.helpers import firebase_token_for
 from tests.helpers import create_member_user
 import pytest
 from django.contrib.auth import get_user_model
@@ -6,7 +7,6 @@ from django.test import Client
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from organizations.models import Organization, Site
 from suppliers.models import Supplier
@@ -17,40 +17,6 @@ from audits.models import AuditLog
 User = get_user_model()
 
 
-@pytest.mark.django_db
-class TestJWTAuth:
-    def test_jwt_token_obtain(self):
-        """Test JWT token obtain endpoint."""
-        user = create_member_user(username="testuser", password="testpass123", email="test@example.com")
-        client = Client()
-        response = client.post("/api/auth/token/", {"username": "testuser", "password": "testpass123"}, content_type="application/json")
-        assert response.status_code == status.HTTP_200_OK
-        assert "access" in response.json()
-        assert "refresh" in response.json()
-
-    def test_jwt_token_refresh(self):
-        """Test JWT token refresh endpoint."""
-        user = create_member_user(username="testuser", password="testpass123")
-        refresh = RefreshToken.for_user(user)
-        client = Client()
-        response = client.post("/api/auth/token/refresh/", {"refresh": str(refresh)}, content_type="application/json")
-        assert response.status_code == status.HTTP_200_OK
-        assert "access" in response.json()
-
-    def test_seeded_nathan_can_obtain_jwt(self):
-        """Seeded onboarding account should be able to log in through JWT."""
-        from django.core.management import call_command
-
-        call_command("seed_demo")
-        client = Client()
-        response = client.post(
-            "/api/auth/token/",
-            {"username": "nathan.cirhuza", "password": "nathan@authmed.africa"},
-            content_type="application/json",
-        )
-        assert response.status_code == status.HTTP_200_OK
-        assert "access" in response.json()
-        assert "refresh" in response.json()
 
 
 @pytest.mark.django_db
@@ -154,9 +120,7 @@ class TestInspectionApiScoping:
 
     def _get_token(self, username, password):
         client = APIClient()
-        response = client.post("/api/auth/token/", {"username": username, "password": password}, format="json")
-        assert response.status_code == status.HTTP_200_OK
-        return response.json()["access"]
+        return firebase_token_for(username)
 
     def test_inspector_sees_only_own_organization_batches(self):
         client = APIClient()

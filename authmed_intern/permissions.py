@@ -17,8 +17,3 @@ class TenantPermission(permissions.BasePermission):
         if obj._meta.label_lower == "users.user":
             return obj.memberships.filter(organization_id=membership.organization_id, is_active=True).exists()
         return object_organization_id(obj) == membership.organization_id
-
-# Kept as compatibility imports, now contextual and fail-closed.
-IsOrgMember = TenantPermission
-IsAdminRole = TenantPermission
-IsAdminOrReviewer = TenantPermission

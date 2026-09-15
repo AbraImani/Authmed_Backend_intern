@@ -43,8 +43,9 @@ inspection = Inspection.objects.create(organization=b, site=site_b, supplier=sha
 event = Audit.objects.create(action="created", object_type="BatchInspection", object_id=str(inspection.pk), details={"preserved": True})
 unknown_event = Audit.objects.create(action="unknown", object_type="User", object_id=str(user.pk))
 executor = MigrationExecutor(connection)
-executor.migrate(executor.loader.graph.leaf_nodes())
-apps = executor.loader.project_state().apps
+phase1 = [("users", "0002_user_firebase_uid"), ("organizations", "0003_migrate_legacy_memberships"), ("suppliers", "0003_scope_legacy_suppliers"), ("audits", "0003_scope_existing_audits")]
+executor.migrate(phase1)
+apps = executor.loader.project_state(phase1).apps
 User = apps.get_model("users", "User")
 Member = apps.get_model("organizations", "OrganizationMembership")
 Supplier = apps.get_model("suppliers", "Supplier")

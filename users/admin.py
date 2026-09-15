@@ -4,5 +4,5 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
-    fieldsets = DjangoUserAdmin.fieldsets + (("Legacy business fields", {"fields": ("role", "organization", "site", "firebase_uid")}),)
+    fieldsets = DjangoUserAdmin.fieldsets + (("Firebase identity", {"fields": ("firebase_uid",)}),)
     readonly_fields = ("firebase_uid",)

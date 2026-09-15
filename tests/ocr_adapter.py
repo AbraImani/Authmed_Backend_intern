@@ -1,8 +1,8 @@
-from .base import BaseOCRAdapter, OCRExtractionResult
+from inspections.services.ocr.base import BaseOCRAdapter, OCRExtractionResult
 
 
 class StaticOCRAdapter(BaseOCRAdapter):
-    """Deterministic OCR adapter for tests and placeholder datasets."""
+    """Deterministic OCR adapter for isolated tests."""
 
     provider_name = "static-ocr"
 

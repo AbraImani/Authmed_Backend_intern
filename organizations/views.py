@@ -1,4 +1,4 @@
-from organizations.tenancy import TenantQuerysetMixin, get_request_organization
+from organizations.tenancy import TenantQuerysetMixin
 from rest_framework import viewsets, permissions
 from .models import Organization, Site
 from .serializers import OrganizationSerializer, SiteSerializer

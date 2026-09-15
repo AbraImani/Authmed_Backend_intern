@@ -2,8 +2,7 @@ from organizations.tenancy import TenantQuerysetMixin, get_request_organization
 from rest_framework import viewsets, permissions, filters
 from organizations.filters import TenantFilterBackend
 from .models import ProductReference, ProductReferenceImage
-from .models import DatasetGroup
-from .serializers import ProductSerializer, ProductReferenceImageSerializer, DatasetGroupSerializer
+from .serializers import ProductSerializer, ProductReferenceImageSerializer
 from authmed_intern.permissions import TenantPermission
 
 
@@ -54,17 +53,3 @@ class ProductReferenceImageViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
-
-
-class DatasetGroupViewSet(TenantQuerysetMixin, viewsets.ModelViewSet):
-    write_capability = 'manage'
-    tenant_filters = {}
-    """Org-scoped CRUD for dataset readiness groups."""
-
-    queryset = DatasetGroup.objects.prefetch_related("reference_images", "reference_images__product_reference").order_by("name")
-    serializer_class = DatasetGroupSerializer
-    permission_classes = [permissions.IsAuthenticated, TenantPermission]
-    filter_backends = [TenantFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ["annotation_status", "quality_flag", "labeling_ready"]
-    search_fields = ["name", "description"]
-    ordering_fields = ["name", "created_at", "updated_at"]

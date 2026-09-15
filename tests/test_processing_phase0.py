@@ -15,7 +15,7 @@ from inspections.services.comparison import InspectionComparisonService
 from inspections.services.scoring import InspectionScoringService
 from inspections.services.errors import InsufficientData, ProviderUnavailable, IncompleteAnalysis
 from inspections.services.ocr import OCRExtractionPipeline, OCRExtractionResult
-from inspections.services.ocr.mock_adapter import StaticOCRAdapter
+from tests.ocr_adapter import StaticOCRAdapter
 from inspections.services.processing import InspectionIntelligencePipeline, InspectionProcessingService
 from inspections.tasks import build_default_intelligence_pipeline, process_inspection_run
 

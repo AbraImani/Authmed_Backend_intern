@@ -528,8 +528,8 @@ Database/Cache (Private, isolated)
 ## Next Steps
 
 See:
-1. [RBAC Matrix](rbac-matrix.md) - Permission details
-2. [API Endpoints](api-endpoints.md) - Security by endpoint
+1. [RBAC Matrix](../phase1_5/runtime.md) - Permission details
+2. [API Endpoints](../phase1_5/runtime.md) - Security by endpoint
 3. [Deployment Architecture](deployment-architecture.md) - Infrastructure security
 
 ---

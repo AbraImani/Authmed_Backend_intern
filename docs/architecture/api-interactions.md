@@ -459,7 +459,7 @@ Admin can:
 ## Next Steps
 
 See:
-1. [API Endpoints Detailed](api-endpoints.md) - Complete endpoint specifications
+1. [API Endpoints Detailed](../phase1_5/runtime.md) - Complete endpoint specifications
 2. [Sequence Diagrams](../sequences/) - Timing and ordering of API calls
 3. [Database Schema](../data-model/database-schema.md) - Underlying data structures
 

@@ -6,7 +6,6 @@ from .models import User
 from .serializers import UserSerializer, MeSerializer
 from authmed_intern.permissions import TenantPermission
 from organizations.tenancy import TenantQuerysetMixin, get_active_membership
-from organizations.roles import CAPABILITIES
 
 class UserViewSet(TenantQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()

@@ -419,7 +419,7 @@ Data Flow: Historical batches → Aggregated metrics → Report
 
 See:
 1. [API Interactions](api-interactions.md) - How components exchange data via APIs
-2. [API Endpoints](api-endpoints.md) - Detailed endpoint specifications
+2. [API Endpoints](../phase1_5/runtime.md) - Detailed endpoint specifications
 3. [Database Schema](../data-model/database-schema.md) - Table structures
 
 ---

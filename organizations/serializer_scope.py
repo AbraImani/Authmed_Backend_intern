@@ -56,8 +56,4 @@ class TenantSerializerMixin:
                 display = field.name + "_display"
                 if display in result:
                     result[display] = None
-        if instance._meta.label_lower == "products.datasetgroup":
-            allowed_ids = set(instance.reference_images.filter(product_reference__organization=organization).values_list("pk", flat=True))
-            result["reference_images"] = [pk for pk in result.get("reference_images", []) if pk in allowed_ids]
-            result["reference_images_display"] = [item for item in result.get("reference_images_display", []) if item["id"] in allowed_ids]
         return result

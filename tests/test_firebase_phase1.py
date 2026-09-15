@@ -13,7 +13,6 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def firebase(settings):
-    settings.AUTHMED_API_AUTH_MODE = "firebase"
     settings.FIREBASE_PROJECT_ID = "authmed-test-project"
     claims = {"uid": "uid-123", "sub": "uid-123", "aud": settings.FIREBASE_PROJECT_ID,
               "iss": "https://securetoken.google.com/" + settings.FIREBASE_PROJECT_ID,
@@ -29,7 +28,7 @@ def test_valid_token_provisions_identity_shell_only(firebase):
     assert response.status_code == 200
     user = User.objects.get(firebase_uid=claims["uid"])
     assert not user.is_staff and not user.is_superuser and not user.has_usable_password()
-    assert user.organization_id is None and user.site_id is None
+    assert not hasattr(user, "organization") and not hasattr(user, "site")
     assert not user.memberships.exists()
     assert response.data["active_context"] is None and response.data["capabilities"] == []
     assert set(response.data) == {"id", "firebase_uid", "email", "first_name", "last_name", "memberships", "active_context", "capabilities"}

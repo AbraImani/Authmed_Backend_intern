@@ -3,9 +3,7 @@ from organizations.tenancy import get_request_organization
 from rest_framework import serializers
 from .models import BatchInspection, Evidence, RiskResult, ReviewDecision, OCRTask, InspectionProcessingRun
 from organizations.models import Organization
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
 
 class EvidenceSerializer(TenantSerializerMixin, serializers.ModelSerializer):
