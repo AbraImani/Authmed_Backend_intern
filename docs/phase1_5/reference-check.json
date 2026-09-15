@@ -1,0 +1,6 @@
+{
+  "obsolete_runtime_references": [],
+  "historical_migrations_unchanged": true,
+  "context_file_count": 107,
+  "method": "Audit of the simple exclusion patterns used in .dockerignore; no Docker image build claimed."
+}

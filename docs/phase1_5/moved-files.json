@@ -1,0 +1,17 @@
+[
+  {
+    "from": "inspections/services/ocr/mock_adapter.py",
+    "to": "tests/ocr_adapter.py",
+    "reason": "Deterministic adapter used only by tests; remove it from production application code."
+  },
+  {
+    "from": "requirements-phase0.lock",
+    "to": "docs/phase0/requirements.lock",
+    "reason": "Historical reproducibility snapshot, excluded from active dependency installation and deployment."
+  },
+  {
+    "from": "requirements-phase1.lock",
+    "to": "docs/phase1/requirements.lock",
+    "reason": "Historical reproducibility snapshot, excluded from active dependency installation and deployment."
+  }
+]

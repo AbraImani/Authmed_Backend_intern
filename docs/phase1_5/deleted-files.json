@@ -1,0 +1,1628 @@
+[
+  {
+    "path": "inspections/services/ocr/easyocr_adapter.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "inspections/services/ocr/paddleocr_adapter.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "inspections/services/ocr/normalization.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "inspections/services/inference/__init__.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "inspections/services/inference/base.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "inspections/services/inference/fake.py",
+    "reason": "Unreferenced provider stub or compatibility re-export; canonical OCR pipeline does not use it.",
+    "reference_search": "Repository imports, URLs, tests and historical migrations inspected; remaining references are historical documentation only.",
+    "risk": "Low: live normalization/provider interfaces retained."
+  },
+  {
+    "path": "authmed_intern/urls_auth.py",
+    "reason": "Retired JWT/demo/dataset implementation or tests for that retired surface; Firebase and supported business tests retained.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "inspections/management/commands/seed_demo.py",
+    "reason": "Retired JWT/demo/dataset implementation or tests for that retired surface; Firebase and supported business tests retained.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "tests/test_basic.py",
+    "reason": "Retired JWT/demo/dataset implementation or tests for that retired surface; Firebase and supported business tests retained.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "tests/test_dataset_groups.py",
+    "reason": "Retired JWT/demo/dataset implementation or tests for that retired surface; Firebase and supported business tests retained.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "tests/test_product_import_preview.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/import_validators.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/services/__init__.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/services/imports/duplicates.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/services/imports/preview.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/services/imports/schemas.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "products/services/imports/__init__.py",
+    "reason": "Unused CSV import-preview prototype; referenced only by its dedicated tests, no routes or commands.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "docs/architecture/api-endpoints.md",
+    "reason": "Obsolete contract documents describe nonexistent JWT/login URLs or cross-tenant admin access; current runtime guide replaces them.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "docs/architecture/rbac-matrix.md",
+    "reason": "Obsolete contract documents describe nonexistent JWT/login URLs or cross-tenant admin access; current runtime guide replaces them.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": "docs/sequences/sequence-login.md",
+    "reason": "Obsolete contract documents describe nonexistent JWT/login URLs or cross-tenant admin access; current runtime guide replaces them.",
+    "reference_search": "Imports, URL registries, tests and migrations inspected; callers removed or migrated in the same cleanup. Historical migrations/reports retained.",
+    "risk": "Controlled: data migrations protect existing rows; equivalent active authentication/security coverage retained."
+  },
+  {
+    "path": ".pytest_cache/.gitignore",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".pytest_cache/CACHEDIR.TAG",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".pytest_cache/README.md",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".pytest_cache/v/cache/lastfailed",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".pytest_cache/v/cache/nodeids",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".pytest_cache/v/cache/stepwise",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/apps.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/apps.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/signals.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/signals.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/0002_auditlog_organization.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/0003_scope_existing_audits.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "audits/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/celery.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/celery.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/permissions.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/permissions.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/settings.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/settings.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/test_settings.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/test_settings.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/urls_auth.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/urls_auth.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/wsgi.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "authmed_intern/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/dispatch.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/tasks.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/tasks.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/upload_paths.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/upload_paths.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/validators.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/validators.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/management/commands/__pycache__/seed_demo.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/management/commands/__pycache__/seed_demo.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0002_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0002_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0003_remove_reviewdecision_approved_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0003_remove_reviewdecision_approved_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0004_batchinspection_expiry_date_batchinspection_notes_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0004_batchinspection_expiry_date_batchinspection_notes_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0005_evidence_created_by_evidence_evidence_type_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0005_evidence_created_by_evidence_evidence_type_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0006_riskresult_calculated_at_riskresult_confidence_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0006_riskresult_calculated_at_riskresult_confidence_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0007_ocrtask_alter_evidence_options_evidence_checksum_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0007_ocrtask_alter_evidence_options_evidence_checksum_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0008_ocrtask_execution_completed_at_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0008_ocrtask_execution_completed_at_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0009_inspectionprocessingrun.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0009_inspectionprocessingrun.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/0010_processing_run_lifecycle.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/__pycache__/errors.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/comparison/__pycache__/engine.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/comparison/__pycache__/engine.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/comparison/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/comparison/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/inference/__pycache__/base.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/inference/__pycache__/fake.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/inference/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/normalization/__pycache__/text.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/normalization/__pycache__/text.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/normalization/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/normalization/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/base.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/base.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/easyocr_adapter.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/easyocr_adapter.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/extraction_pipeline.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/extraction_pipeline.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/mock_adapter.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/normalization.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/normalization.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/paddleocr_adapter.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/paddleocr_adapter.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/ocr/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/config.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/pipeline.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/pipeline.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/service.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/steps.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/processing/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/scoring/__pycache__/engine.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/scoring/__pycache__/engine.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/scoring/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "inspections/services/scoring/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/filters.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/roles.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/serializer_scope.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/tenancy.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/0002_organizationmembership.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/0003_migrate_legacy_memberships.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "organizations/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/import_validators.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/import_validators.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/upload_paths.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/upload_paths.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/validators.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/validators.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0002_rename_product_productreference.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0002_rename_product_productreference.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0003_productreference_add_fields.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0003_productreference_add_fields.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0004_alter_productreference_options_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0004_alter_productreference_options_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0005_alter_productreference_reference_image_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0005_alter_productreference_reference_image_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0006_datasetgroup_datasetgroupimage_and_more.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/0006_datasetgroup_datasetgroupimage_and_more.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/duplicates.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/duplicates.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/preview.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/preview.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/schemas.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/schemas.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "products/services/imports/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/0002_supplier_organization.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/0003_scope_legacy_suppliers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "suppliers/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/helpers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_basic.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_basic.cpython-310-pytest-9.0.2.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_basic.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_dataset_groups.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_dataset_groups.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_decisions_mobile.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_decisions_mobile.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_evidence_mobile.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_evidence_mobile.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_firebase_phase1.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_foundation_phase0.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_inspections_mobile.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_inspections_mobile.cpython-310-pytest-9.0.2.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_inspections_mobile.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_migrations_phase1.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_ocr_task_pipeline.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_ocr_task_pipeline.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_processing_phase0.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_products_api.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_products_api.cpython-310-pytest-9.0.2.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_products_api.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_product_import_preview.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_product_import_preview.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_product_reference_images.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_product_reference_images.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_risk_results_mobile.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_risk_results_mobile.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_tenancy_phase1.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_workflow.cpython-310-pytest-8.2.0.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_workflow.cpython-310-pytest-9.0.2.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/test_workflow.cpython-311-pytest-9.1.1.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "tests/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/admin.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/admin.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/apps.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/authentication.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/firebase.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/models.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/models.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/schema.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/serializers.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/serializers.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/urls.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/urls.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/views.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/__pycache__/views.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/migrations/__pycache__/0001_initial.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/migrations/__pycache__/0001_initial.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/migrations/__pycache__/0002_user_firebase_uid.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/migrations/__pycache__/__init__.cpython-310.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": "users/migrations/__pycache__/__init__.cpython-311.pyc",
+    "reason": "Generated Python/pytest cache; reproducible and not business data.",
+    "reference_search": "Cache artifacts are interpreter/test outputs, not source imports or migration inputs.",
+    "risk": "Low; regenerated when needed, excluded from Git/runtime context."
+  },
+  {
+    "path": ".venv/phase0-parent-snapshot.json",
+    "reason": "Superseded local validation artifact; proof summarized in the cleanup report.",
+    "reference_search": "No application, URL, migration or test import; historical reports mention generated schemas only.",
+    "risk": "Low; no business evidence or credentials."
+  },
+  {
+    "path": ".venv/phase0-schema.yaml",
+    "reason": "Superseded local validation artifact; proof summarized in the cleanup report.",
+    "reference_search": "No application, URL, migration or test import; historical reports mention generated schemas only.",
+    "risk": "Low; no business evidence or credentials."
+  },
+  {
+    "path": ".venv/phase1-schema.yaml",
+    "reason": "Superseded local validation artifact; proof summarized in the cleanup report.",
+    "reference_search": "No application, URL, migration or test import; historical reports mention generated schemas only.",
+    "risk": "Low; no business evidence or credentials."
+  },
+  {
+    "path": "docs/phase1_5/current-delete-batch.json",
+    "reason": "Superseded local validation artifact; proof summarized in the cleanup report.",
+    "reference_search": "No application, URL, migration or test import; historical reports mention generated schemas only.",
+    "risk": "Low; no business evidence or credentials."
+  }
+]

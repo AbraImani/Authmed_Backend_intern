@@ -1,0 +1,67 @@
+{
+  "method": "isolated copy of Git-visible source outside the parent workspace",
+  "location": "C:\\Users\\Abraham\\AppData\\Local\\Temp\\authmed-phase1-5-cx3au1km",
+  "steps": [
+    {
+      "name": "create fresh virtualenv",
+      "exit_code": 0,
+      "seconds": 34.08,
+      "output_tail": ""
+    },
+    {
+      "name": "install runtime only",
+      "exit_code": 0,
+      "seconds": 189.56,
+      "output_tail": ""
+    },
+    {
+      "name": "runtime WSGI smoke",
+      "exit_code": 0,
+      "seconds": 5.31,
+      "output_tail": "Runtime boots WSGI; unauthenticated /me is 401; no pytest or SimpleJWT; application modules load from isolated copy."
+    },
+    {
+      "name": "fresh default migrations",
+      "exit_code": 0,
+      "seconds": 9.95,
+      "output_tail": ""
+    },
+    {
+      "name": "Django check",
+      "exit_code": 0,
+      "seconds": 4.45,
+      "output_tail": "System check identified no issues (0 silenced)."
+    },
+    {
+      "name": "migration drift",
+      "exit_code": 0,
+      "seconds": 4.42,
+      "output_tail": "No changes detected"
+    },
+    {
+      "name": "runtime dependency check",
+      "exit_code": 0,
+      "seconds": 6.25,
+      "output_tail": "No broken requirements found."
+    },
+    {
+      "name": "install test dependencies",
+      "exit_code": 0,
+      "seconds": 23.62,
+      "output_tail": ""
+    },
+    {
+      "name": "full independent pytest",
+      "exit_code": 0,
+      "seconds": 124.91,
+      "output_tail": "........................................................................ [ 26%]\n........................................................................ [ 53%]\n........................................................................ [ 79%]\n.......................................................                  [100%]\n271 passed in 120.69s (0:02:00)"
+    },
+    {
+      "name": "OpenAPI validation",
+      "exit_code": 0,
+      "seconds": 5.3,
+      "output_tail": "OpenAPI paths: 35\n\nSchema generation summary:\nWarnings: 62 (43 unique)\nErrors:   0 (0 unique)"
+    }
+  ],
+  "success": true
+}
