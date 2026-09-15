@@ -19,3 +19,17 @@ credentials.json
 credentials/
 *.pem
 *.key
+*.sqlite3
+*.sqlite3-*
+*.py[cod]
+htmlcov/
+.coverage*
+coverage.xml
+junit*.xml
+pytest_output*.txt
+*.log
+*.tmp
+.ipynb_checkpoints/
+.idea/
+.vscode/
+service_account*.json
