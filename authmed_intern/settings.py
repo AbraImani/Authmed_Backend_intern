@@ -99,7 +99,7 @@ INSPECTION_USE_FAKE_PROVIDERS = os.getenv("INSPECTION_USE_FAKE_PROVIDERS", "Fals
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "users.authentication.AuthMedAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -120,3 +120,11 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+# Firebase is the sole default end-user authentication contract.
+FIREBASE_PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID", "")
+AUTHMED_API_AUTH_MODE = os.getenv("AUTHMED_API_AUTH_MODE", "firebase")
+if AUTHMED_API_AUTH_MODE not in {"firebase", "legacy_jwt"}:
+    raise ValueError("Unsupported AUTHMED_API_AUTH_MODE")
+if AUTHMED_API_AUTH_MODE == "legacy_jwt" and not DEBUG:
+    raise ValueError("Legacy JWT mode is restricted to explicit development environments")

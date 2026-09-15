@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    firebase_uid = models.CharField(max_length=128, unique=True, null=True, blank=True, editable=False)
+
     ROLE_CHOICES = (
         ("admin", "Admin"),
         ("inspector", "Inspector"),

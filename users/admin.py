@@ -1,9 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from .models import User
 
-
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "role", "organization", "site", "is_staff")
-    list_filter = ("role", "organization", "site", "is_staff")
-    search_fields = ("username", "email", "first_name", "last_name")
+class UserAdmin(DjangoUserAdmin):
+    fieldsets = DjangoUserAdmin.fieldsets + (("Legacy business fields", {"fields": ("role", "organization", "site", "firebase_uid")}),)
+    readonly_fields = ("firebase_uid",)
